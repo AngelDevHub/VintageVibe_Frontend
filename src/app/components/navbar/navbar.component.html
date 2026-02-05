@@ -1,0 +1,112 @@
+<nav class="navbar">
+  <div class="navbar-container container">
+    <!-- Logo -->
+    <a routerLink="/" class="navbar-logo">
+      <img src="images/logo-letras.png" alt="VintageVibe Logo" class="logo-image">
+    </a>
+    
+    <!-- Desktop Navigation -->
+    <ul class="navbar-menu">
+      <li class="nav-item">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+          Inicio
+        </a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/shop" routerLinkActive="active" class="nav-link">
+          Tienda
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#collections" class="nav-link">
+          Colecciones
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#about" class="nav-link">
+          Nosotros
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#contact" class="nav-link">
+          Contacto
+        </a>
+      </li>
+    </ul>
+    
+    <!-- Actions -->
+    <div class="navbar-actions">
+      <button class="nav-action-btn" aria-label="Buscar">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+        </svg>
+      </button>
+      
+      <a routerLink="/login" class="nav-action-btn" aria-label="Mi cuenta">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </a>
+      
+      <button class="nav-action-btn cart-btn" aria-label="Carrito">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"/>
+          <circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        <span class="cart-badge">3</span>
+      </button>
+      
+      <!-- Mobile Menu Toggle -->
+      <button class="mobile-menu-toggle" (click)="toggleMenu()" aria-label="Menú">
+        <svg *ngIf="!isMenuOpen()" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+        <svg *ngIf="isMenuOpen()" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" [class.open]="isMenuOpen()">
+    <ul class="mobile-menu-list">
+      <li>
+        <a routerLink="/" (click)="closeMenu()" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="mobile-nav-link">
+          Inicio
+        </a>
+      </li>
+      <li>
+        <a routerLink="/shop" (click)="closeMenu()" routerLinkActive="active" class="mobile-nav-link">
+          Tienda
+        </a>
+      </li>
+      <li>
+        <a href="#collections" (click)="closeMenu()" class="mobile-nav-link">
+          Colecciones
+        </a>
+      </li>
+      <li>
+        <a href="#about" (click)="closeMenu()" class="mobile-nav-link">
+          Nosotros
+        </a>
+      </li>
+      <li>
+        <a href="#contact" (click)="closeMenu()" class="mobile-nav-link">
+          Contacto
+        </a>
+      </li>
+      <li>
+        <a routerLink="/login" (click)="closeMenu()" class="mobile-nav-link btn btn-primary">
+          Iniciar Sesión
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
