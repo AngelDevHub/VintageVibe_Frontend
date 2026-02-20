@@ -1,0 +1,126 @@
+<div class="checkout-page container">
+    <h1 class="page-title">Finalizar Compra</h1>
+
+    @if (orderSuccess()) {
+    <div class="success-card">
+        <div class="success-icon">✅</div>
+        <h2>¡Pedido realizado con éxito!</h2>
+        <p>Número de orden: <strong>{{ orderSuccess()!.orderNumber }}</strong></p>
+        <p>Total: <strong>\${{ orderSuccess()!.totalAmount | number:'1.0-0' }}</strong></p>
+        <a routerLink="/profile" class="view-orders-btn">Ver mis pedidos</a>
+    </div>
+    }
+
+    @if (!orderSuccess()) {
+    <div class="checkout-layout">
+        <!-- Address Section -->
+        <div class="checkout-section">
+            <h2>Dirección de Envío</h2>
+
+            @if (addresses().length > 0) {
+            <div class="addresses-list">
+                @for (addr of addresses(); track addr.id) {
+                <div class="address-card" [class.selected]="selectedAddressId() === addr.id"
+                    (click)="selectedAddressId.set(addr.id)">
+                    <div class="address-radio">
+                        <input type="radio" [checked]="selectedAddressId() === addr.id" readonly />
+                    </div>
+                    <div class="address-info">
+                        <strong>{{ addr.fullName }}</strong>
+                        <p>{{ addr.addressLine1 }}</p>
+                        @if (addr.addressLine2) { <p>{{ addr.addressLine2 }}</p> }
+                        <p>{{ addr.city }}, {{ addr.state }} {{ addr.postalCode }}</p>
+                        <p>{{ addr.country }}</p>
+                        <p>Tel: {{ addr.phoneNumber }}</p>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+
+            <!-- New Address Form -->
+            <div class="new-address-section">
+                <h3>{{ addresses().length > 0 ? 'O añade una nueva dirección:' : 'Añade una dirección de envío:' }}</h3>
+                <div class="address-form">
+                    <input class="form-input" placeholder="Nombre completo" [(ngModel)]="newAddress.fullName" />
+                    <input class="form-input" placeholder="Dirección línea 1" [(ngModel)]="newAddress.addressLine1" />
+                    <input class="form-input" placeholder="Dirección línea 2 (opcional)"
+                        [(ngModel)]="newAddress.addressLine2" />
+                    <div class="form-row">
+                        <input class="form-input" placeholder="Ciudad" [(ngModel)]="newAddress.city" />
+                        <input class="form-input" placeholder="Estado/Provincia" [(ngModel)]="newAddress.state" />
+                    </div>
+                    <div class="form-row">
+                        <input class="form-input" placeholder="Código postal" [(ngModel)]="newAddress.postalCode" />
+                        <input class="form-input" placeholder="País" [(ngModel)]="newAddress.country" />
+                    </div>
+                    <input class="form-input" placeholder="Teléfono" [(ngModel)]="newAddress.phoneNumber" />
+                    <button class="save-address-btn" (click)="saveAddress()" [disabled]="isSavingAddress()">
+                        {{ isSavingAddress() ? 'Guardando...' : '+ Guardar dirección' }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Coupon -->
+            <div class="coupon-section">
+                <h3>Código de descuento (opcional)</h3>
+                <div class="coupon-input">
+                    <input class="form-input" placeholder="Ingresa tu cupón" [(ngModel)]="couponCode" />
+                </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="payment-section">
+                <h3>Método de Pago</h3>
+                <div class="payment-options">
+                    <label class="payment-option" [class.selected]="paymentMethod() === 'CARD'">
+                        <input type="radio" name="payment" value="CARD" [checked]="paymentMethod() === 'CARD'"
+                            (change)="paymentMethod.set('CARD')">
+                        <span>💳 Tarjeta de Crédito/Débito</span>
+                    </label>
+                    <label class="payment-option" [class.selected]="paymentMethod() === 'PAYPAL'">
+                        <input type="radio" name="payment" value="PAYPAL" [checked]="paymentMethod() === 'PAYPAL'"
+                            (change)="paymentMethod.set('PAYPAL')">
+                        <span>🅿️ PayPal</span>
+                    </label>
+                    <label class="payment-option" [class.selected]="paymentMethod() === 'TRANSFER'">
+                        <input type="radio" name="payment" value="TRANSFER" [checked]="paymentMethod() === 'TRANSFER'"
+                            (change)="paymentMethod.set('TRANSFER')">
+                        <span>🏦 Transferencia Bancaria</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-summary">
+            <h2>Resumen</h2>
+            @if (cart()) {
+            @for (item of cart()!.items; track item.id) {
+            <div class="summary-item">
+                <span>{{ item.productName }} ({{ item.size }}) x{{ item.quantity }}</span>
+                <span>\${{ item.subtotal | number:'1.0-0' }}</span>
+            </div>
+            }
+            <div class="summary-total">
+                <span>Total</span>
+                <span>\${{ cart()!.total | number:'1.0-0' }}</span>
+            </div>
+            }
+
+            @if (errorMessage()) {
+            <div class="error-msg">{{ errorMessage() }}</div>
+            }
+
+            <button class="place-order-btn" (click)="placeOrder()"
+                [disabled]="!selectedAddressId() || isPlacingOrder()">
+                @if (isPlacingOrder()) {
+                Procesando...
+                } @else {
+                Confirmar Pedido
+                }
+            </button>
+        </div>
+    </div>
+    }
+</div>

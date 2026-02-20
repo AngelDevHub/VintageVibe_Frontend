@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { AuthService } from './core/services/auth.service';
+import { CartService } from './core/services/cart.service';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +29,14 @@ import { FooterComponent } from './components/footer/footer.component';
     }
   `]
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'VintageVibe';
+  private authService = inject(AuthService);
+  private cartService = inject(CartService);
+
+  ngOnInit() {
+    if (this.authService.isLoggedIn()) {
+      this.cartService.getCart().subscribe();
+    }
+  }
 }

@@ -1,0 +1,101 @@
+<div class="shop-container container">
+    <h1 class="shop-title">Nuestra Colección</h1>
+
+    <!-- Filters -->
+    <div class="filters-bar">
+        <input type="text" class="search-input" placeholder="Buscar productos..." [ngModel]="searchTerm()"
+            (ngModelChange)="onSearchChange($event)" />
+        <select class="filter-select" [ngModel]="selectedCategory()" (ngModelChange)="onCategoryChange($event)">
+            <option value="">Todas las categorías</option>
+            @for (cat of categories(); track cat.id) {
+            <option [value]="cat.id">{{ cat.name }}</option>
+            }
+        </select>
+        <select class="filter-select" [ngModel]="sortBy()" (ngModelChange)="onSortChange($event)">
+            <option value="">Ordenar por</option>
+            <option value="name,asc">Nombre A-Z</option>
+            <option value="name,desc">Nombre Z-A</option>
+            <option value="createdAt,desc">Más recientes</option>
+        </select>
+    </div>
+
+    <!-- Loading -->
+    @if (isLoading()) {
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Cargando productos...</p>
+    </div>
+    }
+
+    <!-- Products Grid -->
+    @if (!isLoading() && products().length > 0) {
+    <div class="products-grid">
+        @for (product of products(); track product.id) {
+        <div class="product-card">
+            <a [routerLink]="['/product', product.id]" class="product-link">
+                <div class="product-image-container">
+                    @if (getPrimaryImage(product); as img) {
+                    <img [src]="img" [alt]="product.name" class="product-image" />
+                    } @else {
+                    <div class="product-image-placeholder">
+                        <span>🛍️</span>
+                    </div>
+                    }
+                    @if (product.conditionName) {
+                    <span class="condition-badge">{{ product.conditionName }}</span>
+                    }
+                </div>
+                <div class="product-info">
+                    <span class="product-category">{{ product.categoryName }}</span>
+                    <h3 class="product-name">{{ product.name }}</h3>
+                    @if (getMinPrice(product); as price) {
+                    <p class="product-price">\${{ price | number:'1.0-0' }}</p>
+                    }
+                    <span class="product-brand">{{ product.brandName }}</span>
+                </div>
+            </a>
+            <button class="add-to-cart-btn" (click)="addToCart(product)"
+                [disabled]="!authService.isLoggedIn() || (product.variants[0]?.stock ?? 0) === 0"
+                [class.out-of-stock]="(product.variants[0]?.stock ?? 0) === 0">
+                @if (!authService.isLoggedIn()) {
+                Inicia sesión para comprar
+                } @else if ((product.variants[0]?.stock ?? 0) === 0) {
+                Agotado
+                } @else {
+                Añadir al Carrito
+                }
+            </button>
+        </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    @if (totalPages() > 1) {
+    <div class="pagination">
+        <button class="page-btn" [disabled]="currentPage() === 0" (click)="changePage(currentPage() - 1)">
+            ← Anterior
+        </button>
+        <span class="page-info">Página {{ currentPage() + 1 }} de {{ totalPages() }}</span>
+        <button class="page-btn" [disabled]="currentPage() === totalPages() - 1"
+            (click)="changePage(currentPage() + 1)">
+            Siguiente →
+        </button>
+    </div>
+    }
+    }
+
+    <!-- No results -->
+    @if (!isLoading() && products().length === 0) {
+    <div class="no-results">
+        <p>No encontramos productos que coincidan con tu búsqueda.</p>
+        <button (click)="clearFilters()" class="back-btn">Ver todos los productos</button>
+    </div>
+    }
+
+    <!-- Toast notification -->
+    @if (toastMessage()) {
+    <div class="toast" [class.toast-success]="toastType() === 'success'" [class.toast-error]="toastType() === 'error'">
+        {{ toastMessage() }}
+    </div>
+    }
+</div>

@@ -1,0 +1,132 @@
+<div class="product-detail-page container">
+    @if (isLoading()) {
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Cargando producto...</p>
+    </div>
+    }
+
+    @if (!isLoading() && product()) {
+    <div class="product-layout">
+        <!-- Images -->
+        <div class="product-images">
+            @if (selectedImage()) {
+            <img [src]="selectedImage()" [alt]="product()!.name" class="main-image" />
+            } @else {
+            <div class="image-placeholder">🛍️</div>
+            }
+            @if (product()!.images.length > 1) {
+            <div class="image-thumbnails">
+                @for (img of product()!.images; track img.id) {
+                <img [src]="img.imageUrl" [alt]="img.altText" class="thumbnail"
+                    [class.active]="selectedImage() === img.imageUrl" (click)="selectedImage.set(img.imageUrl)" />
+                }
+            </div>
+            }
+        </div>
+
+        <!-- Info -->
+        <div class="product-info">
+            <span class="product-category">{{ product()!.categoryName }} · {{ product()!.brandName }}</span>
+            <h1 class="product-name">{{ product()!.name }}</h1>
+            <span class="condition-badge">{{ product()!.conditionName }}</span>
+
+            @if (selectedVariant()) {
+            <div class="price-section">
+                @if (selectedVariant()!.discountPrice && selectedVariant()!.discountPrice < selectedVariant()!.price) {
+                    <span class="original-price">\${{ selectedVariant()!.price | number:'1.0-0' }}</span>
+                    }
+                    <span class="current-price">\${{ (selectedVariant()!.discountPrice || selectedVariant()!.price) |
+                        number:'1.0-0' }}</span>
+            </div>
+            }
+
+            <p class="product-description">{{ product()!.description }}</p>
+
+            <!-- Variants -->
+            @if (product()!.variants.length > 0) {
+            <div class="variants-section">
+                <h3>Selecciona una variante:</h3>
+                <div class="variants-grid">
+                    @for (variant of product()!.variants; track variant.id) {
+                    <button class="variant-btn" [class.selected]="selectedVariant()?.id === variant.id"
+                        [class.out-of-stock]="variant.stock === 0" (click)="selectVariant(variant)">
+                        <span class="variant-size">{{ variant.size }}</span>
+                        <span class="variant-color">{{ variant.color }}</span>
+                        @if (variant.stock === 0) {
+                        <span class="out-stock-label">Agotado</span>
+                        } @else {
+                        <span class="stock-label">{{ variant.stock }} disp.</span>
+                        }
+                    </button>
+                    }
+                </div>
+            </div>
+            }
+
+            <!-- Quantity -->
+            <div class="quantity-section">
+                <label>Cantidad:</label>
+                <div class="quantity-controls">
+                    <button (click)="decreaseQty()" [disabled]="quantity() <= 1">−</button>
+                    <span>{{ quantity() }}</span>
+                    <button (click)="increaseQty()"
+                        [disabled]="quantity() >= (selectedVariant()?.stock || 1)">+</button>
+                </div>
+            </div>
+
+            <!-- Add to Cart -->
+            @if (authService.isLoggedIn()) {
+            <button class="add-to-cart-btn" (click)="addToCart()"
+                [disabled]="!selectedVariant() || isAddingToCart() || (selectedVariant()?.stock || 0) === 0">
+                @if (isAddingToCart()) {
+                Añadiendo...
+                } @else if ((selectedVariant()?.stock || 0) === 0) {
+                Agotado
+                } @else {
+                🛒 Añadir al Carrito
+                }
+            </button>
+            } @else {
+            <a routerLink="/login" class="login-to-buy-btn">Inicia sesión para comprar</a>
+            }
+
+            @if (toastMessage()) {
+            <div class="toast" [class.toast-success]="toastType() === 'success'"
+                [class.toast-error]="toastType() === 'error'">
+                {{ toastMessage() }}
+            </div>
+            }
+        </div>
+    </div>
+
+    <!-- Reviews -->
+    <div class="reviews-section">
+        <h2>Reseñas</h2>
+        @if (reviews().length === 0) {
+        <p class="no-reviews">Aún no hay reseñas para este producto.</p>
+        }
+        @for (review of reviews(); track review.id) {
+        <div class="review-card">
+            <div class="review-header">
+                <strong>{{ review.userName }}</strong>
+                <div class="stars">
+                    @for (star of [1,2,3,4,5]; track star) {
+                    <span [class.filled]="star <= review.rating">★</span>
+                    }
+                </div>
+                <span class="review-date">{{ review.createdAt | date:'mediumDate' }}</span>
+            </div>
+            <p class="review-comment">{{ review.comment }}</p>
+        </div>
+        }
+    </div>
+    }
+
+    @if (!isLoading() && !product()) {
+    <div class="not-found">
+        <h2>Producto no encontrado</h2>
+        <a routerLink="/shop" class="back-btn">← Volver a la tienda</a>
+    </div>
+    }
+</div>

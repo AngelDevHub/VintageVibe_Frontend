@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -10,32 +11,48 @@ import { Router, RouterLink } from '@angular/router';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
-  name = signal('');
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
+  firstName = signal('');
+  lastName = signal('');
   email = signal('');
   password = signal('');
   confirmPassword = signal('');
   acceptTerms = signal(false);
   isLoading = signal(false);
-  
-  constructor(private router: Router) {}
-  
+  errorMessage = signal('');
+
   onSubmit() {
     if (this.password() !== this.confirmPassword()) {
-      alert('Las contraseñas no coinciden');
+      this.errorMessage.set('Las contraseñas no coinciden');
       return;
     }
-    
+
     if (!this.acceptTerms()) {
-      alert('Debes aceptar los términos y condiciones');
+      this.errorMessage.set('Debes aceptar los términos y condiciones');
       return;
     }
-    
+
     this.isLoading.set(true);
-    // Simulamos una llamada API
-    setTimeout(() => {
-      this.isLoading.set(false);
-      alert('¡Cuenta creada exitosamente!');
-      this.router.navigate(['/login']);
-    }, 1500);
+    this.errorMessage.set('');
+
+    this.authService.register({
+      firstName: this.firstName(),
+      lastName: this.lastName(),
+      email: this.email(),
+      password: this.password()
+    }).subscribe({
+      next: () => {
+        this.isLoading.set(false);
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        this.errorMessage.set(
+          err.status === 409 ? 'Este correo ya está registrado' : 'Error al crear la cuenta. Intenta de nuevo.'
+        );
+      }
+    });
   }
 }

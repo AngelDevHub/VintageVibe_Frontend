@@ -1,15 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  category: string;
-  era: string;
-}
+import { ProductService } from '../../core/services/product.service';
+import { CategoryService } from '../../core/services/category.service';
+import { Product, Category, PageResponse } from '../../core/models';
 
 @Component({
   selector: 'app-home',
@@ -17,78 +11,58 @@ interface Product {
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
-  featuredProducts: Product[] = [
-    {
-      id: 1,
-      name: 'Chaqueta de Cuero Vintage',
-      price: 89.99,
-      image: '/images/product1.png',
-      category: 'Chaquetas',
-      era: '1970s'
-    },
-    {
-      id: 2,
-      name: 'Vestido Floral Elegante',
-      price: 65.00,
-      image: '/images/product2.png',
-      category: 'Vestidos',
-      era: '1960s'
-    },
-    {
-      id: 3,
-      name: 'Chaqueta Denim Clásica',
-      price: 55.00,
-      image: '/images/product3.png',
-      category: 'Chaquetas',
-      era: '1980s'
-    },
-    {
-      id: 4,
-      name: 'Falda de Cuadros Vintage',
-      price: 45.00,
-      image: '/images/product4.png',
-      category: 'Faldas',
-      era: '1960s'
-    },
-    {
-      id: 5,
-      name: 'Pañuelo de Seda Premium',
-      price: 35.00,
-      image: '/images/product5.png',
-      category: 'Accesorios',
-      era: '1950s'
-    },
-    {
-      id: 6,
-      name: 'Chaqueta de Cuero Vintage',
-      price: 89.99,
-      image: '/images/product1.png',
-      category: 'Chaquetas',
-      era: '1970s'
-    }
-  ];
+export class HomeComponent implements OnInit {
+  private productService = inject(ProductService);
+  private categoryService = inject(CategoryService);
 
-  collections = [
-    {
-      title: 'Años 50',
-      description: 'Elegancia clásica',
-      image: '🌸'
-    },
-    {
-      title: 'Años 60',
-      description: 'Revolución de estilo',
-      image: '🎨'
-    },
-    {
-      title: 'Años 70',
-      description: 'Bohemio y libre',
-      image: '🌼'
-    },
-    {
-      title: 'Años 80',
-      description: 'Audaz y vibrante',
-      image: '⚡'
+  featuredProducts = signal<Product[]>([]);
+  categories = signal<Category[]>([]);
+  isLoading = signal(true);
+
+  ngOnInit() {
+    this.loadData();
+  }
+
+  loadData() {
+    this.isLoading.set(true);
+    // Load featured products (newest)
+    this.productService.getAll({ page: 0, size: 4, sort: 'createdAt,desc' }).subscribe({
+      next: (response: PageResponse<Product>) => {
+        this.featuredProducts.set(response.content);
+      }
+    });
+
+    // Load categories
+    this.categoryService.getAll().subscribe({
+      next: (cats: Category[]) => {
+        this.categories.set(cats);
+        this.isLoading.set(false);
+      },
+      error: () => this.isLoading.set(false)
+    });
+  }
+
+  getCategoryImage(categoryName: string): string {
+    // Return an emoji or icon based on category name for visual appeal
+    const lower = categoryName.toLowerCase();
+    if (lower.includes('vestido')) return '👗';
+    if (lower.includes('chaqueta') || lower.includes('abrigo')) return '🧥';
+    if (lower.includes('pantalón') || lower.includes('jeans')) return '👖';
+    if (lower.includes('accesorio') || lower.includes('joya')) return '💍';
+    if (lower.includes('bolso')) return '👜';
+    if (lower.includes('zapato')) return '👠';
+    return '✨';
+  }
+
+  getProductImage(product: Product): string {
+    const primary = product.images?.find(img => img.isPrimary);
+    return primary?.imageUrl || product.images?.[0]?.imageUrl || 'assets/images/placeholder.png';
+  }
+
+  getProductPrice(product: Product): number {
+    if (product.variants?.length > 0) {
+      return product.variants[0].discountPrice || product.variants[0].price;
     }
-  ];
+    return 0;
+  }
 }
