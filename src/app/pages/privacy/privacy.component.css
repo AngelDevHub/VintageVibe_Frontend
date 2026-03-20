@@ -1,0 +1,28 @@
+/* ===========================
+   PRIVACY PAGE
+   =========================== */
+.privacy-page { background: var(--color-bg, #0f0f0f); color: var(--color-text, #f5f5f0); padding: 4rem 0 6rem; }
+
+.privacy-header { text-align: center; margin-bottom: 4rem; }
+.privacy-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; margin: 1rem 0 0.5rem; }
+.privacy-meta { opacity: 0.5; font-size: 0.9rem; }
+.highlight { color: var(--color-accent, #c9a96e); }
+
+.privacy-content { max-width: 780px; margin: 0 auto; }
+.privacy-section { margin-bottom: 2.5rem; padding-bottom: 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.privacy-section:last-of-type { border-bottom: none; }
+.privacy-section h2 { font-size: 1.2rem; margin-bottom: 1rem; color: var(--color-accent, #c9a96e); }
+.privacy-section p { opacity: 0.75; line-height: 1.8; margin-bottom: 0.75rem; }
+.privacy-section ul { opacity: 0.75; line-height: 1.8; padding-left: 1.5rem; }
+.privacy-section ul li { margin-bottom: 0.4rem; }
+.privacy-section a { color: var(--color-accent, #c9a96e); }
+
+.privacy-footer { display: flex; gap: 1rem; margin-top: 3rem; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; text-decoration: none; cursor: pointer; border: 1px solid transparent; transition: all 0.2s; }
+.btn-primary { background: var(--color-accent, #c9a96e); color: #0f0f0f; }
+.btn-primary:hover { background: #b8975a; }
+.btn-outline { background: transparent; border-color: rgba(255,255,255,0.2); color: inherit; }
+.btn-outline:hover { border-color: var(--color-accent, #c9a96e); color: var(--color-accent, #c9a96e); }
+
+.section-badge { display: inline-block; background: rgba(201,169,110,0.15); color: var(--color-accent, #c9a96e); border: 1px solid rgba(201,169,110,0.3); padding: 0.3rem 1rem; border-radius: 100px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }

@@ -38,7 +38,28 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'terms-of-use',
+    loadComponent: () => import('./pages/terms-of-use/terms-of-use.component').then(m => m.TermsOfUseComponent)
+  },
+  {
+    path: 'about',
+    loadComponent: () => import('./pages/about/about.component').then(m => m.AboutComponent)
+  },
+  {
+    path: 'contact',
+    loadComponent: () => import('./pages/contact/contact.component').then(m => m.ContactComponent)
+  },
+  {
+    path: 'privacy',
+    loadComponent: () => import('./pages/privacy/privacy.component').then(m => m.PrivacyComponent)
+  },
+  {
+    path: 'design-doc',
+    loadComponent: () => import('./pages/design-doc/design-doc.component').then(m => m.DesignDocComponent)
+  },
+  {
     path: '**',
-    redirectTo: ''
+    loadComponent: () => import('./pages/not-found/not-found.component').then(m => m.NotFoundComponent)
   }
 ];
+

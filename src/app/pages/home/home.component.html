@@ -67,7 +67,16 @@
                 </p>
             </div>
 
-            <div class="collections-grid">
+            <!-- Skeleton loader for categories -->
+            <div *ngIf="isLoading()" class="collections-grid">
+                <div *ngFor="let i of [1,2,3,4,5,6]" class="collection-card skeleton-card">
+                    <div class="skeleton-icon"></div>
+                    <div class="skeleton-line skeleton-title"></div>
+                    <div class="skeleton-line skeleton-desc"></div>
+                </div>
+            </div>
+
+            <div *ngIf="!isLoading()" class="collections-grid">
                 <div *ngFor="let category of categories()" class="collection-card">
                     <div class="collection-icon">{{ getCategoryImage(category.name) }}</div>
                     <h3 class="collection-title">{{ category.name }}</h3>
@@ -96,24 +105,29 @@
                 </p>
             </div>
 
-            <div class="products-grid">
+            <!-- Skeleton loader for products -->
+            <div *ngIf="isLoading()" class="products-grid">
+                <div *ngFor="let i of [1,2,3,4]" class="product-card skeleton-card">
+                    <div class="skeleton-image"></div>
+                    <div class="product-info">
+                        <div class="skeleton-line skeleton-category"></div>
+                        <div class="skeleton-line skeleton-name"></div>
+                        <div class="skeleton-line skeleton-price"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="!isLoading()" class="products-grid">
                 <div *ngFor="let product of featuredProducts()" class="product-card">
                     <div class="product-image-wrapper">
                         <img [src]="getProductImage(product)" [alt]="product.name" class="product-image">
                         <div class="product-overlay">
-                            <a [routerLink]="['/product', product.id]" class="product-action-btn">
+                            <a [routerLink]="['/product', product.id]" class="product-action-btn" title="Ver producto">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2">
                                     <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                                     <circle cx="9" cy="21" r="1" />
                                     <circle cx="20" cy="21" r="1" />
-                                </svg>
-                            </a>
-                            <a [routerLink]="['/product', product.id]" class="product-action-btn">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <path
-                                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                                 </svg>
                             </a>
                         </div>
@@ -218,12 +232,21 @@
                         Suscríbete y recibe un 15% de descuento en tu primera compra
                     </p>
                 </div>
-                <form class="newsletter-form">
-                    <input type="email" placeholder="Ingresa tu email" class="newsletter-input" required>
-                    <button type="submit" class="btn btn-primary">
-                        Suscribirse
+                <form class="newsletter-form" #nlForm="ngForm" (ngSubmit)="subscribeNewsletter(nlEmail.value)">
+                    <input #nlEmail type="email" name="newsletterEmail" placeholder="Ingresa tu email"
+                        class="newsletter-input" required [disabled]="newsletterStatus() === 'loading' || newsletterStatus() === 'success'">
+                    <button type="submit" class="btn btn-primary"
+                        [disabled]="newsletterStatus() === 'loading' || newsletterStatus() === 'success'">
+                        <span *ngIf="newsletterStatus() === 'loading'">Enviando...</span>
+                        <span *ngIf="newsletterStatus() !== 'loading'">Suscribirse</span>
                     </button>
                 </form>
+                <p *ngIf="newsletterStatus() === 'success'" class="newsletter-feedback newsletter-success">
+                    ✅ ¡Gracias! Revisa tu correo para confirmar tu suscripción.
+                </p>
+                <p *ngIf="newsletterStatus() === 'error'" class="newsletter-feedback newsletter-error">
+                    ⚠️ Por favor ingresa un email válido.
+                </p>
             </div>
         </div>
     </section>

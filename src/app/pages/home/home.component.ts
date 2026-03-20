@@ -1,13 +1,14 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../core/services/product.service';
 import { CategoryService } from '../../core/services/category.service';
 import { Product, Category, PageResponse } from '../../core/models';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
@@ -18,6 +19,8 @@ export class HomeComponent implements OnInit {
   featuredProducts = signal<Product[]>([]);
   categories = signal<Category[]>([]);
   isLoading = signal(true);
+  newsletterEmail = signal('');
+  newsletterStatus = signal<'idle' | 'success' | 'error' | 'loading'>('idle');
 
   ngOnInit() {
     this.loadData();
@@ -43,7 +46,6 @@ export class HomeComponent implements OnInit {
   }
 
   getCategoryImage(categoryName: string): string {
-    // Return an emoji or icon based on category name for visual appeal
     const lower = categoryName.toLowerCase();
     if (lower.includes('vestido')) return '👗';
     if (lower.includes('chaqueta') || lower.includes('abrigo')) return '🧥';
@@ -64,5 +66,23 @@ export class HomeComponent implements OnInit {
       return product.variants[0].discountPrice || product.variants[0].price;
     }
     return 0;
+  }
+
+  subscribeNewsletter(email: string): void {
+    if (!email || !this.isValidEmail(email)) {
+      this.newsletterStatus.set('error');
+      return;
+    }
+    this.newsletterStatus.set('loading');
+    // Simulated subscription — replace with real API call when newsletter service is available
+    setTimeout(() => {
+      this.newsletterStatus.set('success');
+      this.newsletterEmail.set('');
+      setTimeout(() => this.newsletterStatus.set('idle'), 4000);
+    }, 800);
+  }
+
+  private isValidEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 }

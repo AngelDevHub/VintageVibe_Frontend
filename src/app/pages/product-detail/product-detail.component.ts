@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../core/services/product.service';
@@ -29,6 +29,20 @@ export class ProductDetailComponent implements OnInit {
   isAddingToCart = signal(false);
   toastMessage = signal('');
   toastType = signal<'success' | 'error'>('success');
+
+  /** Average review rating (0-5) */
+  avgRating = computed(() => {
+    const list = this.reviews();
+    if (!list.length) return 0;
+    return list.reduce((sum, r) => sum + r.rating, 0) / list.length;
+  });
+
+  /** Discount percentage for the selected variant */
+  discountPercent = computed(() => {
+    const v = this.selectedVariant();
+    if (!v?.discountPrice || v.discountPrice >= v.price) return 0;
+    return Math.round((1 - v.discountPrice / v.price) * 100);
+  });
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -86,7 +100,6 @@ export class ProductDetailComponent implements OnInit {
 
     this.isAddingToCart.set(true);
 
-    // Check availability considering current cart
     const currentCart = this.cartService.cart();
     const existingItem = currentCart?.items?.find(item => item.variantId === variant.id);
     const cartQty = existingItem ? existingItem.quantity : 0;

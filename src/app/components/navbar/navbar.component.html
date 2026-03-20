@@ -25,12 +25,12 @@
       </li>
       }
       <li class="nav-item">
-        <a href="#about" class="nav-link">
+        <a routerLink="/about" routerLinkActive="active" class="nav-link">
           Nosotros
         </a>
       </li>
       <li class="nav-item">
-        <a href="#contact" class="nav-link">
+        <a routerLink="/contact" routerLinkActive="active" class="nav-link">
           Contacto
         </a>
       </li>
@@ -64,13 +64,22 @@
         </svg>
       </a>
 
-      <!-- Auth: logged in -->
+      <!-- Auth: logged in — profile link -->
       <a *ngIf="authService.isLoggedIn()" routerLink="/profile" class="nav-action-btn" aria-label="Mi perfil">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
           <circle cx="12" cy="7" r="4" />
         </svg>
       </a>
+
+      <!-- Auth: logged in — logout button (desktop) -->
+      <button *ngIf="authService.isLoggedIn()" (click)="logout()" class="nav-action-btn" aria-label="Cerrar sesión" title="Cerrar sesión">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+      </button>
 
       <!-- Cart -->
       <a routerLink="/cart" class="nav-action-btn cart-btn" aria-label="Carrito">
@@ -122,12 +131,12 @@
       </li>
       }
       <li>
-        <a href="#about" (click)="closeMenu()" class="mobile-nav-link">
+        <a routerLink="/about" (click)="closeMenu()" routerLinkActive="active" class="mobile-nav-link">
           Nosotros
         </a>
       </li>
       <li>
-        <a href="#contact" (click)="closeMenu()" class="mobile-nav-link">
+        <a routerLink="/contact" (click)="closeMenu()" routerLinkActive="active" class="mobile-nav-link">
           Contacto
         </a>
       </li>

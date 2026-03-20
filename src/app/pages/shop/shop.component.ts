@@ -149,6 +149,21 @@ export class ShopComponent implements OnInit {
     });
   }
 
+  /** Returns an array of page indices for the paginator (max 7 shown) */
+  pageArray(): number[] {
+    const total = this.totalPages();
+    const current = this.currentPage();
+    const maxVisible = 7;
+    if (total <= maxVisible) {
+      return Array.from({ length: total }, (_, i) => i);
+    }
+    const half = Math.floor(maxVisible / 2);
+    let start = Math.max(0, current - half);
+    const end = Math.min(total - 1, start + maxVisible - 1);
+    start = Math.max(0, end - maxVisible + 1);
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  }
+
   showToast(message: string, type: 'success' | 'error') {
     this.toastMessage.set(message);
     this.toastType.set(type);

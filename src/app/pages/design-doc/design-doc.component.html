@@ -1,0 +1,600 @@
+<div class="design-doc-page">
+
+  <!-- ── Hero ── -->
+  <div class="doc-hero">
+    <div class="doc-hero-inner container">
+      <span class="doc-eyebrow">Proyecto VintageVibe · Angular + Spring Boot</span>
+      <h1>Justificación de Diseño UX/UI</h1>
+      <p class="doc-subtitle">Análisis profesional del sistema visual, experiencia de usuario y cumplimiento de estándares web de la plataforma.</p>
+      <div class="doc-meta">
+        <span><strong>Versión:</strong> 1.0</span>
+        <span><strong>Fecha:</strong> Marzo 2026</span>
+        <span><strong>Autor:</strong> Equipo VintageVibe</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TOC ── -->
+  <div class="toc-bar container">
+    <nav class="toc">
+      <a href="#objetivo">1. Objetivo</a>
+      <a href="#colores">2. Colores</a>
+      <a href="#tipografia">3. Tipografía</a>
+      <a href="#navegacion">4. Navegación</a>
+      <a href="#ux">5. UX</a>
+      <a href="#componentes">6. Componentes</a>
+      <a href="#responsive">7. Responsive</a>
+      <a href="#seguridad">8. Seguridad Visual</a>
+      <a href="#checklist">9. Checklist</a>
+      <a href="#conclusion">10. Conclusión</a>
+    </nav>
+  </div>
+
+  <div class="doc-body container">
+
+    <!-- ══════════════════════════════════ -->
+    <!-- 1. OBJETIVO -->
+    <!-- ══════════════════════════════════ -->
+    <section class="doc-section" id="objetivo">
+      <div class="section-number">01</div>
+      <div class="section-content">
+        <h2>Objetivo del Diseño</h2>
+        <p>VintageVibe es una plataforma de comercio electrónico especializada en moda vintage auténtica. El objetivo central del diseño es transmitir <strong>autenticidad, confianza y sofisticación atemporal</strong>, alineándose con el valor emocional que el usuario asocia con las prendas vintage: nostalgia, exclusividad y carácter.</p>
+
+        <div class="principles-grid">
+          <div class="principle-card">
+            <div class="principle-icon">🎯</div>
+            <h4>Inmediatez</h4>
+            <p>El usuario debe poder encontrar, evaluar y comprar un producto en el menor número de pasos posible.</p>
+          </div>
+          <div class="principle-card">
+            <div class="principle-icon">🛡️</div>
+            <h4>Confianza Visual</h4>
+            <p>Al tratarse de un e-commerce de ropa vintage, la interfaz debe compensar la desconfianza natural del usuario hacia la condición del producto.</p>
+          </div>
+          <div class="principle-card">
+            <div class="principle-icon">🎨</div>
+            <h4>Coherencia de Marca</h4>
+            <p>Cada elemento visual refuerza la identidad vintage: colores cálidos, tipografía serif elegante, ausencia de colores agresivos.</p>
+          </div>
+        </div>
+
+        <div class="flow-diagram">
+          <strong>Flujo de conversión:</strong>
+          <div class="flow-steps">
+            <span class="flow-step">Inicio</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-step">Tienda</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-step">Producto</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-step">Carrito</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-step">Checkout</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-step highlight">Confirmación</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════ -->
+    <!-- 2. COLORES -->
+    <!-- ══════════════════════════════════ -->
+    <section class="doc-section" id="colores">
+      <div class="section-number">02</div>
+      <div class="section-content">
+        <h2>Análisis de Colores</h2>
+        <p>Paleta extraída directamente de <code>styles.css</code> — variables CSS del Design System real del proyecto.</p>
+
+        <div class="palette-grid">
+          <div class="swatch-card">
+            <div class="swatch" style="background:#D4A574;"></div>
+            <div class="swatch-info">
+              <code>#D4A574</code>
+              <span>Oro Cálido — Primary</span>
+              <p class="swatch-desc">CTAs, badges, hover, scrollbar</p>
+            </div>
+          </div>
+          <div class="swatch-card">
+            <div class="swatch" style="background:#8B7355;"></div>
+            <div class="swatch-info">
+              <code>#8B7355</code>
+              <span>Marrón Rico — Secondary</span>
+              <p class="swatch-desc">Botones secundarios</p>
+            </div>
+          </div>
+          <div class="swatch-card">
+            <div class="swatch" style="background:#C7956D;"></div>
+            <div class="swatch-info">
+              <code>#C7956D</code>
+              <span>Terracota — Accent</span>
+              <p class="swatch-desc">Acentos decorativos</p>
+            </div>
+          </div>
+          <div class="swatch-card">
+            <div class="swatch" style="background:#2C2416; border:1px solid #ddd;"></div>
+            <div class="swatch-info">
+              <code>#2C2416</code>
+              <span>Marrón Oscuro — Dark</span>
+              <p class="swatch-desc">Textos principales, botones CTA</p>
+            </div>
+          </div>
+          <div class="swatch-card">
+            <div class="swatch" style="background:#F5F1ED; border:1px solid #ddd;"></div>
+            <div class="swatch-info">
+              <code>#F5F1ED</code>
+              <span>Crema — Light</span>
+              <p class="swatch-desc">Fondo global del sitio</p>
+            </div>
+          </div>
+          <div class="swatch-card">
+            <div class="swatch" style="background:#6B6458;"></div>
+            <div class="swatch-info">
+              <code>#6B6458</code>
+              <span>Gris Cálido — Gray</span>
+              <p class="swatch-desc">Textos secundarios</p>
+            </div>
+          </div>
+          <div class="swatch-card">
+            <div class="swatch" style="background:#7A9B76;"></div>
+            <div class="swatch-info">
+              <code>#7A9B76</code>
+              <span>Verde Musgo — Success</span>
+              <p class="swatch-desc">Mensajes de éxito</p>
+            </div>
+          </div>
+          <div class="swatch-card">
+            <div class="swatch" style="background:#C85A54;"></div>
+            <div class="swatch-info">
+              <code>#C85A54</code>
+              <span>Rojo Ladrillo — Error</span>
+              <p class="swatch-desc">Mensajes de error</p>
+            </div>
+          </div>
+        </div>
+
+        <h3>Psicología del Color</h3>
+        <div class="psychology-list">
+          <div class="psych-item">
+            <div class="psych-dot" style="background:#D4A574;"></div>
+            <div>
+              <strong>Oro Cálido (#D4A574)</strong>
+              <p>Evoca lujo accesible, nostalgia y valor. No es el amarillo agresivo del fast fashion, sino un tono desaturado que transmite serenidad y autenticidad. Es la elección más acertada del sistema visual.</p>
+            </div>
+          </div>
+          <div class="psych-item">
+            <div class="psych-dot" style="background:#2C2416;"></div>
+            <div>
+              <strong>Marrón Oscuro (#2C2416)</strong>
+              <p>La elección del marrón oscuro sobre el negro puro reduce el contraste excesivo, generando lectura más cómoda. Transmite solidez, tierra y confiabilidad, coherente con la paleta cálida.</p>
+            </div>
+          </div>
+          <div class="psych-item">
+            <div class="psych-dot" style="background:#F5F1ED; border:1px solid #aaa;"></div>
+            <div>
+              <strong>Fondo Crema (#F5F1ED)</strong>
+              <p>Decisión de diseño sofisticada. El blanco puro haría la interfaz fría y genérica. La crema crea una atmósfera de papel antiguo, catálogo vintage, boutique física — es lo que más cohesiona la identidad de marca.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-warning">
+          <strong>⚠️ Problema Detectado:</strong> En algunos componentes se usan colores hardcodeados (<code>#22c55e</code>, <code>#ef4444</code>) que no pertenecen al sistema de tokens. Esto rompe la coherencia visual. Recomendación: reemplazar por <code>var(--color-success)</code> y <code>var(--color-error)</code>.
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════ -->
+    <!-- 3. TIPOGRAFÍA -->
+    <!-- ══════════════════════════════════ -->
+    <section class="doc-section" id="tipografia">
+      <div class="section-number">03</div>
+      <div class="section-content">
+        <h2>Tipografía</h2>
+
+        <div class="font-showcase">
+          <div class="font-card">
+            <div class="font-sample playfair">Aa Bb Cc — 123</div>
+            <div class="font-meta">
+              <strong>Playfair Display</strong>
+              <span>Serif editorial · <code>--font-heading</code></span>
+              <p>Pesos: 400, 500, 600, 700, 900. Fuente serif de alta calidad diseñada para pantallas. Carácter editorial y lujoso asociado con <em>revistas de moda, boutiques exclusivas y catálogos premium</em>. Uso exclusivo en H1–H6.</p>
+            </div>
+          </div>
+          <div class="font-card">
+            <div class="font-sample inter">Aa Bb Cc — 123</div>
+            <div class="font-meta">
+              <strong>Inter</strong>
+              <span>Sans-serif moderna · <code>--font-body</code></span>
+              <p>Pesos: 300–700. Una de las fuentes más legibles en pantalla. Con los 5 pesos disponibles crea jerarquía visual sin cambiar de fuente. Elección técnicamente sólida para e-commerce.</p>
+            </div>
+          </div>
+        </div>
+
+        <h3>Escala Tipográfica</h3>
+        <div class="type-scale">
+          <div class="scale-row"><span class="scale-name">5xl (3rem)</span><span class="scale-sample" style="font-size:1.8rem;font-family:'Playfair Display',serif;">Título Principal H1</span></div>
+          <div class="scale-row"><span class="scale-name">4xl (2.25rem)</span><span class="scale-sample" style="font-size:1.4rem;font-family:'Playfair Display',serif;">Sección H2</span></div>
+          <div class="scale-row"><span class="scale-name">3xl (1.875rem)</span><span class="scale-sample" style="font-size:1.2rem;font-family:'Playfair Display',serif;">Subsección H3</span></div>
+          <div class="scale-row"><span class="scale-name">base (1rem)</span><span class="scale-sample">Texto de cuerpo — descripción del producto y párrafos generales</span></div>
+          <div class="scale-row"><span class="scale-name">sm (0.875rem)</span><span class="scale-sample" style="font-size:0.875rem;">Etiquetas, categorías, metadatos</span></div>
+          <div class="scale-row"><span class="scale-name">xs (0.75rem)</span><span class="scale-sample" style="font-size:0.75rem;">Notas legales, timestamps, badges</span></div>
+        </div>
+
+        <div class="alert alert-info">
+          <strong>ℹ️ Nota:</strong> En <code>checkout.component.html</code> se detectó <code>style="text-transform: uppercase"</code> inline en un input. Debe moverse al CSS del componente para mantener separación de responsabilidades.
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════ -->
+    <!-- 4. NAVEGACIÓN -->
+    <!-- ══════════════════════════════════ -->
+    <section class="doc-section" id="navegacion">
+      <div class="section-number">04</div>
+      <div class="section-content">
+        <h2>Navegación y Estructura</h2>
+
+        <h3>Rutas Implementadas</h3>
+        <div class="routes-grid">
+          <div class="route-item"><code>/</code><span>Home</span></div>
+          <div class="route-item"><code>/shop</code><span>Tienda / Colección</span></div>
+          <div class="route-item"><code>/product/:id</code><span>Detalle de Producto</span></div>
+          <div class="route-item"><code>/cart</code><span>Carrito 🔒</span></div>
+          <div class="route-item"><code>/checkout</code><span>Finalizar Compra 🔒</span></div>
+          <div class="route-item"><code>/profile</code><span>Perfil de Usuario 🔒</span></div>
+          <div class="route-item"><code>/login</code><span>Inicio de Sesión</span></div>
+          <div class="route-item"><code>/register</code><span>Registro</span></div>
+          <div class="route-item"><code>/about</code><span>Nosotros</span></div>
+          <div class="route-item"><code>/contact</code><span>Contacto</span></div>
+          <div class="route-item"><code>/privacy</code><span>Política de Privacidad</span></div>
+          <div class="route-item"><code>/terms-of-use</code><span>Términos de Uso</span></div>
+        </div>
+        <p class="route-note">🔒 = protegidas por <code>authGuard</code>. Total: <strong>12 rutas funcionales</strong>.</p>
+
+        <h3>Evaluación del Navbar</h3>
+        <div class="eval-list">
+          <div class="eval-item good">✅ Logo enlazado al home con imagen PNG real</div>
+          <div class="eval-item good">✅ Menú con categorías dinámicas cargadas desde la API</div>
+          <div class="eval-item good">✅ Acciones adaptadas al estado de autenticación</div>
+          <div class="eval-item good">✅ Badge numérico en icono del carrito</div>
+          <div class="eval-item good">✅ Hamburger menu funcional en móvil (se cierra al navegar)</div>
+          <div class="eval-item good">✅ Búsqueda expandible con toggle</div>
+          <div class="eval-item bad">⚠️ Categorías dinámicas pueden desbordarse en menú horizontal si hay muchas</div>
+          <div class="eval-item bad">⚠️ No hay límite de categorías en la nav ni un dropdown agrupador</div>
+        </div>
+
+        <div class="alert alert-warning">
+          <strong>Recomendación:</strong> Implementar un dropdown tipo "mega menu" o limitar a 3–4 categorías en la barra de navegación. El resto debería mostrarse solo en la página de tienda.
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════ -->
+    <!-- 5. UX -->
+    <!-- ══════════════════════════════════ -->
+    <section class="doc-section" id="ux">
+      <div class="section-number">05</div>
+      <div class="section-content">
+        <h2>Experiencia de Usuario (UX)</h2>
+
+        <h3>Formularios</h3>
+        <div class="ux-table">
+          <div class="ux-row header">
+            <span>Elemento</span><span>Estado</span><span>Observación</span>
+          </div>
+          <div class="ux-row">
+            <span>Labels vinculados (for/id) — Contacto</span>
+            <span class="tag-good">✅ Correcto</span>
+            <span>Todos los inputs del formulario de contacto tienen labels</span>
+          </div>
+          <div class="ux-row">
+            <span>Campos required — Contacto</span>
+            <span class="tag-good">✅ Correcto</span>
+            <span>Todos los campos críticos usan atributo required</span>
+          </div>
+          <div class="ux-row">
+            <span>Labels en formulario de dirección — Checkout</span>
+            <span class="tag-bad">⚠️ Falta</span>
+            <span>Solo usa placeholder. Problema de accesibilidad: lectores de pantalla no identifican los campos</span>
+          </div>
+          <div class="ux-row">
+            <span>Formateo automático de tarjeta (grupos de 4)</span>
+            <span class="tag-good">✅ Correcto</span>
+            <span>UX premium: el número se formatea mientras se escribe</span>
+          </div>
+          <div class="ux-row">
+            <span>Formateo expiry (MM/AA)</span>
+            <span class="tag-good">✅ Correcto</span>
+            <span>Barra diagonal se inserta automáticamente</span>
+          </div>
+          <div class="ux-row">
+            <span>CVV en campo tipo password</span>
+            <span class="tag-good">✅ Correcto</span>
+            <span>Oculto por seguridad visual</span>
+          </div>
+          <div class="ux-row">
+            <span>Preview visual de tarjeta en tiempo real</span>
+            <span class="tag-good">✅ Excelente</span>
+            <span>Muestra datos en vivo sobre representación visual de tarjeta</span>
+          </div>
+        </div>
+
+        <h3>Feedback al Usuario</h3>
+        <div class="feedback-grid">
+          <div class="feedback-item ok">
+            <span class="fb-icon">🛒</span>
+            <strong>Añadir al carrito</strong>
+            <p>Toast flotante éxito/error</p>
+          </div>
+          <div class="feedback-item ok">
+            <span class="fb-icon">✅</span>
+            <strong>Orden completada</strong>
+            <p>Pantalla de éxito con número de orden y total</p>
+          </div>
+          <div class="feedback-item ok">
+            <span class="fb-icon">❌</span>
+            <strong>Error de pago</strong>
+            <p>Mensaje específico visible en pantalla</p>
+          </div>
+          <div class="feedback-item ok">
+            <span class="fb-icon">📧</span>
+            <strong>Newsletter</strong>
+            <p>Confirmación inline con estado de loading</p>
+          </div>
+          <div class="feedback-item ok">
+            <span class="fb-icon">📬</span>
+            <strong>Formulario Contacto</strong>
+            <p>Pantalla de éxito tras envío</p>
+          </div>
+          <div class="feedback-item warn">
+            <span class="fb-icon">🗑️</span>
+            <strong>Eliminar del carrito</strong>
+            <p>Sin confirmación — riesgo de eliminar por accidente</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════ -->
+    <!-- 6. COMPONENTES CLAVE -->
+    <!-- ══════════════════════════════════ -->
+    <section class="doc-section" id="componentes">
+      <div class="section-number">06</div>
+      <div class="section-content">
+        <h2>Diseño de Componentes Clave</h2>
+
+        <div class="component-tabs">
+
+          <!-- CHECKOUT -->
+          <div class="comp-block">
+            <h3>🛍️ Checkout</h3>
+            <p>Layout de dos columnas (formulario izquierda / resumen derecha) con 3 pasos numerados.</p>
+            <div class="good-bad-grid">
+              <div class="good-side">
+                <h4>✅ Lo que está bien</h4>
+                <ul>
+                  <li>Pasos numerados con badges dan orientación al usuario</li>
+                  <li>Resumen del pedido siempre visible en columna derecha</li>
+                  <li>Pantalla de éxito informativa con número de orden</li>
+                  <li>Validación client-side granular en formulario de tarjeta</li>
+                  <li>Botón de confirmar con ícono 🔒 transmite seguridad</li>
+                  <li>Enlace a Términos y Privacidad antes de confirmar</li>
+                </ul>
+              </div>
+              <div class="bad-side">
+                <h4>⚠️ Lo que está mal</h4>
+                <ul>
+                  <li>El cupón muestra "Calculando..." pero nunca actualiza el total real — <strong>erosiona confianza en el momento crítico</strong></li>
+                  <li>El spinner de procesando es un emoji (⏳) — en un contexto de pago se ve poco profesional</li>
+                  <li>El resumen no muestra imágenes de los productos, solo nombres</li>
+                  <li>Inputs de dirección sin labels — <strong>problema de accesibilidad</strong></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- MÉTODOS DE PAGO -->
+          <div class="comp-block">
+            <h3>💳 Métodos de Pago</h3>
+            <p>5 métodos: Tarjeta de Crédito, Débito, PayPal, Transferencia Bancaria y Efectivo al recibir.</p>
+            <div class="good-bad-grid">
+              <div class="good-side">
+                <h4>✅ Lo que está bien</h4>
+                <ul>
+                  <li>Selector visual con radio indicador, ícono y descripción</li>
+                  <li>Información contextual diferente según método seleccionado</li>
+                  <li>Datos bancarios pre-rellenados para transferencia</li>
+                  <li>Aviso de simulación claro y honesto con el usuario</li>
+                </ul>
+              </div>
+              <div class="bad-side">
+                <h4>⚠️ Lo que está mal</h4>
+                <ul>
+                  <li>Íconos de pago son emojis Unicode (💳🏧🅿️) — inconsistentes entre sistemas operativos</li>
+                  <li>No hay logos de Visa/Mastercard ni sello SSL en esta sección</li>
+                  <li>El emoji 🅿️ de PayPal puede confundirse con señal de tránsito</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARRITO -->
+          <div class="comp-block">
+            <h3>🛒 Carrito</h3>
+            <div class="good-bad-grid">
+              <div class="good-side">
+                <h4>✅ Lo que está bien</h4>
+                <ul>
+                  <li>Controles de cantidad respetan límites de stock</li>
+                  <li>Estado vacío con CTA directo a la tienda</li>
+                  <li>Resumen de pedido con subtotal visible</li>
+                </ul>
+              </div>
+              <div class="bad-side">
+                <h4>⚠️ Lo que está mal</h4>
+                <ul>
+                  <li>El carrito dice "Envío: Calculado al finalizar" pero el checkout dice "Gratis" — <strong>inconsistencia grave</strong></li>
+                  <li>Botón de eliminar sin confirmación</li>
+                  <li>No hay opción de "Guardar para después" o lista de deseos</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════ -->
+    <!-- 7. RESPONSIVE -->
+    <!-- ══════════════════════════════════ -->
+    <section class="doc-section" id="responsive">
+      <div class="section-number">07</div>
+      <div class="section-content">
+        <h2>Responsive Design</h2>
+        <div class="responsive-grid">
+          <div class="device-card">
+            <div class="device-icon">🖥️</div>
+            <strong>Desktop (>1024px)</strong>
+            <p>Layout completo en dos columnas. Grid de productos en 4 columnas. Navbar horizontal.</p>
+            <span class="tag-good">✅ Óptimo</span>
+          </div>
+          <div class="device-card">
+            <div class="device-icon">📱</div>
+            <strong>Móvil (&lt;768px)</strong>
+            <p>Grids en 1 columna. Hamburger menu funcional. Fuentes reducidas con media queries.</p>
+            <span class="tag-good">✅ Funcional</span>
+          </div>
+          <div class="device-card warn">
+            <div class="device-icon">📟</div>
+            <strong>Tablet (768–1024px)</strong>
+            <p>No existe breakpoint intermedio. El diseño puede verse sub-óptimo en iPads en landscape.</p>
+            <span class="tag-bad">⚠️ Mejorar</span>
+          </div>
+        </div>
+
+        <div class="eval-list" style="margin-top:1.5rem;">
+          <div class="eval-item good">✅ Los grids usan <code>grid-template-columns: 1fr</code> en móvil</div>
+          <div class="eval-item good">✅ Fuentes escalan con <code>clamp()</code> en componentes rediseñados</div>
+          <div class="eval-item good">✅ Navbar con hamburger completamente funcional</div>
+          <div class="eval-item bad">⚠️ Imágenes de producto sin <code>loading="lazy"</code> en el grid de tienda</div>
+          <div class="eval-item bad">⚠️ Falta breakpoint para tablets (~1024px)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════ -->
+    <!-- 8. SEGURIDAD VISUAL -->
+    <!-- ══════════════════════════════════ -->
+    <section class="doc-section" id="seguridad">
+      <div class="section-number">08</div>
+      <div class="section-content">
+        <h2>Seguridad Visual</h2>
+        <p>Evaluación de qué tan confiable se percibe el sitio antes de que el usuario proporcione datos personales o de pago.</p>
+        <div class="eval-list">
+          <div class="eval-item good">✅ Botón "Confirmar Pedido" con ícono de candado (🔒)</div>
+          <div class="eval-item good">✅ Leyenda "Pago simulado — no se procesará ningún cargo" visible en formulario de tarjeta</div>
+          <div class="eval-item good">✅ Términos de Uso y Privacidad enlazados desde el checkout</div>
+          <div class="eval-item good">✅ Redes sociales verificables en el footer (presencia de marca)</div>
+          <div class="eval-item good">✅ Copyright dinámico con año actual</div>
+          <div class="eval-item good">✅ Rutas protegidas (cart, checkout, profile) con <code>authGuard</code></div>
+          <div class="eval-item bad">⚠️ No hay sello de seguridad SSL visible en la interfaz</div>
+          <div class="eval-item bad">⚠️ No se muestran logos de Visa/Mastercard como respaldo de confianza</div>
+          <div class="eval-item bad">⚠️ El emoji 🅿️ para PayPal reduce profesionalismo visual</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════ -->
+    <!-- 9. CHECKLIST -->
+    <!-- ══════════════════════════════════ -->
+    <section class="doc-section" id="checklist">
+      <div class="section-number">09</div>
+      <div class="section-content">
+        <h2>Cumplimiento de Elementos de Página Web</h2>
+        <div class="checklist-grid">
+          <div class="check-item ok"><span class="check-icon">✅</span><strong>Dominio / URL</strong><p><code>localhost:4200</code> en desarrollo</p></div>
+          <div class="check-item ok"><span class="check-icon">✅</span><strong>Logo</strong><p>Imagen PNG en navbar y footer con alt text</p></div>
+          <div class="check-item ok"><span class="check-icon">✅</span><strong>Navegación Clara</strong><p>Navbar + footer con enlaces organizados</p></div>
+          <div class="check-item ok"><span class="check-icon">✅</span><strong>Páginas Internas</strong><p>12 rutas funcionales implementadas</p></div>
+          <div class="check-item ok"><span class="check-icon">✅</span><strong>Textos</strong><p>Descripciones de producto, páginas informativas</p></div>
+          <div class="check-item warn"><span class="check-icon">⚠️</span><strong>Imágenes Reales</strong><p>Sistema listo pero usa emoji placeholder sin imágenes reales</p></div>
+          <div class="check-item ok"><span class="check-icon">✅</span><strong>Formulario de Contacto</strong><p>Completo con validación y feedback de estado</p></div>
+          <div class="check-item ok"><span class="check-icon">✅</span><strong>Redes Sociales</strong><p>Instagram, Facebook, Pinterest, TikTok en footer</p></div>
+          <div class="check-item ok"><span class="check-icon">✅</span><strong>CTAs</strong><p>"Añadir al Carrito", "Confirmar Pedido", "Ver todos", etc.</p></div>
+          <div class="check-item ok"><span class="check-icon">✅</span><strong>Mapa</strong><p>Google Maps embebido en página de Contacto (CDMX)</p></div>
+          <div class="check-item ok"><span class="check-icon">✅</span><strong>Páginas Legales</strong><p>Política de Privacidad y Términos de Uso</p></div>
+          <div class="check-item ok"><span class="check-icon">✅</span><strong>Newsletter</strong><p>Formulario en footer con estados loading/success/error</p></div>
+          <div class="check-item ok"><span class="check-icon">✅</span><strong>Página 404</strong><p>Componente <code>not-found</code> implementado</p></div>
+          <div class="check-item ok"><span class="check-icon">✅</span><strong>Perfil de Usuario</strong><p>Página <code>/profile</code> con historial de pedidos</p></div>
+          <div class="check-item warn"><span class="check-icon">⚠️</span><strong>Breadcrumbs</strong><p>Solo en detalle de producto, no generalizados</p></div>
+          <div class="check-item fail"><span class="check-icon">❌</span><strong>Analítica Web</strong><p>No se detecta Google Analytics, GTM ni similar</p></div>
+        </div>
+        <div class="score-banner">
+          <strong>Resultado: 14 / 16 elementos presentes</strong>
+          <div class="score-bar"><div class="score-fill" style="width:87.5%;"></div></div>
+          <span>87.5% de cumplimiento</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════ -->
+    <!-- 10. CONCLUSIÓN -->
+    <!-- ══════════════════════════════════ -->
+    <section class="doc-section" id="conclusion">
+      <div class="section-number">10</div>
+      <div class="section-content">
+        <h2>Conclusión</h2>
+
+        <div class="conclusion-score">
+          <div class="score-circle">
+            <span class="score-value">8.2</span>
+            <span class="score-label">/ 10</span>
+          </div>
+          <div class="score-desc">
+            <h3>Nivel Intermedio-Avanzado</h3>
+            <p>VintageVibe es notablemente superior al promedio en proyectos de portafolio. El sistema de design tokens, la tipografía editorial y la complejidad del checkout demuestran madurez técnica y de diseño.</p>
+          </div>
+        </div>
+
+        <h3>Recomendaciones Priorizadas</h3>
+        <div class="recs-grid">
+          <div class="rec-block high">
+            <div class="rec-priority">Alta Prioridad</div>
+            <ul>
+              <li>Conectar la lógica del cupón al backend o eliminarlo hasta que esté funcional</li>
+              <li>Añadir Auth Guard real a <code>/checkout</code> para redirigir automáticamente al login</li>
+              <li>Unificar el mensaje de envío (carrito vs checkout: "Gratis" ≠ "Calculado al finalizar")</li>
+            </ul>
+          </div>
+          <div class="rec-block mid">
+            <div class="rec-priority">Prioridad Media</div>
+            <ul>
+              <li>Reemplazar colores hardcodeados por tokens CSS del design system</li>
+              <li>Añadir <code>&lt;label&gt;</code> a todos los inputs del formulario de dirección</li>
+              <li>Reemplazar emojis de métodos de pago por íconos SVG consistentes</li>
+              <li>Agregar confirmación modal al eliminar productos del carrito</li>
+              <li>Aplicar <code>loading="lazy"</code> a imágenes de producto en el grid</li>
+            </ul>
+          </div>
+          <div class="rec-block low">
+            <div class="rec-priority">Baja Prioridad</div>
+            <ul>
+              <li>Integrar Google Analytics o GTM para analítica real</li>
+              <li>Añadir breakpoint intermedio para tablets (~1024px)</li>
+              <li>Generalizar breadcrumbs a todas las páginas internas</li>
+              <li>Añadir logos de Visa/Mastercard y sello SSL en el checkout</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Footer del doc -->
+  <div class="doc-footer">
+    <p>Generado a partir del análisis del código fuente real del proyecto VintageVibe · Angular 19 + Spring Boot 4 · Marzo 2026</p>
+  </div>
+</div>

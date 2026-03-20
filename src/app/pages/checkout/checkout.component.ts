@@ -1,12 +1,19 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { OrderService } from '../../core/services/order.service';
 import { AddressService } from '../../core/services/address.service';
 import { CartService } from '../../core/services/cart.service';
 import { PaymentMethodService } from '../../core/services/payment-method.service';
 import { Address, Order, PaymentMethod } from '../../core/models';
+
+export interface CardForm {
+  number: string;
+  name: string;
+  expiry: string;
+  cvv: string;
+}
 
 @Component({
   selector: 'app-checkout',
@@ -19,7 +26,6 @@ export class CheckoutComponent implements OnInit {
   private addressService = inject(AddressService);
   private cartService = inject(CartService);
   private pmService = inject(PaymentMethodService);
-  private router = inject(Router);
 
   cart = this.cartService.cart;
   addresses = signal<Address[]>([]);
@@ -30,7 +36,23 @@ export class CheckoutComponent implements OnInit {
   orderSuccess = signal<Order | null>(null);
   errorMessage = signal('');
   couponCode = '';
-  paymentMethod = signal('CARD'); // Default
+
+  // ✅ FIX: selectedPaymentMethod guarda el nombre EXACTO de la BD
+  // (CREDIT_CARD, DEBIT_CARD, PAYPAL, BANK_TRANSFER, CASH_ON_DELIVERY)
+  selectedPaymentMethod = signal<string>('');
+
+  // Computed helpers para la UI
+  isCardPayment = computed(() =>
+    this.selectedPaymentMethod() === 'CREDIT_CARD' ||
+    this.selectedPaymentMethod() === 'DEBIT_CARD'
+  );
+  isBankTransfer = computed(() => this.selectedPaymentMethod() === 'BANK_TRANSFER');
+  isPayPal = computed(() => this.selectedPaymentMethod() === 'PAYPAL');
+  isCashOnDelivery = computed(() => this.selectedPaymentMethod() === 'CASH_ON_DELIVERY');
+
+  // Formulario de tarjeta (simulado)
+  cardForm: CardForm = { number: '', name: '', expiry: '', cvv: '' };
+  cardError = signal('');
 
   newAddress: Partial<Address> = {
     fullName: '', addressLine1: '', addressLine2: '',
@@ -38,12 +60,44 @@ export class CheckoutComponent implements OnInit {
     addressType: 'SHIPPING', isDefault: false
   };
 
+  paymentIcons: Record<string, string> = {
+    CREDIT_CARD: '💳',
+    DEBIT_CARD: '🏧',
+    PAYPAL: '🅿️',
+    BANK_TRANSFER: '🏦',
+    CASH_ON_DELIVERY: '💵'
+  };
+
+  paymentLabels: Record<string, string> = {
+    CREDIT_CARD: 'Tarjeta de Crédito',
+    DEBIT_CARD: 'Tarjeta de Débito',
+    PAYPAL: 'PayPal',
+    BANK_TRANSFER: 'Transferencia Bancaria',
+    CASH_ON_DELIVERY: 'Pago en Efectivo'
+  };
+
   ngOnInit() {
     this.cartService.getCart().subscribe();
-    this.pmService.getAll().subscribe((methods) => {
-      this.paymentMethods.set(methods);
-      if (methods.length > 0) {
-        this.paymentMethod.set(methods[0].name); // Default to first method
+
+    this.pmService.getAll().subscribe({
+      next: (methods: PaymentMethod[]) => {
+        this.paymentMethods.set(methods);
+        if (methods.length > 0) {
+          // ✅ FIX: Usar el nombre EXACTO del método (name del DTO), no un alias
+          this.selectedPaymentMethod.set(methods[0].name);
+        }
+      },
+      error: () => {
+        // Fallback si la API falla
+        const fallback: PaymentMethod[] = [
+          { id: 1, name: 'CREDIT_CARD' },
+          { id: 2, name: 'DEBIT_CARD' },
+          { id: 3, name: 'PAYPAL' },
+          { id: 4, name: 'BANK_TRANSFER' },
+          { id: 5, name: 'CASH_ON_DELIVERY' }
+        ] as PaymentMethod[];
+        this.paymentMethods.set(fallback);
+        this.selectedPaymentMethod.set('CREDIT_CARD');
       }
     });
 
@@ -58,15 +112,21 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
+  getPaymentIcon(name: string): string {
+    return this.paymentIcons[name] || '💰';
+  }
+
+  getPaymentLabel(name: string): string {
+    return this.paymentLabels[name] || name;
+  }
+
   saveAddress() {
     if (!this.newAddress.fullName || !this.newAddress.addressLine1 || !this.newAddress.city) {
       this.errorMessage.set('Por favor completa los campos requeridos de la dirección');
       return;
     }
-
     this.isSavingAddress.set(true);
     this.errorMessage.set('');
-
     this.addressService.create(this.newAddress).subscribe({
       next: (addr: Address) => {
         this.addresses.update((addrs: Address[]) => [...addrs, addr]);
@@ -81,16 +141,65 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
+  private validateCardForm(): boolean {
+    const digits = this.cardForm.number.replace(/\s/g, '');
+    if (!digits || digits.length < 13) {
+      this.cardError.set('Número de tarjeta inválido (mínimo 13 dígitos)');
+      return false;
+    }
+    if (!this.cardForm.name.trim()) {
+      this.cardError.set('Ingresa el nombre del titular');
+      return false;
+    }
+    if (!this.cardForm.expiry || !/^\d{2}\/\d{2}$/.test(this.cardForm.expiry)) {
+      this.cardError.set('Ingresa la fecha de vencimiento (MM/AA)');
+      return false;
+    }
+    if (!this.cardForm.cvv || this.cardForm.cvv.length < 3) {
+      this.cardError.set('CVV inválido');
+      return false;
+    }
+    this.cardError.set('');
+    return true;
+  }
+
+  formatCardNumber(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let val = input.value.replace(/\D/g, '').substring(0, 16);
+    val = val.replace(/(.{4})/g, '$1 ').trim();
+    this.cardForm.number = val;
+    input.value = val;
+  }
+
+  formatExpiry(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let val = input.value.replace(/\D/g, '').substring(0, 4);
+    if (val.length >= 2) val = val.substring(0, 2) + '/' + val.substring(2);
+    this.cardForm.expiry = val;
+    input.value = val;
+  }
+
   placeOrder() {
-    if (!this.selectedAddressId()) return;
+    if (!this.selectedAddressId()) {
+      this.errorMessage.set('Selecciona una dirección de envío');
+      return;
+    }
+    if (!this.selectedPaymentMethod()) {
+      this.errorMessage.set('Selecciona un método de pago');
+      return;
+    }
+    if (this.isCardPayment() && !this.validateCardForm()) {
+      return;
+    }
 
     this.isPlacingOrder.set(true);
     this.errorMessage.set('');
 
+    // ✅ FIX: Enviamos el name exacto de la BD
     this.orderService.checkout({
       addressId: this.selectedAddressId()!,
       couponCode: this.couponCode || undefined,
-      paymentMethod: this.paymentMethod()
+      paymentMethod: this.selectedPaymentMethod()
     }).subscribe({
       next: (order: Order) => {
         this.isPlacingOrder.set(false);
@@ -99,7 +208,8 @@ export class CheckoutComponent implements OnInit {
       },
       error: (err: any) => {
         this.isPlacingOrder.set(false);
-        this.errorMessage.set(err.error?.message || 'Error al procesar el pedido');
+        const msg = err.error?.message || err.error?.error || 'Error al procesar el pedido. Intenta de nuevo.';
+        this.errorMessage.set(msg);
       }
     });
   }
