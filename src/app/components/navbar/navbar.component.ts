@@ -23,10 +23,6 @@ export class NavbarComponent implements OnInit {
   isSearchOpen = signal(false);
 
   ngOnInit() {
-    this.categoryService.getAll().subscribe(cats => {
-        const ignored = ['Ropa Exterior', 'Camisetas', 'Pantalones'];
-        this.categories.set(cats.filter(c => !ignored.includes(c.name)));
-    });
   }
   
   toggleMenu() {

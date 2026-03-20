@@ -1,0 +1,50 @@
+<div class="admin-page">
+  <div class="page-header">
+    <div><h1>Pedidos</h1><p>{{ total() }} órdenes en total</p></div>
+  </div>
+
+  <div class="toolbar">
+    <select class="search-input" [(ngModel)]="statusFilter" (change)="load()">
+      <option value="">Todos los estados</option>
+      <option value="PENDING">Pendiente</option>
+      <option value="PAID">Pagado</option>
+      <option value="SHIPPED">Enviado</option>
+      <option value="DELIVERED">Entregado</option>
+      <option value="CANCELLED">Cancelado</option>
+    </select>
+  </div>
+
+  <div class="table-card">
+    <div *ngIf="loading()" class="table-loader">Cargando pedidos...</div>
+    <table class="data-table" *ngIf="!loading()">
+      <thead>
+        <tr><th>Nº Orden</th><th>Cliente</th><th>Ciudad</th><th>Total</th><th>Estado</th><th>Fecha</th><th>Cambiar Estado</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of orders()">
+          <td><strong>{{ order.orderNumber }}</strong></td>
+          <td>{{ order.shippingFullName }}</td>
+          <td>{{ order.shippingCity }}, {{ order.shippingCountry }}</td>
+          <td><strong>${{ order.totalAmount | number:'1.0-0' }}</strong></td>
+          <td><span class="status-tag status-{{ order.status }}">{{ order.status }}</span></td>
+          <td>{{ order.createdAt | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <select class="role-select" [value]="order.status" (change)="changeStatus(order.id, $event)">
+              <option value="PENDING">Pendiente</option>
+              <option value="PAID">Pagado</option>
+              <option value="SHIPPED">Enviado</option>
+              <option value="DELIVERED">Entregado</option>
+              <option value="CANCELLED">Cancelado</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="pagination" *ngIf="totalPages() > 1">
+      <button [disabled]="page()===0" (click)="goPage(page()-1)">← Anterior</button>
+      <span>Página {{ page()+1 }} de {{ totalPages() }}</span>
+      <button [disabled]="page()+1>=totalPages()" (click)="goPage(page()+1)">Siguiente →</button>
+    </div>
+  </div>
+  <div class="toast" *ngIf="toast()" [class.error]="toastType()==='error'">{{ toast() }}</div>
+</div>

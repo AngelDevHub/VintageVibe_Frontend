@@ -1,0 +1,61 @@
+<div class="admin-page">
+  <div class="page-header">
+    <h1>Dashboard</h1>
+    <p>Resumen general del sistema</p>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid" *ngIf="!loading(); else skeleton">
+    <div class="stat-card">
+      <div class="stat-icon revenue">💰</div>
+      <div class="stat-info">
+        <span class="stat-label">Ingresos Totales</span>
+        <span class="stat-value">${{ stats()?.totalRevenue | number:'1.0-0' }}</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon orders">📦</div>
+      <div class="stat-info">
+        <span class="stat-label">Total Pedidos</span>
+        <span class="stat-value">{{ stats()?.totalOrders | number }}</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon users">👥</div>
+      <div class="stat-info">
+        <span class="stat-label">Usuarios</span>
+        <span class="stat-value">{{ stats()?.totalUsers | number }}</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon products">🛍️</div>
+      <div class="stat-info">
+        <span class="stat-label">Productos</span>
+        <span class="stat-value">{{ stats()?.totalProducts | number }}</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #skeleton>
+    <div class="stats-grid">
+      <div class="stat-card skeleton" *ngFor="let i of [1,2,3,4]"></div>
+    </div>
+  </ng-template>
+
+  <!-- Quick Nav -->
+  <div class="section-title">Accesos rápidos</div>
+  <div class="quick-nav">
+    <a routerLink="/admin/products" class="quick-card">
+      <span>📦</span><strong>Gestionar Productos</strong>
+    </a>
+    <a routerLink="/admin/orders" class="quick-card">
+      <span>🛒</span><strong>Ver Pedidos</strong>
+    </a>
+    <a routerLink="/admin/users" class="quick-card">
+      <span>👤</span><strong>Gestionar Usuarios</strong>
+    </a>
+    <a routerLink="/admin/coupons" class="quick-card">
+      <span>🎟️</span><strong>Cupones</strong>
+    </a>
+  </div>
+</div>

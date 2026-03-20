@@ -45,17 +45,6 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  getCategoryImage(categoryName: string): string {
-    const lower = categoryName.toLowerCase();
-    if (lower.includes('vestido')) return '👗';
-    if (lower.includes('chaqueta') || lower.includes('abrigo')) return '🧥';
-    if (lower.includes('pantalón') || lower.includes('jeans')) return '👖';
-    if (lower.includes('accesorio') || lower.includes('joya')) return '💍';
-    if (lower.includes('bolso')) return '👜';
-    if (lower.includes('zapato')) return '👠';
-    return '✨';
-  }
-
   getProductImage(product: Product): string {
     const primary = product.images?.find(img => img.isPrimary);
     return primary?.imageUrl || product.images?.[0]?.imageUrl || 'assets/images/placeholder.png';

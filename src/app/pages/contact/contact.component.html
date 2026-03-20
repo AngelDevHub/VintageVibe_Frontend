@@ -17,7 +17,6 @@
           <h2>Información de Contacto</h2>
           <div class="info-list">
             <div *ngFor="let info of contactInfo" class="info-item">
-              <span class="info-icon">{{ info.icon }}</span>
               <div>
                 <p class="info-label">{{ info.label }}</p>
                 <a *ngIf="info.href" [href]="info.href" class="info-value">{{ info.value }}</a>
@@ -46,7 +45,6 @@
           <h2>Envíanos un mensaje</h2>
 
           <div *ngIf="formStatus() === 'success'" class="form-success">
-            <span class="success-icon">✅</span>
             <h3>¡Mensaje enviado!</h3>
             <p>Te responderemos en menos de 24 horas. ¡Gracias!</p>
           </div>

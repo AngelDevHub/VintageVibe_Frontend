@@ -1,0 +1,124 @@
+<div class="admin-page">
+  <div class="page-header">
+    <div><h1>Catálogo</h1><p>Gestión de categorías, marcas y condiciones</p></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="catalog-tabs">
+    <button [class.tab-active]="activeTab()==='categories'" (click)="activeTab.set('categories')">Categorías</button>
+    <button [class.tab-active]="activeTab()==='brands'" (click)="activeTab.set('brands')">Marcas</button>
+    <button [class.tab-active]="activeTab()==='conditions'" (click)="activeTab.set('conditions')">Condiciones</button>
+  </div>
+
+  <!-- Categories Tab -->
+  <div *ngIf="activeTab()==='categories'">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;">
+      <button class="btn-primary" (click)="openCatForm()">+ Nueva Categoría</button>
+    </div>
+    <div class="table-card" *ngIf="catForm()" style="margin-bottom:1.5rem;">
+      <div class="form-panel">
+        <div class="form-grid">
+          <div class="form-field"><label>Nombre *</label><input [(ngModel)]="catData.name" placeholder="Nombre de la categoría"></div>
+          <div class="form-field"><label>Slug</label><input [(ngModel)]="catData.slug" placeholder="nombre-url"></div>
+          <div class="form-field"><label>Descripción</label><input [(ngModel)]="catData.description" placeholder="Descripción breve"></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-cancel" (click)="catForm.set(false)">Cancelar</button>
+          <button class="btn-primary" (click)="saveCat()">{{ catEditId() ? 'Actualizar' : 'Crear' }}</button>
+        </div>
+      </div>
+    </div>
+    <div class="table-card">
+      <table class="data-table">
+        <thead><tr><th>ID</th><th>Nombre</th><th>Slug</th><th>Descripción</th><th>Acciones</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let c of categories()">
+            <td>{{ c.id }}</td><td>{{ c.name }}</td><td>{{ c.slug }}</td><td>{{ c.description }}</td>
+            <td class="actions">
+              <button class="btn-icon" (click)="editCat(c)">✏️</button>
+              <button class="btn-icon danger" (click)="confirmDel('cat', c.id)">🗑️</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Brands Tab -->
+  <div *ngIf="activeTab()==='brands'">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;">
+      <button class="btn-primary" (click)="openBrandForm()">+ Nueva Marca</button>
+    </div>
+    <div class="table-card" *ngIf="brandForm()" style="margin-bottom:1.5rem;">
+      <div class="form-panel">
+        <div class="form-grid">
+          <div class="form-field"><label>Nombre *</label><input [(ngModel)]="brandData.name" placeholder="Nombre de la marca"></div>
+          <div class="form-field"><label>Slug</label><input [(ngModel)]="brandData.slug" placeholder="nombre-url"></div>
+          <div class="form-field"><label>Descripción</label><input [(ngModel)]="brandData.description" placeholder="Descripción breve"></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-cancel" (click)="brandForm.set(false)">Cancelar</button>
+          <button class="btn-primary" (click)="saveBrand()">{{ brandEditId() ? 'Actualizar' : 'Crear' }}</button>
+        </div>
+      </div>
+    </div>
+    <div class="table-card">
+      <table class="data-table">
+        <thead><tr><th>ID</th><th>Nombre</th><th>Slug</th><th>Descripción</th><th>Acciones</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let b of brands()">
+            <td>{{ b.id }}</td><td>{{ b.name }}</td><td>{{ b.slug }}</td><td>{{ b.description }}</td>
+            <td class="actions">
+              <button class="btn-icon" (click)="editBrand(b)">✏️</button>
+              <button class="btn-icon danger" (click)="confirmDel('brand', b.id)">🗑️</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Conditions Tab -->
+  <div *ngIf="activeTab()==='conditions'">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;">
+      <button class="btn-primary" (click)="openCondForm()">+ Nueva Condición</button>
+    </div>
+    <div class="table-card" *ngIf="condForm()" style="margin-bottom:1.5rem;">
+      <div class="form-panel">
+        <div class="form-grid">
+          <div class="form-field"><label>Nombre *</label><input [(ngModel)]="condData.name" placeholder="ej: Excelente"></div>
+          <div class="form-field"><label>Descripción</label><input [(ngModel)]="condData.description" placeholder="Descripción breve"></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-cancel" (click)="condForm.set(false)">Cancelar</button>
+          <button class="btn-primary" (click)="saveCond()">{{ condEditId() ? 'Actualizar' : 'Crear' }}</button>
+        </div>
+      </div>
+    </div>
+    <div class="table-card">
+      <table class="data-table">
+        <thead><tr><th>ID</th><th>Nombre</th><th>Descripción</th><th>Acciones</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let c of conditions()">
+            <td>{{ c.id }}</td><td>{{ c.name }}</td><td>{{ c.description }}</td>
+            <td class="actions">
+              <button class="btn-icon" (click)="editCond(c)">✏️</button>
+              <button class="btn-icon danger" (click)="confirmDel('cond', c.id)">🗑️</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="deleteTarget()">
+    <div class="modal">
+      <h3>¿Eliminar registro?</h3><p>Esta acción no se puede deshacer.</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="deleteTarget.set(null)">Cancelar</button>
+        <button class="btn-danger" (click)="doDelete()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+  <div class="toast" *ngIf="toast()" [class.error]="toastType()==='error'">{{ toast() }}</div>
+</div>

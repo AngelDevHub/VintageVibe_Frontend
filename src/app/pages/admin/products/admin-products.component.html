@@ -1,0 +1,89 @@
+<div class="admin-page">
+  <div class="page-header">
+    <div><h1>Productos</h1><p>{{ total() }} productos en el catálogo</p></div>
+    <button class="btn-primary" (click)="openForm()">+ Nuevo Producto</button>
+  </div>
+
+  <div class="toolbar">
+    <input class="search-input" placeholder="Buscar productos..." [(ngModel)]="search" (input)="load()">
+  </div>
+
+  <!-- Create/Edit Form -->
+  <div class="table-card" *ngIf="showForm()" style="margin-bottom:1.5rem;">
+    <div class="form-panel">
+      <div class="form-grid">
+        <div class="form-field"><label>Nombre *</label><input [(ngModel)]="form.name" placeholder="Nombre del producto"></div>
+        <div class="form-field"><label>Slug</label><input [(ngModel)]="form.slug" placeholder="nombre-url"></div>
+        
+        <div class="form-field"><label>Precio ($)</label><input type="number" [(ngModel)]="form.price" placeholder="Precio"></div>
+        <div class="form-field"><label>Stock (Base)</label><input type="number" [(ngModel)]="form.stock" placeholder="Stock numérico"></div>
+        <div class="form-field">
+          <label>Categoría</label>
+          <select [(ngModel)]="form.categoryId">
+            <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Marca</label>
+          <select [(ngModel)]="form.brandId">
+            <option *ngFor="let b of brands" [value]="b.id">{{ b.name }}</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Condición</label>
+          <select [(ngModel)]="form.conditionId">
+            <option *ngFor="let c of conditions" [value]="c.id">{{ c.name }}</option>
+          </select>
+        </div>
+        <div class="form-field" style="grid-column:1/-1;"><label>Descripción</label><textarea [(ngModel)]="form.description" rows="3" placeholder="Descripción del producto"></textarea></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-cancel" (click)="cancelForm()">Cancelar</button>
+        <button class="btn-primary" (click)="save()">{{ editId() ? 'Actualizar' : 'Crear producto' }}</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div *ngIf="loading()" class="table-loader">Cargando productos...</div>
+    <table class="data-table" *ngIf="!loading()">
+      <thead><tr><th>ID</th><th>Imagen</th><th>Nombre</th><th>Categoría</th><th>Marca</th><th>Condición</th><th>Variantes</th><th>Acciones</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let p of products()">
+          <td>{{ p.id }}</td>
+          <td>
+            <img *ngIf="p.images[0]?.imageUrl" [src]="p.images[0].imageUrl" [alt]="p.name" style="width:40px;height:40px;object-fit:cover;border-radius:8px;">
+            <span *ngIf="!p.images[0]?.imageUrl" style="font-size:1.5rem;">📦</span>
+          </td>
+          <td><strong>{{ p.name }}</strong></td>
+          <td>{{ p.categoryName }}</td>
+          <td>{{ p.brandName }}</td>
+          <td>{{ p.conditionName }}</td>
+          <td><span class="badge badge-info">{{ p.variants.length || 0 }} variantes</span></td>
+          <td class="actions">
+            <button class="btn-icon" (click)="editProduct(p)" title="Editar">✏️</button>
+            <button class="btn-icon danger" (click)="confirmDelete(p.id)" title="Eliminar">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="pagination" *ngIf="totalPages() > 1">
+      <button [disabled]="page()===0" (click)="goPage(page()-1)">← Anterior</button>
+      <span>Página {{ page()+1 }} de {{ totalPages() }}</span>
+      <button [disabled]="page()+1>=totalPages()" (click)="goPage(page()+1)">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="deleteId()">
+    <div class="modal">
+      <h3>¿Eliminar producto?</h3><p>Se eliminará el producto y todas sus variantes e imágenes.</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="deleteId.set(null)">Cancelar</button>
+        <button class="btn-danger" (click)="deleteProduct()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+  <div class="toast" *ngIf="toast()" [class.error]="toastType()==='error'">{{ toast() }}</div>
+</div>

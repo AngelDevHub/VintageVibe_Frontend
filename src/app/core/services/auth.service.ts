@@ -19,7 +19,10 @@ export class AuthService {
   readonly token = this._token.asReadonly();
   readonly currentUser = this._user.asReadonly();
   readonly isLoggedIn = computed(() => !!this._token());
-  readonly isAdmin = computed(() => this._user()?.role === 'ROLE_ADMIN');
+  readonly isAdmin = computed(() => {
+    const role = this._user()?.role?.toUpperCase();
+    return role === 'ROLE_ADMIN' || role === 'ADMIN';
+  });
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {

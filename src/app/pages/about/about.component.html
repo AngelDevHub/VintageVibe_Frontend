@@ -40,7 +40,6 @@
       </div>
       <div class="values-grid">
         <div *ngFor="let v of values" class="value-card">
-          <div class="value-icon">{{ v.icon }}</div>
           <h3>{{ v.title }}</h3>
           <p>{{ v.desc }}</p>
         </div>
@@ -57,7 +56,6 @@
       </div>
       <div class="team-grid">
         <div *ngFor="let member of team" class="team-card">
-          <div class="team-avatar">{{ member.emoji }}</div>
           <h3 class="team-name">{{ member.name }}</h3>
           <p class="team-role">{{ member.role }}</p>
           <p class="team-bio">{{ member.bio }}</p>

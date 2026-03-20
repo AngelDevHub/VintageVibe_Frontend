@@ -35,8 +35,16 @@ export class ShopComponent implements OnInit {
   toastType = signal<'success' | 'error'>('success');
 
   private searchTimeout: any;
+  private bc = new BroadcastChannel('vintage_vibe_updates');
 
   ngOnInit() {
+    // Escuchar actualizaciones inter-pestañas
+    this.bc.onmessage = (event) => {
+      if (event.data?.type === 'DATA_UPDATED') {
+        this.loadProducts();
+      }
+    };
+
     this.categoryService.getAll().subscribe((cats: Category[]) => this.categories.set(cats));
 
     this.route.queryParams.subscribe((params: any) => {

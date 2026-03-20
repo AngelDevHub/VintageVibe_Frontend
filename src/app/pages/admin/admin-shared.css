@@ -1,0 +1,100 @@
+/* Shared Admin Table & Form Styles — usado por todos los módulos */
+.admin-page { max-width: 1200px; }
+
+.page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem; }
+.page-header h1 { font-size: 1.6rem; font-weight: 700; color: #1f2937; margin: 0 0 2px; font-family:'Playfair Display',serif; }
+.page-header p { color: #6b7280; font-size: 0.875rem; margin: 0; }
+
+/* ── Toolbar ── */
+.toolbar { display: flex; gap: 10px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.search-input {
+  padding: 9px 14px; border: 1.5px solid #e5e7eb; border-radius: 10px;
+  font-size: 0.88rem; outline: none; min-width: 220px; background: white;
+  transition: border-color 0.15s;
+}
+.search-input:focus { border-color: #D4A574; }
+
+/* ── Buttons ── */
+.btn-primary {
+  background: linear-gradient(135deg, #D4A574, #B8935E); color: white;
+  border: none; padding: 9px 18px; border-radius: 10px; font-size: 0.88rem;
+  font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.btn-icon {
+  background: #f3f4f6; border: none; border-radius: 8px; padding: 7px;
+  cursor: pointer; color: #6b7280; display: inline-flex; transition: all 0.15s;
+}
+.btn-icon:hover { background: #e5e7eb; color: #374151; }
+.btn-icon.danger:hover { background: #fee2e2; color: #dc2626; }
+
+.btn-cancel { background: #f3f4f6; border: none; padding: 9px 18px; border-radius: 10px; font-size: 0.88rem; font-weight: 600; cursor: pointer; color: #374151; }
+.btn-danger { background: #dc2626; color: white; border: none; padding: 9px 18px; border-radius: 10px; font-size: 0.88rem; font-weight: 600; cursor: pointer; }
+.btn-cancel:hover { background: #e5e7eb; }
+.btn-danger:hover { background: #b91c1c; }
+
+/* ── Table Card ── */
+.table-card { background: white; border-radius: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; overflow: hidden; }
+
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.data-table thead { background: #f9fafb; }
+.data-table th { padding: 12px 16px; text-align: left; font-size: 0.72rem; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #f0f0f0; }
+.data-table td { padding: 12px 16px; color: #374151; border-bottom: 1px solid #f9fafb; vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: #fafafa; }
+
+.actions { display: flex; gap: 6px; white-space: nowrap; }
+
+/* ── Badges ── */
+.badge { font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; display: inline-block; }
+.badge-success { background: #dcfce7; color: #16a34a; }
+.badge-warning { background: #fef9c3; color: #ca8a04; }
+.badge-error   { background: #fee2e2; color: #dc2626; }
+.badge-info    { background: #dbeafe; color: #2563eb; }
+.badge-muted   { background: #f3f4f6; color: #6b7280; }
+
+/* ── Pagination ── */
+.pagination { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 16px; font-size: 0.85rem; color: #6b7280; border-top: 1px solid #f0f0f0; }
+.pagination button { background: white; border: 1.5px solid #e5e7eb; padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: 0.82rem; font-weight: 600; color: #374151; transition: all 0.15s; }
+.pagination button:hover:not(:disabled) { border-color: #D4A574; color: #D4A574; }
+.pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Modal ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+.modal { background: white; border-radius: 16px; padding: 2rem; max-width: 400px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+.modal h3 { font-size: 1.1rem; font-weight: 700; color: #1f2937; margin: 0 0 8px; }
+.modal p { color: #6b7280; font-size: 0.9rem; margin: 0 0 1.5rem; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+/* ── Toast ── */
+.toast { position: fixed; bottom: 24px; right: 24px; background: #1f2937; color: white; padding: 12px 20px; border-radius: 12px; font-size: 0.875rem; font-weight: 500; z-index: 2000; animation: slideUp 0.25s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+.toast.error { background: #dc2626; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── Form inside table / modal ── */
+.table-loader { padding: 2rem; text-align: center; color: #9ca3af; font-size: 0.9rem; }
+
+.role-select { border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 4px 8px; font-size: 0.82rem; cursor: pointer; outline: none; background: white; }
+.role-select:focus { border-color: #D4A574; }
+
+/* ── Form Panel (for modals/create forms) ── */
+.form-panel { padding: 1.5rem; background: #f9fafb; border-top: 1px solid #f0f0f0; }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+.form-field { display: flex; flex-direction: column; gap: 4px; }
+.form-field label { font-size: 0.77rem; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
+.form-field input, .form-field select, .form-field textarea {
+  padding: 9px 12px; border: 1.5px solid #e5e7eb; border-radius: 10px;
+  font-size: 0.875rem; outline: none; background: white; transition: border-color 0.15s;
+}
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: #D4A574; }
+.form-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+/* ── Status tag ── */
+.status-tag { display: inline-flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
+.status-PENDING, .status-PENDIENTE   { background: #fef9c3; color: #ca8a04; }
+.status-PAID, .status-PAGADO        { background: #dcfce7; color: #16a34a; }
+.status-SHIPPED, .status-ENVIADO    { background: #dbeafe; color: #2563eb; }
+.status-DELIVERED, .status-ENTREGADO{ background: #f0fdf4; color: #15803d; }
+.status-CANCELLED                   { background: #fee2e2; color: #dc2626; }

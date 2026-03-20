@@ -1,0 +1,84 @@
+<div class="admin-page">
+  <div class="page-header">
+    <div>
+      <h1>Usuarios</h1>
+      <p>{{ total() }} usuarios registrados</p>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="toolbar">
+    <input class="search-input" placeholder="Buscar por email o nombre..." [(ngModel)]="searchTerm" (input)="load()">
+  </div>
+
+  <!-- Table -->
+  <div class="table-card">
+    <div *ngIf="loading()" class="table-loader">Cargando...</div>
+
+    <table class="data-table" *ngIf="!loading()">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users()">
+          <td>{{ user.id }}</td>
+          <td>{{ user.firstName }} {{ user.lastName }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <select class="role-select" [value]="user.role.name" (change)="onRoleChange(user.id, $event)">
+              <option value="ROLE_USER">USER</option>
+              <option value="ROLE_ADMIN">ADMIN</option>
+            </select>
+          </td>
+          <td>
+            <span class="badge" [class.badge-success]="user.isActive" [class.badge-muted]="!user.isActive">
+              {{ user.isActive ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td class="actions">
+            <button class="btn-icon" (click)="toggleActive(user)" title="Activar/Desactivar">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/>
+              </svg>
+            </button>
+            <button class="btn-icon danger" (click)="confirmDelete(user.id)" title="Eliminar">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalPages() > 1">
+      <button [disabled]="page() === 0" (click)="goPage(page() - 1)">← Anterior</button>
+      <span>Página {{ page() + 1 }} de {{ totalPages() }}</span>
+      <button [disabled]="page() + 1 >= totalPages()" (click)="goPage(page() + 1)">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" *ngIf="toast()" [class.error]="toastType() === 'error'">{{ toast() }}</div>
+
+  <!-- Confirm Modal -->
+  <div class="modal-overlay" *ngIf="deleteId()">
+    <div class="modal">
+      <h3>¿Eliminar usuario?</h3>
+      <p>Esta acción no se puede deshacer.</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="deleteId.set(null)">Cancelar</button>
+        <button class="btn-danger" (click)="deleteUser()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

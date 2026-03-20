@@ -1,0 +1,39 @@
+.admin-page { max-width: 1200px; }
+.page-header { margin-bottom: 2rem; }
+.page-header h1 { font-size: 1.75rem; font-weight: 700; color: #1f2937; margin: 0 0 4px; font-family:'Playfair Display',serif; }
+.page-header p { color: #6b7280; font-size: 0.9rem; margin: 0; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2.5rem; }
+
+.stat-card {
+  background: white; border-radius: 16px; padding: 1.5rem;
+  display: flex; align-items: center; gap: 1.25rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #f0f0f0;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+
+.stat-icon { font-size: 2rem; width: 56px; height: 56px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; }
+.stat-icon.revenue { background: #fef9c3; }
+.stat-icon.orders  { background: #dbeafe; }
+.stat-icon.users   { background: #dcfce7; }
+.stat-icon.products{ background: #fce7f3; }
+
+.stat-info { display: flex; flex-direction: column; gap: 2px; }
+.stat-label { font-size: 0.78rem; color: #9ca3af; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-value { font-size: 1.6rem; font-weight: 800; color: #1f2937; line-height: 1.1; }
+
+.stat-card.skeleton { height: 100px; background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 16px; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+.section-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #9ca3af; margin-bottom: 1rem; }
+
+.quick-nav { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+.quick-card {
+  background: white; border: 1px solid #f0f0f0; border-radius: 14px; padding: 1.25rem 1.5rem;
+  display: flex; align-items: center; gap: 12px; text-decoration: none; color: #374151;
+  font-size: 0.9rem; transition: all 0.18s; box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.quick-card:hover { border-color: #D4A574; color: #D4A574; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(212,165,116,0.15); }
+.quick-card span { font-size: 1.5rem; }

@@ -78,7 +78,6 @@
 
             <div *ngIf="!isLoading()" class="collections-grid">
                 <div *ngFor="let category of categories()" class="collection-card">
-                    <div class="collection-icon">{{ getCategoryImage(category.name) }}</div>
                     <h3 class="collection-title">{{ category.name }}</h3>
                     <p class="collection-description">{{ category.description }}</p>
                     <a [routerLink]="['/shop']" [queryParams]="{categoryId: category.id}" class="collection-link">
@@ -242,10 +241,10 @@
                     </button>
                 </form>
                 <p *ngIf="newsletterStatus() === 'success'" class="newsletter-feedback newsletter-success">
-                    ✅ ¡Gracias! Revisa tu correo para confirmar tu suscripción.
+                    ¡Gracias! Revisa tu correo para confirmar tu suscripción.
                 </p>
                 <p *ngIf="newsletterStatus() === 'error'" class="newsletter-feedback newsletter-error">
-                    ⚠️ Por favor ingresa un email válido.
+                    Por favor ingresa un email válido.
                 </p>
             </div>
         </div>

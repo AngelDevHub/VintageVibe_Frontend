@@ -1,0 +1,47 @@
+<div class="admin-page">
+  <div class="page-header">
+    <div><h1>Reviews</h1><p>{{ total() }} opiniones en el sistema</p></div>
+  </div>
+
+  <div class="table-card">
+    <div *ngIf="loading()" class="table-loader">Cargando reviews...</div>
+    <table class="data-table" *ngIf="!loading()">
+      <thead><tr><th>ID</th><th>Usuario</th><th>Producto ID</th><th>Rating</th><th>Comentario</th><th>Fecha</th><th>Acción</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let r of reviews()">
+          <td>{{ r.id }}</td>
+          <td>{{ r.userName }}</td>
+          <td>#{{ r.productId }}</td>
+          <td>
+            <span class="badge" [class.badge-success]="r.rating >= 4" [class.badge-warning]="r.rating === 3" [class.badge-error]="r.rating < 3">
+              {{ '★'.repeat(r.rating) }}{{ '☆'.repeat(5 - r.rating) }}
+            </span>
+          </td>
+          <td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ r.comment }}</td>
+          <td>{{ r.createdAt | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <button class="btn-icon danger" (click)="confirmDelete(r.id)" title="Eliminar review">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="pagination" *ngIf="totalPages() > 1">
+      <button [disabled]="page()===0" (click)="goPage(page()-1)">← Anterior</button>
+      <span>Página {{ page()+1 }} de {{ totalPages() }}</span>
+      <button [disabled]="page()+1>=totalPages()" (click)="goPage(page()+1)">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="deleteId()">
+    <div class="modal">
+      <h3>¿Eliminar review?</h3><p>Esta acción eliminará la opinión del sistema.</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="deleteId.set(null)">Cancelar</button>
+        <button class="btn-danger" (click)="deleteReview()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+  <div class="toast" *ngIf="toast()" [class.error]="toastType()==='error'">{{ toast() }}</div>
+</div>

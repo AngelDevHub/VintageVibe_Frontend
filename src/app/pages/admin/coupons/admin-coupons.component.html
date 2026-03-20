@@ -1,0 +1,67 @@
+<div class="admin-page">
+  <div class="page-header">
+    <div><h1>Cupones</h1><p>{{ coupons().length }} cupones</p></div>
+    <button class="btn-primary" (click)="openForm()">+ Nuevo Cupón</button>
+  </div>
+
+  <!-- Form Panel -->
+  <div class="table-card" *ngIf="showForm()" style="margin-bottom:1.5rem;">
+    <div class="form-panel">
+      <div class="form-grid">
+        <div class="form-field"><label>Código *</label><input [(ngModel)]="form.code" placeholder="ej: VERANO20" style="text-transform:uppercase"></div>
+        <div class="form-field"><label>Descuento *</label><input type="number" [(ngModel)]="form.discount" placeholder="ej: 20"></div>
+        <div class="form-field">
+          <label>Tipo</label>
+          <select [(ngModel)]="form.percentage">
+            <option [ngValue]="true">Porcentaje (%)</option>
+            <option [ngValue]="false">Monto fijo ($)</option>
+          </select>
+        </div>
+        <div class="form-field"><label>Mínimo de compra</label><input type="number" [(ngModel)]="form.minPurchaseAmount" placeholder="ej: 500"></div>
+        <div class="form-field"><label>Fecha expiración</label><input type="date" [(ngModel)]="form.expirationDate"></div>
+        <div class="form-field" style="justify-content:flex-end;padding-top:1.5rem;">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.875rem;text-transform:none;letter-spacing:0;">
+            <input type="checkbox" [(ngModel)]="form.active"> Activo
+          </label>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-cancel" (click)="cancelForm()">Cancelar</button>
+        <button class="btn-primary" (click)="save()">{{ editId() ? 'Guardar cambios' : 'Crear cupón' }}</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div *ngIf="loading()" class="table-loader">Cargando cupones...</div>
+    <table class="data-table" *ngIf="!loading()">
+      <thead><tr><th>Código</th><th>Descuento</th><th>Mínimo</th><th>Expira</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let c of coupons()">
+          <td><strong>{{ c.code }}</strong></td>
+          <td>{{ c.discount }}{{ c.percentage ? '%' : '$' }}</td>
+          <td>${{ c.minPurchaseAmount | number }}</td>
+          <td>{{ c.expirationDate | date:'dd/MM/yyyy' }}</td>
+          <td><span class="badge" [class.badge-success]="c.active" [class.badge-muted]="!c.active">{{ c.active ? 'Activo' : 'Inactivo' }}</span></td>
+          <td class="actions">
+            <button class="btn-icon" (click)="editCoupon(c)" title="Editar">✏️</button>
+            <button class="btn-icon danger" (click)="confirmDelete(c.id)" title="Eliminar">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="modal-overlay" *ngIf="deleteId()">
+    <div class="modal">
+      <h3>¿Eliminar cupón?</h3><p>Esta acción no se puede deshacer.</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="deleteId.set(null)">Cancelar</button>
+        <button class="btn-danger" (click)="deleteCoupon()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+  <div class="toast" *ngIf="toast()" [class.error]="toastType()==='error'">{{ toast() }}</div>
+</div>

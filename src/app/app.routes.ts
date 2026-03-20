@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth.guard';
+import { authGuard, adminGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -52,6 +52,21 @@ export const routes: Routes = [
   {
     path: 'privacy',
     loadComponent: () => import('./pages/privacy/privacy.component').then(m => m.PrivacyComponent)
+  },
+  {
+    path: 'admin',
+    loadComponent: () => import('./pages/admin/admin-shell/admin-shell.component').then(m => m.AdminShellComponent),
+    canActivate: [adminGuard],
+    children: [
+      { path: '', loadComponent: () => import('./pages/admin/dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent) },
+      { path: 'products', loadComponent: () => import('./pages/admin/products/admin-products.component').then(m => m.AdminProductsComponent) },
+      { path: 'orders', loadComponent: () => import('./pages/admin/orders/admin-orders.component').then(m => m.AdminOrdersComponent) },
+      { path: 'users', loadComponent: () => import('./pages/admin/users/admin-users.component').then(m => m.AdminUsersComponent) },
+      { path: 'payments', loadComponent: () => import('./pages/admin/payments/admin-payments.component').then(m => m.AdminPaymentsComponent) },
+      { path: 'coupons', loadComponent: () => import('./pages/admin/coupons/admin-coupons.component').then(m => m.AdminCouponsComponent) },
+      { path: 'reviews', loadComponent: () => import('./pages/admin/reviews/admin-reviews.component').then(m => m.AdminReviewsComponent) },
+      { path: 'catalog', loadComponent: () => import('./pages/admin/catalog/admin-catalog.component').then(m => m.AdminCatalogComponent) }
+    ]
   },
   {
     path: 'design-doc',

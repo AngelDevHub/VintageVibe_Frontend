@@ -1,0 +1,50 @@
+<div class="admin-page">
+  <div class="page-header">
+    <div><h1>Pagos</h1><p>Historial de transacciones y métodos</p></div>
+  </div>
+
+  <!-- Payments Table -->
+  <div class="section-title" style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#9ca3af;margin-bottom:1rem;">Transacciones</div>
+  <div class="table-card" style="margin-bottom:2rem;">
+    <div *ngIf="loading()" class="table-loader">Cargando pagos...</div>
+    <table class="data-table" *ngIf="!loading()">
+      <thead><tr><th>ID</th><th>Orden ID</th><th>Método</th><th>Estado</th><th>Monto</th><th>Fecha</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let p of payments()">
+          <td>{{ p.id }}</td>
+          <td>#{{ p.orderId }}</td>
+          <td>{{ p.method }}</td>
+          <td><span class="badge" [class.badge-success]="p.status==='COMPLETED'" [class.badge-warning]="p.status==='PENDING'" [class.badge-error]="p.status==='FAILED'">{{ p.status }}</span></td>
+          <td><strong>${{ p.amount | number:'1.0-0' }}</strong></td>
+          <td>{{ p.paidAt | date:'dd/MM/yyyy HH:mm' }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="pagination" *ngIf="totalPages() > 1">
+      <button [disabled]="page()===0" (click)="goPage(page()-1)">← Anterior</button>
+      <span>Página {{ page()+1 }} de {{ totalPages() }}</span>
+      <button [disabled]="page()+1>=totalPages()" (click)="goPage(page()+1)">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- Payment Methods -->
+  <div class="section-title" style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#9ca3af;margin-bottom:1rem;">Métodos de Pago</div>
+  <div class="table-card">
+    <table class="data-table">
+      <thead><tr><th>ID</th><th>Nombre</th><th>Estado</th><th>Acción</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let pm of methods()">
+          <td>{{ pm.id }}</td>
+          <td>{{ pm.name }}</td>
+          <td><span class="badge" [class.badge-success]="pm.isActive" [class.badge-muted]="!pm.isActive">{{ pm.isActive ? 'Activo' : 'Inactivo' }}</span></td>
+          <td>
+            <button class="btn-icon" (click)="toggleMethod(pm)" [title]="pm.isActive ? 'Desactivar' : 'Activar'">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="toast" *ngIf="toast()" [class.error]="toastType()==='error'">{{ toast() }}</div>
+</div>

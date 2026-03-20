@@ -17,13 +17,7 @@
           Tienda
         </a>
       </li>
-      @for (cat of categories(); track cat.id) {
-      <li class="nav-item">
-        <a [routerLink]="['/shop']" [queryParams]="{categoryId: cat.id}" routerLinkActive="active" class="nav-link">
-          {{ cat.name }}
-        </a>
-      </li>
-      }
+
       <li class="nav-item">
         <a routerLink="/about" routerLinkActive="active" class="nav-link">
           Nosotros
@@ -38,23 +32,7 @@
 
     <!-- Actions -->
     <div class="navbar-actions">
-      <div class="search-container" [class.active]="isSearchOpen()">
-        <input #searchInput type="text" class="search-input" placeholder="Buscar..."
-          (keyup.enter)="handleSearch(searchInput.value); searchInput.value = ''">
-      </div>
 
-      <button class="nav-action-btn" (click)="toggleSearch()" aria-label="Buscar">
-        <svg *ngIf="!isSearchOpen()" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2">
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.35-4.35" />
-        </svg>
-        <svg *ngIf="isSearchOpen()" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18" />
-          <line x1="6" y1="6" x2="18" y2="18" />
-        </svg>
-      </button>
 
       <!-- Auth: logged out -->
       <a *ngIf="!authService.isLoggedIn()" routerLink="/login" class="nav-action-btn" aria-label="Iniciar sesión">
@@ -122,14 +100,7 @@
           Tienda
         </a>
       </li>
-      @for (cat of categories(); track cat.id) {
-      <li>
-        <a [routerLink]="['/shop']" [queryParams]="{categoryId: cat.id}" (click)="closeMenu()" routerLinkActive="active"
-          class="mobile-nav-link">
-          {{ cat.name }}
-        </a>
-      </li>
-      }
+
       <li>
         <a routerLink="/about" (click)="closeMenu()" routerLinkActive="active" class="mobile-nav-link">
           Nosotros
