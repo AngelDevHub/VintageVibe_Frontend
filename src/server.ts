@@ -7,10 +7,37 @@ import {
 import express from 'express';
 import { join } from 'node:path';
 
+import http from 'node:http';
+
+const serverUrl = 'http://backend:8080';
+
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
+
+// Proxy para peticiones API desde el cliente (Navegador) al contenedor del Backend
+app.use('/api', (req, res) => {
+  const targetUrl = new URL(req.originalUrl, serverUrl);
+  
+  const proxyReq = http.request(targetUrl, {
+    method: req.method,
+    headers: req.headers
+  }, (proxyRes) => {
+    res.status(proxyRes.statusCode || 500);
+    Object.entries(proxyRes.headers).forEach(([key, value]) => {
+      if (value) res.setHeader(key, value);
+    });
+    proxyRes.pipe(res);
+  });
+
+  proxyReq.on('error', (err) => {
+    console.error('Error proxying to backend:', err);
+    res.status(502).send('Error connecting to backend');
+  });
+
+  req.pipe(proxyReq);
+});
 
 /**
  * Example Express Rest API endpoints can be defined here.
