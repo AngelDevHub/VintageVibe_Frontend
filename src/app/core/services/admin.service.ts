@@ -30,7 +30,8 @@ export class AdminService {
 
   // ── Users ──────────────────────────────────
   getUsers(page = 0, size = 10, search = ''): Observable<PageResponse<AdminUser>> {
-    const params = new HttpParams().set('page', page).set('size', size);
+    let params = new HttpParams().set('page', page).set('size', size);
+    if (search) params = params.set('search', search);
     return this.http.get<PageResponse<AdminUser>>(`${this.api}/admin/users`, { params });
   }
   changeUserRole(id: number, roleName: string): Observable<AdminUser> {
@@ -44,8 +45,9 @@ export class AdminService {
   }
 
   // ── Products ───────────────────────────────
-  getProducts(page = 0, size = 10): Observable<PageResponse<Product>> {
-    const params = new HttpParams().set('page', page).set('size', size);
+  getProducts(page = 0, size = 10, search = ''): Observable<PageResponse<Product>> {
+    let params = new HttpParams().set('page', page).set('size', size);
+    if (search) params = params.set('name', search);
     return this.http.get<PageResponse<Product>>(`${this.api}/products`, { params });
   }
   createProduct(data: Partial<Product>): Observable<Product> {
@@ -113,13 +115,19 @@ export class AdminService {
     return this.http.get<Category[]>(`${this.api}/categories`);
   }
   createCategory(data: Partial<Category>): Observable<Category> {
-    return this.http.post<Category>(`${this.api}/categories`, data);
+    return this.http.post<Category>(`${this.api}/categories`, data).pipe(
+      tap(() => this.notifyUpdate())
+    );
   }
   updateCategory(id: number, data: Partial<Category>): Observable<Category> {
-    return this.http.put<Category>(`${this.api}/categories/${id}`, data);
+    return this.http.put<Category>(`${this.api}/categories/${id}`, data).pipe(
+      tap(() => this.notifyUpdate())
+    );
   }
   deleteCategory(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.api}/categories/${id}`);
+    return this.http.delete<void>(`${this.api}/categories/${id}`).pipe(
+      tap(() => this.notifyUpdate())
+    );
   }
 
   // ── Brands ─────────────────────────────────
@@ -127,13 +135,19 @@ export class AdminService {
     return this.http.get<Brand[]>(`${this.api}/brands`);
   }
   createBrand(data: Partial<Brand>): Observable<Brand> {
-    return this.http.post<Brand>(`${this.api}/brands`, data);
+    return this.http.post<Brand>(`${this.api}/brands`, data).pipe(
+      tap(() => this.notifyUpdate())
+    );
   }
   updateBrand(id: number, data: Partial<Brand>): Observable<Brand> {
-    return this.http.put<Brand>(`${this.api}/brands/${id}`, data);
+    return this.http.put<Brand>(`${this.api}/brands/${id}`, data).pipe(
+      tap(() => this.notifyUpdate())
+    );
   }
   deleteBrand(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.api}/brands/${id}`);
+    return this.http.delete<void>(`${this.api}/brands/${id}`).pipe(
+      tap(() => this.notifyUpdate())
+    );
   }
 
   // ── Conditions ─────────────────────────────
@@ -141,12 +155,18 @@ export class AdminService {
     return this.http.get<ProductCondition[]>(`${this.api}/product-conditions`);
   }
   createCondition(data: Partial<ProductCondition>): Observable<ProductCondition> {
-    return this.http.post<ProductCondition>(`${this.api}/product-conditions`, data);
+    return this.http.post<ProductCondition>(`${this.api}/product-conditions`, data).pipe(
+      tap(() => this.notifyUpdate())
+    );
   }
   updateCondition(id: number, data: Partial<ProductCondition>): Observable<ProductCondition> {
-    return this.http.put<ProductCondition>(`${this.api}/product-conditions/${id}`, data);
+    return this.http.put<ProductCondition>(`${this.api}/product-conditions/${id}`, data).pipe(
+      tap(() => this.notifyUpdate())
+    );
   }
   deleteCondition(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.api}/product-conditions/${id}`);
+    return this.http.delete<void>(`${this.api}/product-conditions/${id}`).pipe(
+      tap(() => this.notifyUpdate())
+    );
   }
 }

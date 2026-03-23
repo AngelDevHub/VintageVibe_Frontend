@@ -26,8 +26,8 @@ export class AuthService {
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
-      const savedToken = localStorage.getItem('vv_token');
-      const savedUser = localStorage.getItem('vv_user');
+      const savedToken = sessionStorage.getItem('vv_token');
+      const savedUser = sessionStorage.getItem('vv_user');
       if (savedToken && savedUser) {
         this._token.set(savedToken);
         this._user.set(JSON.parse(savedUser));
@@ -41,8 +41,8 @@ export class AuthService {
         this._token.set(response.token);
         this._user.set(response);
         if (isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('vv_token', response.token);
-          localStorage.setItem('vv_user', JSON.stringify(response));
+          sessionStorage.setItem('vv_token', response.token);
+          sessionStorage.setItem('vv_user', JSON.stringify(response));
         }
       })
     );
@@ -54,8 +54,8 @@ export class AuthService {
         this._token.set(response.token);
         this._user.set(response);
         if (isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('vv_token', response.token);
-          localStorage.setItem('vv_user', JSON.stringify(response));
+          sessionStorage.setItem('vv_token', response.token);
+          sessionStorage.setItem('vv_user', JSON.stringify(response));
         }
       })
     );
@@ -65,8 +65,8 @@ export class AuthService {
     this._token.set(null);
     this._user.set(null);
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('vv_token');
-      localStorage.removeItem('vv_user');
+      sessionStorage.removeItem('vv_token');
+      sessionStorage.removeItem('vv_user');
     }
     this.router.navigate(['/login']);
   }

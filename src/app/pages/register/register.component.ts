@@ -1,6 +1,6 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -23,7 +23,13 @@ export class RegisterComponent {
   isLoading = signal(false);
   errorMessage = signal('');
 
-  onSubmit() {
+  onSubmit(form: NgForm) {
+    if (form.invalid) {
+      this.errorMessage.set('Por favor, completa correctamente todos los campos obligatorios');
+      Object.keys(form.controls).forEach(key => form.controls[key].markAsTouched());
+      return;
+    }
+
     if (this.password() !== this.confirmPassword()) {
       this.errorMessage.set('Las contraseñas no coinciden');
       return;

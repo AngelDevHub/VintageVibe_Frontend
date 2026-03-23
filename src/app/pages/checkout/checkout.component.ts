@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { OrderService } from '../../core/services/order.service';
 import { AddressService } from '../../core/services/address.service';
@@ -17,7 +17,7 @@ export interface CardForm {
 
 @Component({
   selector: 'app-checkout',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.css']
 })
@@ -54,11 +54,20 @@ export class CheckoutComponent implements OnInit {
   cardForm: CardForm = { number: '', name: '', expiry: '', cvv: '' };
   cardError = signal('');
 
-  newAddress: Partial<Address> = {
-    fullName: '', addressLine1: '', addressLine2: '',
-    city: '', state: '', postalCode: '', country: '', phoneNumber: '',
-    addressType: 'SHIPPING', isDefault: false
-  };
+  private fb = inject(FormBuilder);
+
+  addressForm = this.fb.nonNullable.group({
+    fullName: ['', [Validators.required, Validators.maxLength(100), Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)]],
+    addressLine1: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s,.-]+$/)]],
+    addressLine2: ['', Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s,.-]*$/)],
+    city: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)]],
+    state: ['', Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/)],
+    postalCode: ['', [Validators.required, Validators.pattern(/^\d{5}$/)]],
+    country: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)]],
+    phoneNumber: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
+    addressType: ['SHIPPING'],
+    isDefault: [false]
+  });
 
   paymentIcons: Record<string, string> = {
     CREDIT_CARD: '💳',
@@ -121,22 +130,36 @@ export class CheckoutComponent implements OnInit {
   }
 
   saveAddress() {
-    if (!this.newAddress.fullName || !this.newAddress.addressLine1 || !this.newAddress.city) {
-      this.errorMessage.set('Por favor completa los campos requeridos de la dirección');
+    if (this.addressForm.invalid) {
+      this.addressForm.markAllAsTouched();
+      this.errorMessage.set('Por favor completa todos los campos obligatorios y corrige los errores de formato.');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
     this.isSavingAddress.set(true);
     this.errorMessage.set('');
-    this.addressService.create(this.newAddress).subscribe({
+    this.addressService.create(this.addressForm.getRawValue() as Address).subscribe({
       next: (addr: Address) => {
         this.addresses.update((addrs: Address[]) => [...addrs, addr]);
         this.selectedAddressId.set(addr.id);
         this.isSavingAddress.set(false);
-        this.newAddress = { fullName: '', addressLine1: '', city: '', state: '', postalCode: '', country: '', phoneNumber: '', addressType: 'SHIPPING', isDefault: false };
+        this.addressForm.reset({ addressType: 'SHIPPING', isDefault: false });
       },
-      error: () => {
+      error: (err: any) => {
         this.isSavingAddress.set(false);
-        this.errorMessage.set('Error al guardar la dirección');
+        if (err.status === 400 && err.error && typeof err.error === 'object') {
+          // Backend field errors mapping
+          Object.keys(err.error).forEach(key => {
+            const control = this.addressForm.get(key);
+            if (control) {
+              control.setErrors({ serverError: err.error[key] });
+              control.markAsTouched();
+            }
+          });
+          this.errorMessage.set('Existen errores en el formulario, revisa los campos señalados debajo.');
+        } else {
+          this.errorMessage.set('Error al guardar la dirección');
+        }
       }
     });
   }

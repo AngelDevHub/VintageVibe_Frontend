@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -21,6 +21,7 @@ export class ShopComponent implements OnInit {
   authService = inject(AuthService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private zone = inject(NgZone);
 
   products = signal<Product[]>([]);
   categories = signal<Category[]>([]);
@@ -41,7 +42,9 @@ export class ShopComponent implements OnInit {
     // Escuchar actualizaciones inter-pestañas
     this.bc.onmessage = (event) => {
       if (event.data?.type === 'DATA_UPDATED') {
-        this.loadProducts();
+        this.zone.run(() => {
+          this.loadProducts();
+        });
       }
     };
 

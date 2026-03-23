@@ -42,7 +42,7 @@
                     <p class="form-subtitle">Completa tus datos para empezar</p>
                 </div>
 
-                <form (ngSubmit)="onSubmit()" class="register-form">
+                <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)" class="register-form">
                     <div class="form-row">
                         <div class="form-group">
                             <label for="firstName" class="form-label">Nombre</label>
@@ -124,7 +124,7 @@
                         </span>
                     </label>
 
-                    <button type="submit" class="btn btn-primary btn-full" [disabled]="isLoading()">
+                    <button type="submit" class="btn btn-primary btn-full" [disabled]="isLoading() || registerForm.invalid">
                         <span *ngIf="!isLoading()">Crear Cuenta</span>
                         <span *ngIf="isLoading()" class="loading-spinner">
                             <svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none"

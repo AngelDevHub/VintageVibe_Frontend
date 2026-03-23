@@ -53,24 +53,100 @@
 
                 <div class="new-address-toggle">
                     <h3>{{ addresses().length > 0 ? '+ Añadir nueva dirección' : 'Añade una dirección de envío' }}</h3>
-                    <div class="address-form">
-                        <input class="form-input" placeholder="Nombre completo *" [(ngModel)]="newAddress.fullName" />
-                        <input class="form-input" placeholder="Calle y número *" [(ngModel)]="newAddress.addressLine1" />
-                        <input class="form-input" placeholder="Interior, colonia, etc. (opcional)"
-                            [(ngModel)]="newAddress.addressLine2" />
-                        <div class="form-row">
-                            <input class="form-input" placeholder="Ciudad *" [(ngModel)]="newAddress.city" />
-                            <input class="form-input" placeholder="Estado / Provincia" [(ngModel)]="newAddress.state" />
+                    <form class="address-form" [formGroup]="addressForm" (ngSubmit)="saveAddress()">
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <input class="form-input" placeholder="Nombre completo *" formControlName="fullName" />
+                            @if (addressForm.get('fullName')?.touched && addressForm.get('fullName')?.invalid) {
+                                <small style="color: #dc3545; display: block; margin-top: 5px;">
+                                    @if (addressForm.get('fullName')?.hasError('required')) { Requerido. }
+                                    @if (addressForm.get('fullName')?.hasError('pattern')) { Solo letras y espacios válidos. }
+                                    @if (addressForm.get('fullName')?.hasError('maxlength')) { Máximo 100 caracteres. }
+                                    @if (addressForm.get('fullName')?.hasError('serverError')) { {{addressForm.get('fullName')?.errors?.['serverError']}} }
+                                </small>
+                            }
                         </div>
-                        <div class="form-row">
-                            <input class="form-input" placeholder="Código postal" [(ngModel)]="newAddress.postalCode" />
-                            <input class="form-input" placeholder="País *" [(ngModel)]="newAddress.country" />
+                        
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <input class="form-input" placeholder="Calle y número *" formControlName="addressLine1" />
+                            @if (addressForm.get('addressLine1')?.touched && addressForm.get('addressLine1')?.invalid) {
+                                <small style="color: #dc3545; display: block; margin-top: 5px;">
+                                    @if (addressForm.get('addressLine1')?.hasError('required')) { Requerido. }
+                                    @if (addressForm.get('addressLine1')?.hasError('pattern')) { Alfanumérico y símbolos comunes. }
+                                    @if (addressForm.get('addressLine1')?.hasError('serverError')) { {{addressForm.get('addressLine1')?.errors?.['serverError']}} }
+                                </small>
+                            }
                         </div>
-                        <input class="form-input" placeholder="Teléfono" [(ngModel)]="newAddress.phoneNumber" />
-                        <button class="save-address-btn" (click)="saveAddress()" [disabled]="isSavingAddress()">
+                        
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <input class="form-input" placeholder="Interior, colonia, etc. (opcional)" formControlName="addressLine2" />
+                            @if (addressForm.get('addressLine2')?.touched && addressForm.get('addressLine2')?.invalid) {
+                                <small style="color: #dc3545; display: block; margin-top: 5px;">
+                                    @if (addressForm.get('addressLine2')?.hasError('pattern')) { Alfanumérico y símbolos comunes. }
+                                    @if (addressForm.get('addressLine2')?.hasError('serverError')) { {{addressForm.get('addressLine2')?.errors?.['serverError']}} }
+                                </small>
+                            }
+                        </div>
+
+                        <div class="form-row" style="margin-bottom: 15px; display: flex; gap: 10px;">
+                            <div class="form-group" style="flex: 1;">
+                                <input class="form-input" placeholder="Ciudad *" formControlName="city" />
+                                @if (addressForm.get('city')?.touched && addressForm.get('city')?.invalid) {
+                                    <small style="color: #dc3545; display: block; margin-top: 5px;">
+                                        @if (addressForm.get('city')?.hasError('required')) { Requerido. }
+                                        @if (addressForm.get('city')?.hasError('pattern')) { Solo letras. }
+                                        @if (addressForm.get('city')?.hasError('serverError')) { {{addressForm.get('city')?.errors?.['serverError']}} }
+                                    </small>
+                                }
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <input class="form-input" placeholder="Estado / Provincia" formControlName="state" />
+                                @if (addressForm.get('state')?.touched && addressForm.get('state')?.invalid) {
+                                    <small style="color: #dc3545; display: block; margin-top: 5px;">
+                                        @if (addressForm.get('state')?.hasError('pattern')) { Solo letras. }
+                                        @if (addressForm.get('state')?.hasError('serverError')) { {{addressForm.get('state')?.errors?.['serverError']}} }
+                                    </small>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="form-row" style="margin-bottom: 15px; display: flex; gap: 10px;">
+                            <div class="form-group" style="flex: 1;">
+                                <input class="form-input" placeholder="Código postal *" formControlName="postalCode" />
+                                @if (addressForm.get('postalCode')?.touched && addressForm.get('postalCode')?.invalid) {
+                                    <small style="color: #dc3545; display: block; margin-top: 5px;">
+                                        @if (addressForm.get('postalCode')?.hasError('required')) { Requerido. }
+                                        @if (addressForm.get('postalCode')?.hasError('pattern')) { 5 dígitos requeridos. }
+                                        @if (addressForm.get('postalCode')?.hasError('serverError')) { {{addressForm.get('postalCode')?.errors?.['serverError']}} }
+                                    </small>
+                                }
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <input class="form-input" placeholder="País *" formControlName="country" />
+                                @if (addressForm.get('country')?.touched && addressForm.get('country')?.invalid) {
+                                    <small style="color: #dc3545; display: block; margin-top: 5px;">
+                                        @if (addressForm.get('country')?.hasError('required')) { Requerido. }
+                                        @if (addressForm.get('country')?.hasError('pattern')) { Solo letras. }
+                                        @if (addressForm.get('country')?.hasError('serverError')) { {{addressForm.get('country')?.errors?.['serverError']}} }
+                                    </small>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <input class="form-input" placeholder="Teléfono *" formControlName="phoneNumber" />
+                            @if (addressForm.get('phoneNumber')?.touched && addressForm.get('phoneNumber')?.invalid) {
+                                <small style="color: #dc3545; display: block; margin-top: 5px;">
+                                    @if (addressForm.get('phoneNumber')?.hasError('required')) { Requerido. }
+                                    @if (addressForm.get('phoneNumber')?.hasError('pattern')) { El teléfono debe tener 10 dígitos. }
+                                    @if (addressForm.get('phoneNumber')?.hasError('serverError')) { {{addressForm.get('phoneNumber')?.errors?.['serverError']}} }
+                                </small>
+                            }
+                        </div>
+                        
+                        <button type="submit" class="save-address-btn" [disabled]="addressForm.invalid || isSavingAddress()">
                             {{ isSavingAddress() ? 'Guardando...' : '+ Guardar dirección' }}
                         </button>
-                    </div>
+                    </form>
                 </div>
             </div>
 

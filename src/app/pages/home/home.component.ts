@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -15,14 +15,23 @@ import { Product, Category, PageResponse } from '../../core/models';
 export class HomeComponent implements OnInit {
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);
+  private zone = inject(NgZone);
 
   featuredProducts = signal<Product[]>([]);
   categories = signal<Category[]>([]);
   isLoading = signal(true);
   newsletterEmail = signal('');
   newsletterStatus = signal<'idle' | 'success' | 'error' | 'loading'>('idle');
+  private bc = new BroadcastChannel('vintage_vibe_updates');
 
   ngOnInit() {
+    this.bc.onmessage = (event) => {
+      if (event.data?.type === 'DATA_UPDATED') {
+        this.zone.run(() => {
+          this.loadData();
+        });
+      }
+    };
     this.loadData();
   }
 

@@ -1,6 +1,6 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
@@ -22,9 +22,10 @@ export class LoginComponent {
   isLoading = signal(false);
   errorMessage = signal('');
 
-  onSubmit() {
-    if (!this.email() || !this.password()) {
-      this.errorMessage.set('Por favor completa todos los campos');
+  onSubmit(form: NgForm) {
+    if (form.invalid) {
+      this.errorMessage.set('Por favor, completa correctamente todos los campos');
+      Object.keys(form.controls).forEach(key => form.controls[key].markAsTouched());
       return;
     }
 
@@ -52,13 +53,5 @@ export class LoginComponent {
         );
       }
     });
-  }
-
-  loginWithGoogle() {
-    alert('Iniciar sesión con Google - Funcionalidad próximamente');
-  }
-
-  loginWithFacebook() {
-    alert('Iniciar sesión con Facebook - Funcionalidad próximamente');
   }
 }

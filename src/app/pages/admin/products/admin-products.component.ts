@@ -36,7 +36,7 @@ export class AdminProductsComponent implements OnInit {
 
   load() {
     this.loading.set(true);
-    this.adminService.getProducts(this.page(), 10).subscribe({
+    this.adminService.getProducts(this.page(), 10, this.search).subscribe({
       next: (p) => { this.products.set(p.content); this.totalPages.set(p.totalPages); this.total.set(p.totalElements); this.loading.set(false); },
       error: () => this.loading.set(false)
     });
@@ -81,7 +81,15 @@ export class AdminProductsComponent implements OnInit {
         this.cancelForm();
         this.showToast(id ? 'Producto actualizado' : 'Producto creado');
       },
-      error: () => this.showToast('Error al guardar', 'error')
+      error: (err: any) => {
+        if (err.status === 400 && err.error && typeof err.error === 'object') {
+          // Display the first validation error field message
+          const firstError = Object.values(err.error)[0] as string;
+          this.showToast(firstError, 'error');
+        } else {
+          this.showToast(err.error?.message || 'Error interno al guardar', 'error');
+        }
+      }
     });
   }
 
