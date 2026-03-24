@@ -6,7 +6,8 @@ import { OrderService } from '../../core/services/order.service';
 import { AddressService } from '../../core/services/address.service';
 import { CartService } from '../../core/services/cart.service';
 import { PaymentMethodService } from '../../core/services/payment-method.service';
-import { Address, Order, PaymentMethod } from '../../core/models';
+import { CouponService } from '../../core/services/coupon.service';
+import { Address, Order, PaymentMethod, Coupon } from '../../core/models';
 
 export interface CardForm {
   number: string;
@@ -26,6 +27,7 @@ export class CheckoutComponent implements OnInit {
   private addressService = inject(AddressService);
   private cartService = inject(CartService);
   private pmService = inject(PaymentMethodService);
+  private couponService = inject(CouponService);
 
   cart = this.cartService.cart;
   addresses = signal<Address[]>([]);
@@ -36,6 +38,8 @@ export class CheckoutComponent implements OnInit {
   orderSuccess = signal<Order | null>(null);
   errorMessage = signal('');
   couponCode = '';
+  appliedCoupon = signal<Coupon | null>(null);
+  isValidatingCoupon = signal(false);
 
   // ✅ FIX: selectedPaymentMethod guarda el nombre EXACTO de la BD
   // (CREDIT_CARD, DEBIT_CARD, PAYPAL, BANK_TRANSFER, CASH_ON_DELIVERY)
@@ -49,6 +53,20 @@ export class CheckoutComponent implements OnInit {
   isBankTransfer = computed(() => this.selectedPaymentMethod() === 'BANK_TRANSFER');
   isPayPal = computed(() => this.selectedPaymentMethod() === 'PAYPAL');
   isCashOnDelivery = computed(() => this.selectedPaymentMethod() === 'CASH_ON_DELIVERY');
+
+  // Cálculo de total con cupón
+  discountAmount = computed(() => {
+    const c = this.appliedCoupon();
+    const subtotal = this.cart()?.total || 0;
+    if (!c) return 0;
+    if (c.percentage) return (subtotal * c.discount) / 100;
+    return c.discount;
+  });
+
+  finalTotal = computed(() => {
+    const subtotal = this.cart()?.total || 0;
+    return Math.max(0, subtotal - this.discountAmount());
+  });
 
   // Formulario de tarjeta (simulado)
   cardForm: CardForm = { number: '', name: '', expiry: '', cvv: '' };
@@ -200,6 +218,23 @@ export class CheckoutComponent implements OnInit {
     if (val.length >= 2) val = val.substring(0, 2) + '/' + val.substring(2);
     this.cardForm.expiry = val;
     input.value = val;
+  }
+
+  applyCoupon() {
+    if (!this.couponCode.trim()) return;
+    this.isValidatingCoupon.set(true);
+    this.couponService.validate(this.couponCode).subscribe({
+      next: (coupon) => {
+        this.appliedCoupon.set(coupon);
+        this.isValidatingCoupon.set(false);
+      },
+      error: () => {
+        this.appliedCoupon.set(null);
+        this.isValidatingCoupon.set(false);
+        this.errorMessage.set('Cupón no válido o expirado');
+        setTimeout(() => this.errorMessage.set(''), 3000);
+      }
+    });
   }
 
   placeOrder() {

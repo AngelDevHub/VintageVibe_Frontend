@@ -167,6 +167,7 @@
 }
 .form-input:focus { outline: none; border-color: var(--color-primary, #c9a96e); box-shadow: 0 0 0 3px rgba(201,169,110,0.15); }
 .form-input::placeholder { color: #9ca3af; }
+.error-text { color: #dc2626; font-size: 0.75rem; margin-top: 0.2rem; }
 .save-address-btn {
     margin-top: 0.5rem;
     padding: 0.7rem 1.25rem;
@@ -209,6 +210,33 @@
 .pm-info { flex: 1; }
 .pm-name { font-size: 0.95rem; font-weight: 700; margin: 0 0 2px; color: #111; }
 .pm-desc { font-size: 0.78rem; color: #6b7280; margin: 0; }
+
+.trusted-logos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px dashed #e5e7eb;
+}
+.trusted-logos img {
+    height: 18px;
+    filter: grayscale(1);
+    opacity: 0.5;
+    transition: all 0.3s;
+}
+.trusted-logos img:hover { filter: none; opacity: 1; }
+.ssl-shield {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #16a34a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
 /* ===========================
    CARD FORM
@@ -260,7 +288,20 @@
    =========================== */
 .coupon-row { display: flex; align-items: center; gap: 0.75rem; }
 .coupon-input { flex: 1; }
-.coupon-hint { font-size: 0.75rem; color: #9ca3af; white-space: nowrap; }
+.input-with-action { display: flex; gap: 0.5rem; width: 100%; }
+.apply-coupon-btn {
+    padding: 0 1.25rem;
+    background: #1a1a1a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.apply-coupon-btn:hover:not(:disabled) { background: var(--color-primary, #c9a96e); }
+.coupon-success { display: block; margin-top: 0.5rem; font-size: 0.85rem; color: #16a34a; font-weight: 600; }
 
 /* ===========================
    ORDER SUMMARY
@@ -276,11 +317,22 @@
 }
 .order-summary h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.25rem; }
 .summary-items { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem; }
-.summary-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
-.item-details { display: flex; flex-direction: column; }
-.item-name { font-size: 0.88rem; font-weight: 600; color: #111; }
-.item-meta { font-size: 0.76rem; color: #9ca3af; }
-.item-price { font-size: 0.9rem; font-weight: 600; white-space: nowrap; }
+.summary-item { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+.item-img-mini {
+    width: 48px;
+    height: 48px;
+    background: #f9fafb;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #f3f4f6;
+    flex-shrink: 0;
+}
+.item-img-mini img { width: 100%; height: 100%; object-fit: cover; }
+.img-mini-placeholder { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
+.item-details { flex: 1; display: flex; flex-direction: column; }
+.item-name { font-size: 0.88rem; font-weight: 600; color: #111; line-height: 1.2; }
+.item-meta { font-size: 0.76rem; color: #6b7280; }
+.item-price { font-size: 0.9rem; font-weight: 600; color: #374151; }
 .summary-divider { border: none; border-top: 1px solid #f3f4f6; margin: 0.75rem 0; }
 .summary-row { display: flex; justify-content: space-between; font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem; }
 .free-shipping { color: #16a34a; font-weight: 600; }
@@ -311,7 +363,17 @@
 }
 .place-order-btn:hover:not(:disabled) { background: #b8975a; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,169,110,0.35); }
 .place-order-btn:disabled { background: #d1d5db; cursor: not-allowed; transform: none; box-shadow: none; }
-.spinner { display: inline-block; animation: spin 1s linear infinite; }
+.btn-loader {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 0.8s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
+}
 @keyframes spin { to { transform: rotate(360deg); } }
 .checkout-terms { font-size: 0.72rem; color: #9ca3af; text-align: center; margin-top: 0.75rem; line-height: 1.5; }
 .checkout-terms a { color: var(--color-primary, #c9a96e); text-decoration: none; }

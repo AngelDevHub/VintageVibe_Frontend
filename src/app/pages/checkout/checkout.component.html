@@ -54,93 +54,55 @@
                 <div class="new-address-toggle">
                     <h3>{{ addresses().length > 0 ? '+ Añadir nueva dirección' : 'Añade una dirección de envío' }}</h3>
                     <form class="address-form" [formGroup]="addressForm" (ngSubmit)="saveAddress()">
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <input class="form-input" placeholder="Nombre completo *" formControlName="fullName" />
+                        <div class="form-group">
+                            <label for="fullName">Nombre completo *</label>
+                            <input id="fullName" class="form-input" placeholder="Ej: Juan Pérez" formControlName="fullName" />
                             @if (addressForm.get('fullName')?.touched && addressForm.get('fullName')?.invalid) {
-                                <small style="color: #dc3545; display: block; margin-top: 5px;">
+                                <small class="error-text">
                                     @if (addressForm.get('fullName')?.hasError('required')) { Requerido. }
-                                    @if (addressForm.get('fullName')?.hasError('pattern')) { Solo letras y espacios válidos. }
-                                    @if (addressForm.get('fullName')?.hasError('maxlength')) { Máximo 100 caracteres. }
-                                    @if (addressForm.get('fullName')?.hasError('serverError')) { {{addressForm.get('fullName')?.errors?.['serverError']}} }
+                                    @if (addressForm.get('fullName')?.hasError('pattern')) { Solo letras y espacios. }
                                 </small>
                             }
                         </div>
                         
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <input class="form-input" placeholder="Calle y número *" formControlName="addressLine1" />
+                        <div class="form-group">
+                            <label for="addressLine1">Calle y número *</label>
+                            <input id="addressLine1" class="form-input" placeholder="Calle Falsa 123" formControlName="addressLine1" />
                             @if (addressForm.get('addressLine1')?.touched && addressForm.get('addressLine1')?.invalid) {
-                                <small style="color: #dc3545; display: block; margin-top: 5px;">
-                                    @if (addressForm.get('addressLine1')?.hasError('required')) { Requerido. }
-                                    @if (addressForm.get('addressLine1')?.hasError('pattern')) { Alfanumérico y símbolos comunes. }
-                                    @if (addressForm.get('addressLine1')?.hasError('serverError')) { {{addressForm.get('addressLine1')?.errors?.['serverError']}} }
-                                </small>
+                                <small class="error-text">Requerido.</small>
                             }
                         </div>
                         
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <input class="form-input" placeholder="Interior, colonia, etc. (opcional)" formControlName="addressLine2" />
-                            @if (addressForm.get('addressLine2')?.touched && addressForm.get('addressLine2')?.invalid) {
-                                <small style="color: #dc3545; display: block; margin-top: 5px;">
-                                    @if (addressForm.get('addressLine2')?.hasError('pattern')) { Alfanumérico y símbolos comunes. }
-                                    @if (addressForm.get('addressLine2')?.hasError('serverError')) { {{addressForm.get('addressLine2')?.errors?.['serverError']}} }
-                                </small>
-                            }
+                        <div class="form-group">
+                            <label for="addressLine2">Interior, colonia, etc. (opcional)</label>
+                            <input id="addressLine2" class="form-input" placeholder="Apto 4B, Col. Centro" formControlName="addressLine2" />
                         </div>
 
-                        <div class="form-row" style="margin-bottom: 15px; display: flex; gap: 10px;">
-                            <div class="form-group" style="flex: 1;">
-                                <input class="form-input" placeholder="Ciudad *" formControlName="city" />
-                                @if (addressForm.get('city')?.touched && addressForm.get('city')?.invalid) {
-                                    <small style="color: #dc3545; display: block; margin-top: 5px;">
-                                        @if (addressForm.get('city')?.hasError('required')) { Requerido. }
-                                        @if (addressForm.get('city')?.hasError('pattern')) { Solo letras. }
-                                        @if (addressForm.get('city')?.hasError('serverError')) { {{addressForm.get('city')?.errors?.['serverError']}} }
-                                    </small>
-                                }
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">Ciudad *</label>
+                                <input id="city" class="form-input" placeholder="CDMX" formControlName="city" />
                             </div>
-                            <div class="form-group" style="flex: 1;">
-                                <input class="form-input" placeholder="Estado / Provincia" formControlName="state" />
-                                @if (addressForm.get('state')?.touched && addressForm.get('state')?.invalid) {
-                                    <small style="color: #dc3545; display: block; margin-top: 5px;">
-                                        @if (addressForm.get('state')?.hasError('pattern')) { Solo letras. }
-                                        @if (addressForm.get('state')?.hasError('serverError')) { {{addressForm.get('state')?.errors?.['serverError']}} }
-                                    </small>
-                                }
+                            <div class="form-group">
+                                <label for="state">Estado / Provincia</label>
+                                <input id="state" class="form-input" placeholder="Ciudad de México" formControlName="state" />
                             </div>
                         </div>
 
-                        <div class="form-row" style="margin-bottom: 15px; display: flex; gap: 10px;">
-                            <div class="form-group" style="flex: 1;">
-                                <input class="form-input" placeholder="Código postal *" formControlName="postalCode" />
-                                @if (addressForm.get('postalCode')?.touched && addressForm.get('postalCode')?.invalid) {
-                                    <small style="color: #dc3545; display: block; margin-top: 5px;">
-                                        @if (addressForm.get('postalCode')?.hasError('required')) { Requerido. }
-                                        @if (addressForm.get('postalCode')?.hasError('pattern')) { 5 dígitos requeridos. }
-                                        @if (addressForm.get('postalCode')?.hasError('serverError')) { {{addressForm.get('postalCode')?.errors?.['serverError']}} }
-                                    </small>
-                                }
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="postalCode">Código postal *</label>
+                                <input id="postalCode" class="form-input" placeholder="06700" formControlName="postalCode" />
                             </div>
-                            <div class="form-group" style="flex: 1;">
-                                <input class="form-input" placeholder="País *" formControlName="country" />
-                                @if (addressForm.get('country')?.touched && addressForm.get('country')?.invalid) {
-                                    <small style="color: #dc3545; display: block; margin-top: 5px;">
-                                        @if (addressForm.get('country')?.hasError('required')) { Requerido. }
-                                        @if (addressForm.get('country')?.hasError('pattern')) { Solo letras. }
-                                        @if (addressForm.get('country')?.hasError('serverError')) { {{addressForm.get('country')?.errors?.['serverError']}} }
-                                    </small>
-                                }
+                            <div class="form-group">
+                                <label for="country">País *</label>
+                                <input id="country" class="form-input" placeholder="México" formControlName="country" />
                             </div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <input class="form-input" placeholder="Teléfono *" formControlName="phoneNumber" />
-                            @if (addressForm.get('phoneNumber')?.touched && addressForm.get('phoneNumber')?.invalid) {
-                                <small style="color: #dc3545; display: block; margin-top: 5px;">
-                                    @if (addressForm.get('phoneNumber')?.hasError('required')) { Requerido. }
-                                    @if (addressForm.get('phoneNumber')?.hasError('pattern')) { El teléfono debe tener 10 dígitos. }
-                                    @if (addressForm.get('phoneNumber')?.hasError('serverError')) { {{addressForm.get('phoneNumber')?.errors?.['serverError']}} }
-                                </small>
-                            }
+                        <div class="form-group">
+                            <label for="phoneNumber">Teléfono *</label>
+                            <input id="phoneNumber" class="form-input" placeholder="5512345678" formControlName="phoneNumber" />
                         </div>
                         
                         <button type="submit" class="save-address-btn" [disabled]="addressForm.invalid || isSavingAddress()">
@@ -166,19 +128,37 @@
                                 <div class="radio-dot"></div>
                             </div>
                         </div>
-                        <div class="pm-icon">{{ getPaymentIcon(pm.name) }}</div>
+                        <div class="pm-icon">
+                            @if (pm.name === 'CREDIT_CARD' || pm.name === 'DEBIT_CARD') {
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                            } @else if (pm.name === 'PAYPAL') {
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.729C5.01 3.312 5.372 3 5.796 3h14.508c.424 0 .786.312.852.729l1.974 12.558c.066.417-.258.789-.682.789H18.33l-1.144 7.261h-4.606l1.341-8.52h-2.186l-1.341 8.52h-3.318l1.341-8.52H7.076l-1.341 8.52z"></path></svg>
+                            } @else {
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"></path><path d="M3 10h18"></path><path d="M5 6l7-3 7 3"></path><path d="M4 10v11"></path><path d="M20 10v11"></path><path d="M8 14v3"></path><path d="M12 14v3"></path><path d="M16 14v3"></path></svg>
+                            }
+                        </div>
                         <div class="pm-info">
                             <p class="pm-name">{{ getPaymentLabel(pm.name) }}</p>
                             <p class="pm-desc">
                                 @if (pm.name === 'CREDIT_CARD') { Visa, Mastercard, Amex }
                                 @else if (pm.name === 'DEBIT_CARD') { Tarjeta de débito bancaria }
                                 @else if (pm.name === 'PAYPAL') { Paga seguro con tu cuenta PayPal }
-                                @else if (pm.name === 'BANK_TRANSFER') { Transferencia directa • Datos al confirmar }
-                                @else if (pm.name === 'CASH_ON_DELIVERY') { Paga cuando llegue tu pedido }
+                                @else if (pm.name === 'BANK_TRANSFER') { Transferencia segura }
+                                @else if (pm.name === 'CASH_ON_DELIVERY') { Pago al repartidor }
                             </p>
                         </div>
                     </div>
                     }
+                </div>
+
+                <div class="trusted-logos">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+                    <div class="ssl-shield">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"></path></svg>
+                        SSL Secure
+                    </div>
                 </div>
 
                 <!-- Formulario de tarjeta (solo si aplica) -->
@@ -260,9 +240,16 @@
                     <h2>Código de Descuento</h2>
                 </div>
                 <div class="coupon-row">
-                    <input class="form-input coupon-input" placeholder="¿Tienes un cupón? Ingrésalo aquí"
-                        [(ngModel)]="couponCode" />
-                    <span class="coupon-hint">Opcional</span>
+                    <div class="input-with-action">
+                        <input class="form-input coupon-input" placeholder="¿Tienes un cupón? Ingrésalo aquí"
+                            [(ngModel)]="couponCode" />
+                        <button class="apply-coupon-btn" (click)="applyCoupon()" [disabled]="isValidatingCoupon() || !couponCode">
+                            {{ isValidatingCoupon() ? '...' : 'Aplicar' }}
+                        </button>
+                    </div>
+                    @if (appliedCoupon()) {
+                        <span class="coupon-success">✅ Cupón aplicado: {{ appliedCoupon()?.discount }}{{ appliedCoupon()?.percentage ? '%' : '$' }} OFF</span>
+                    }
                 </div>
             </div>
         </div>
@@ -275,6 +262,13 @@
             <div class="summary-items">
                 @for (item of cart()!.items; track item.id) {
                 <div class="summary-item">
+                    <div class="item-img-mini">
+                        @if (item.imageUrl) {
+                            <img [src]="item.imageUrl" [alt]="item.productName">
+                        } @else {
+                            <div class="img-mini-placeholder">🛍️</div>
+                        }
+                    </div>
                     <div class="item-details">
                         <span class="item-name">{{ item.productName }}</span>
                         <span class="item-meta">{{ item.size }} · x{{ item.quantity }}</span>
@@ -294,16 +288,16 @@
                 <span>Envío</span>
                 <span class="free-shipping">Gratis</span>
             </div>
-            @if (couponCode) {
+            @if (appliedCoupon()) {
             <div class="summary-row discount-row">
-                <span>Código: {{ couponCode }}</span>
-                <span>Calculando...</span>
+                <span>Descuento ({{ appliedCoupon()?.code }})</span>
+                <span>- ${{ discountAmount() | number:'1.0-0' }}</span>
             </div>
             }
             <div class="summary-divider"></div>
             <div class="summary-total">
                 <span>Total</span>
-                <span>${{ cart()!.total | number:'1.0-0' }}</span>
+                <span>${{ finalTotal() | number:'1.0-0' }}</span>
             </div>
             }
 
@@ -314,7 +308,7 @@
             <button class="place-order-btn" (click)="placeOrder()"
                 [disabled]="!selectedAddressId() || isPlacingOrder()">
                 @if (isPlacingOrder()) {
-                <span class="spinner">⏳</span> Procesando...
+                <div class="btn-loader"></div> Procesando...
                 } @else {
                 🔒 Confirmar Pedido
                 }

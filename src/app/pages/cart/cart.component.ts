@@ -39,7 +39,9 @@ export class CartComponent implements OnInit {
   }
 
   removeItem(itemId: number) {
-    this.cartService.removeItem(itemId).subscribe();
+    if (confirm('¿Estás seguro de que deseas eliminar este producto del carrito?')) {
+      this.cartService.removeItem(itemId).subscribe();
+    }
   }
 
   goToCheckout() {
