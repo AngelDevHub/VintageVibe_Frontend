@@ -3,9 +3,12 @@
         <div class="avatar">{{ getInitials() }}</div>
         <div class="user-info">
             <h1>{{ authService.currentUser()?.firstName }} {{ authService.currentUser()?.lastName }}</h1>
-            <p>{{ authService.currentUser()?.email }}</p>
+            <p>{{ authService.email() }}</p>
             @if (authService.isAdmin()) {
-            <span class="admin-badge">Administrador</span>
+            <div class="admin-actions">
+                <span class="admin-badge">Administrador</span>
+                <a routerLink="/admin" class="admin-link-btn">Ir al Panel de Administración →</a>
+            </div>
             }
         </div>
         <button class="logout-btn" (click)="authService.logout()">Cerrar sesión</button>

@@ -50,6 +50,13 @@
         </svg>
       </a>
 
+      <!-- Auth: Admin Link -->
+      <a *ngIf="authService.isAdmin()" routerLink="/admin" class="nav-action-btn" aria-label="Panel Admin" title="Panel Admin">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+      </a>
+
       <!-- Auth: logged in — logout button (desktop) -->
       <button *ngIf="authService.isLoggedIn()" (click)="logout()" class="nav-action-btn" aria-label="Cerrar sesión" title="Cerrar sesión">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -119,6 +126,11 @@
       <li *ngIf="authService.isLoggedIn()">
         <a routerLink="/profile" (click)="closeMenu()" class="mobile-nav-link">
           Mi Perfil
+        </a>
+      </li>
+      <li *ngIf="authService.isAdmin()">
+        <a routerLink="/admin" (click)="closeMenu()" class="mobile-nav-link" style="color: var(--accent-color); font-weight: bold;">
+          Panel Admin
         </a>
       </li>
       <li *ngIf="authService.isLoggedIn()">
