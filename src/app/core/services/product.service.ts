@@ -32,6 +32,9 @@ export class ProductService {
       if (params.maxPrice !== undefined) httpParams = httpParams.set('maxPrice', params.maxPrice);
       if (params.sort) httpParams = httpParams.set('sort', params.sort);
     }
+    // Añadimos cache-buster para evitar respuestas obsoletas del navegador
+    httpParams = httpParams.set('_t', Date.now().toString());
+    
     return this.http.get<PageResponse<Product>>(this.base, { params: httpParams });
   }
 

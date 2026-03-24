@@ -1,6 +1,7 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 import { environment } from '../../../environments/environment.development';
 import {
   Coupon, DashboardStats, ProductCondition, Product, PageResponse,
@@ -16,11 +17,20 @@ export interface AdminUser {
 export class AdminService {
   private http = inject(HttpClient);
   private api = environment.apiUrl;
-  private bc = new BroadcastChannel('vintage_vibe_updates');
+  private platformId = inject(PLATFORM_ID);
+  private bc: BroadcastChannel | null = null;
+
+  constructor() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.bc = new BroadcastChannel('vintage_vibe_updates');
+    }
+  }
 
   /** Emit an update event to all other tabs */
   notifyUpdate() {
-    this.bc.postMessage({ type: 'DATA_UPDATED' });
+    if (this.bc) {
+      this.bc.postMessage({ type: 'DATA_UPDATED' });
+    }
   }
 
   // ── Dashboard ──────────────────────────────

@@ -1,7 +1,8 @@
-import { Component, OnInit, inject, signal, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, NgZone, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 import { ProductService } from '../../core/services/product.service';
 import { CategoryService } from '../../core/services/category.service';
 import { CartService } from '../../core/services/cart.service';
@@ -22,6 +23,7 @@ export class ShopComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private zone = inject(NgZone);
+  private platformId = inject(PLATFORM_ID);
 
   products = signal<Product[]>([]);
   categories = signal<Category[]>([]);
@@ -36,17 +38,20 @@ export class ShopComponent implements OnInit {
   toastType = signal<'success' | 'error'>('success');
 
   private searchTimeout: any;
-  private bc = new BroadcastChannel('vintage_vibe_updates');
+  private bc: BroadcastChannel | null = null;
 
   ngOnInit() {
     // Escuchar actualizaciones inter-pestañas
-    this.bc.onmessage = (event) => {
-      if (event.data?.type === 'DATA_UPDATED') {
-        this.zone.run(() => {
-          this.loadProducts();
-        });
-      }
-    };
+    if (isPlatformBrowser(this.platformId)) {
+      this.bc = new BroadcastChannel('vintage_vibe_updates');
+      this.bc.onmessage = (event) => {
+        if (event.data?.type === 'DATA_UPDATED') {
+          this.zone.run(() => {
+            this.loadProducts();
+          });
+        }
+      };
+    }
 
     this.categoryService.getAll().subscribe((cats: Category[]) => this.categories.set(cats));
 
@@ -179,5 +184,11 @@ export class ShopComponent implements OnInit {
     this.toastMessage.set(message);
     this.toastType.set(type);
     setTimeout(() => this.toastMessage.set(''), 3000);
+  }
+
+  ngOnDestroy() {
+    if (this.bc) {
+      this.bc.close();
+    }
   }
 }
