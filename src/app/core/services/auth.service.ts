@@ -38,28 +38,23 @@ export class AuthService {
 
   login(credentials: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials).pipe(
-      tap(response => {
-        this._token.set(response.token);
-        this._user.set(response);
-        if (isPlatformBrowser(this.platformId)) {
-          sessionStorage.setItem('vv_token', response.token);
-          sessionStorage.setItem('vv_user', JSON.stringify(response));
-        }
-      })
+      tap(response => this.setSession(response))
     );
   }
 
   register(data: RegisterRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/register`, data).pipe(
-      tap(response => {
-        this._token.set(response.token);
-        this._user.set(response);
-        if (isPlatformBrowser(this.platformId)) {
-          sessionStorage.setItem('vv_token', response.token);
-          sessionStorage.setItem('vv_user', JSON.stringify(response));
-        }
-      })
+      tap(response => this.setSession(response))
     );
+  }
+
+  setSession(response: AuthResponse): void {
+    this._token.set(response.token);
+    this._user.set(response);
+    if (isPlatformBrowser(this.platformId)) {
+      sessionStorage.setItem('vv_token', response.token);
+      sessionStorage.setItem('vv_user', JSON.stringify(response));
+    }
   }
 
   logout(): void {

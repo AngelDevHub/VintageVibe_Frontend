@@ -4,6 +4,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
+import { WebAuthnService } from '../../core/services/webauthn.service';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,7 @@ import { CartService } from '../../core/services/cart.service';
 export class LoginComponent {
   private authService = inject(AuthService);
   private cartService = inject(CartService);
+  private webAuthnService = inject(WebAuthnService);
   private router = inject(Router);
 
   email = signal('');
@@ -51,6 +53,40 @@ export class LoginComponent {
         this.errorMessage.set(
           err.status === 401 ? 'Credenciales incorrectas' : 'Error al iniciar sesión. Intenta de nuevo.'
         );
+      }
+    });
+  }
+
+  onWebAuthnLogin() {
+    if (!this.email()) {
+      this.errorMessage.set('Por favor, ingresa tu correo electrónico para usar biometría');
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.errorMessage.set('');
+
+    this.webAuthnService.login(this.email()).subscribe({
+      next: (response) => {
+        // La respuesta del servidor debe incluir el token JWT
+        // Debemos guardarlo en el AuthService (similar a como lo hace login normal)
+        this.authService.setSession(response);
+        
+        this.cartService.getCart().subscribe({
+          next: () => {
+            this.isLoading.set(false);
+            this.router.navigate(['/']);
+          },
+          error: () => {
+            this.isLoading.set(false);
+            this.router.navigate(['/']);
+          }
+        });
+      },
+      error: (err: any) => {
+        this.isLoading.set(true); // Se pone en true para el efecto, pero lo cambiamos abajo
+        this.isLoading.set(false);
+        this.errorMessage.set('No se pudo autenticar con biometría. Usa tu contraseña.');
       }
     });
   }

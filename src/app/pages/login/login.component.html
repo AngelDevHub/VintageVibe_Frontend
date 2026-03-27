@@ -98,9 +98,20 @@
                             <svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2">
                                 <circle cx="12" cy="12" r="10" />
+                                <path d="M12 2v4" />
                             </svg>
-                            Iniciando...
                         </span>
+                    </button>
+
+                    <div class="divider">
+                        <span>O también</span>
+                    </div>
+
+                    <button type="button" class="btn btn-secondary btn-full" (click)="onWebAuthnLogin()" [disabled]="isLoading()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A10.003 10.003 0 0012 3v0c4.97 0 9 4.03 9 9 0 1.419-.327 2.763-.914 3.956M11.666 21.262A9.071 9.071 0 0112 21c4.97 0 9-4.03 9-9 0-1.419-.327-2.763-.914-3.956M11.666 21.262c-2.346.592-4.823.043-6.847-1.488m6.847 1.488l-.03.03A9.99 9.99 0 015.333 19.262m0 0C3.333 17.262 2 14.333 2 12c0-4.97 4.03-9 9-9h0" />
+                        </svg>
+                        <span>Iniciar sesión con Biometría</span>
                     </button>
                 </form>
 

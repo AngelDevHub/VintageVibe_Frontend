@@ -4,6 +4,14 @@
         <div class="user-info">
             <h1>{{ authService.currentUser()?.firstName }} {{ authService.currentUser()?.lastName }}</h1>
             <p>{{ authService.email() }}</p>
+            <div class="security-actions" style="margin-top: 10px;">
+                <button (click)="registerPasskey()" class="passkey-btn" style="background-color: #f3f4f6; border: 1px solid #d1d5db; padding: 6px 12px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A10.003 10.003 0 0012 3v0c4.97 0 9 4.03 9 9 0 1.419-.327 2.763-.914 3.956M11.666 21.262A9.071 9.071 0 0112 21c4.97 0 9-4.03 9-9 0-1.419-.327-2.763-.914-3.956M11.666 21.262c-2.346.592-4.823.043-6.847-1.488m6.847 1.488l-.03.03A9.99 9.99 0 015.333 19.262m0 0C3.333 17.262 2 14.333 2 12c0-4.97 4.03-9 9-9h0" />
+                    </svg>
+                    Configurar Huella / Passkey
+                </button>
+            </div>
             @if (authService.isAdmin()) {
             <div class="admin-actions">
                 <span class="admin-badge">Administrador</span>

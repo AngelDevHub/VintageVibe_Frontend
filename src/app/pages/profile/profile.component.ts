@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { OrderService } from '../../core/services/order.service';
 import { AuthService } from '../../core/services/auth.service';
+import { WebAuthnService } from '../../core/services/webauthn.service';
 import { Order } from '../../core/models';
 
 @Component({
@@ -13,6 +14,7 @@ import { Order } from '../../core/models';
 })
 export class ProfileComponent implements OnInit {
   private orderService = inject(OrderService);
+  private webAuthnService = inject(WebAuthnService);
   authService = inject(AuthService);
 
   orders = signal<Order[]>([]);
@@ -41,5 +43,17 @@ export class ProfileComponent implements OnInit {
     const user = this.authService.currentUser();
     if (!user) return '?';
     return `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase();
+  }
+
+  registerPasskey() {
+    this.webAuthnService.register().subscribe({
+      next: () => {
+        alert('¡Dispositivo registrado con éxito! Ahora puedes iniciar sesión con tu huella o rostro.');
+      },
+      error: (err) => {
+        console.error('Error al registrar passkey', err);
+        alert('No se pudo registrar el dispositivo. Asegúrate de que tu navegador soporte WebAuthn y tengas un método de bloqueo configurado.');
+      }
+    });
   }
 }
