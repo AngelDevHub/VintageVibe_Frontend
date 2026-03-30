@@ -9,7 +9,7 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class WebAuthnService {
-  private apiUrl = `${environment.apiUrl}/v1/webauthn`;
+  private apiUrl = `${environment.apiUrl}/webauthn`;
 
   constructor(private http: HttpClient) {}
 
