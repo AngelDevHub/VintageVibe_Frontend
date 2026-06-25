@@ -2,6 +2,10 @@ import { Component, OnInit, inject, signal, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { TagModule } from 'primeng/tag';
 import { ProductService } from '../../core/services/product.service';
 import { CategoryService } from '../../core/services/category.service';
 import { Product, Category, PageResponse } from '../../core/models';
@@ -127,7 +131,7 @@ const SEASONAL_CAMPAIGNS: SeasonalCampaign[] = [
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, ButtonModule, CardModule, InputTextModule, TagModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })

@@ -3,6 +3,7 @@
    ========================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+@import 'primeicons/primeicons.css';
 
 /* ==========================================
    CSS Variables - Design Tokens
@@ -116,6 +117,77 @@ body {
   color: var(--color-dark);
   background-color: var(--color-light);
   overflow-x: hidden;
+}
+
+.p-component {
+  font-family: var(--font-body);
+}
+
+.p-button {
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  font-weight: 600;
+  transition: transform var(--transition-base), box-shadow var(--transition-base), background var(--transition-base), border-color var(--transition-base);
+}
+
+.p-button:not(.p-button-secondary):not(.p-button-contrast):not(.p-button-outlined) {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  border-color: var(--color-primary-dark);
+  color: var(--color-white);
+  box-shadow: var(--shadow-md);
+}
+
+.p-button:not(.p-button-secondary):not(.p-button-contrast):not(.p-button-outlined):hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.p-button.p-button-secondary {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-dark) 100%);
+  border-color: var(--color-secondary-dark);
+}
+
+.p-button.p-button-outlined {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(212, 165, 116, 0.45);
+  color: var(--color-primary-dark);
+}
+
+.p-button.p-button-outlined:hover {
+  background: rgba(212, 165, 116, 0.12);
+  border-color: var(--color-primary);
+}
+
+.p-card {
+  border: 1px solid rgba(212, 165, 116, 0.18);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.p-card .p-card-title {
+  font-family: var(--font-heading);
+  color: var(--color-dark);
+}
+
+.p-card .p-card-subtitle {
+  color: var(--color-gray);
+}
+
+.p-inputtext {
+  border-radius: var(--radius-md);
+  border-color: rgba(212, 165, 116, 0.28);
+  box-shadow: none;
+}
+
+.p-inputtext:enabled:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.14);
+}
+
+.p-tag {
+  border-radius: var(--radius-full);
+  font-weight: 700;
 }
 
 /* ==========================================

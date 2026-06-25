@@ -1,36 +1,33 @@
 <div class="home-page">
     <!-- Hero Section -->
-  <section class="hero-section" [ngClass]="activeCampaign().themeClass">
-    <div class="season-banner container">
-      <span class="season-banner-tag">
-        {{ activeCampaign().isSpecial ? 'Evento calendarizado activo' : 'Programacion automatica disponible' }}
-      </span>
-      <p class="season-banner-text">
-        <strong>{{ activeCampaign().name }}</strong> · {{ activeCampaign().detailText }}
-      </p>
-    </div>
+    <section class="hero-section" [ngClass]="activeCampaign().themeClass">
+        <div class="season-banner container">
+            <p-tag class="season-banner-tag-prime"
+                [value]="activeCampaign().isSpecial ? 'Evento calendarizado activo' : 'Programacion automatica disponible'"
+                severity="contrast" [rounded]="true">
+            </p-tag>
+            <p class="season-banner-text">
+                <strong>{{ activeCampaign().name }}</strong> · {{ activeCampaign().detailText }}
+            </p>
+        </div>
         <div class="hero-overlay">
             <div class="hero-content container">
                 <div class="hero-text">
-          <span class="hero-badge">{{ activeCampaign().badge }}</span>
+                    <p-tag class="hero-badge-prime" [value]="activeCampaign().badge" [rounded]="true"></p-tag>
                     <h1 class="hero-title">
-            {{ activeCampaign().title }}
-            <span class="highlight">{{ activeCampaign().highlight }}</span>
+                        {{ activeCampaign().title }}
+                        <span class="highlight">{{ activeCampaign().highlight }}</span>
                     </h1>
                     <p class="hero-description">
-            {{ activeCampaign().description }}
+                        {{ activeCampaign().description }}
                     </p>
                     <div class="hero-actions">
-                        <a routerLink="/shop" class="btn btn-primary btn-lg">
-              {{ activeCampaign().primaryCta }}
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <line x1="5" y1="12" x2="19" y2="12" />
-                                <polyline points="12 5 19 12 12 19" />
-                            </svg>
+                        <a pButton [routerLink]="['/shop']" [label]="activeCampaign().primaryCta"
+                            icon="pi pi-arrow-right" iconPos="right" size="large" class="hero-prime-button">
                         </a>
-            <a routerLink="/design-doc" class="btn btn-outline btn-lg">
-              {{ activeCampaign().secondaryCta }}
+                        <a pButton [routerLink]="['/design-doc']" [label]="activeCampaign().secondaryCta"
+                            icon="pi pi-file-edit" iconPos="right" [outlined]="true" severity="secondary" size="large"
+                            class="hero-prime-button secondary">
                         </a>
                     </div>
                     <div class="hero-stats">
@@ -63,31 +60,32 @@
         </div>
     </section>
 
-  <section class="event-schedule-section">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-badge">Eventos Basados en Periodo</span>
-        <h2 class="section-title">Calendario de cambios visuales</h2>
-        <p class="section-description">
-          La portada se actualiza automaticamente para reflejar eventos calendarizados y reforzar la experiencia del usuario.
-        </p>
-      </div>
+    <section class="event-schedule-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Eventos Basados en Periodo</span>
+                <h2 class="section-title">Calendario de cambios visuales</h2>
+                <p class="section-description">
+                    La portada se actualiza automaticamente para reflejar eventos calendarizados y reforzar la
+                    experiencia del usuario.
+                </p>
+            </div>
 
-      <div class="campaign-grid">
-        <article
-          *ngFor="let campaign of campaignSchedule"
-          class="campaign-card"
-          [class.active]="campaign.id === activeCampaign().id">
-          <span class="campaign-period">{{ campaign.periodLabel }}</span>
-          <h3 class="campaign-name">{{ campaign.name }}</h3>
-          <p class="campaign-description">{{ campaign.detailText }}</p>
-          <span class="campaign-status">
-            {{ campaign.id === activeCampaign().id ? 'Activo ahora' : 'Programado' }}
-          </span>
-        </article>
-      </div>
-    </div>
-  </section>
+            <div class="campaign-grid">
+                <p-card *ngFor="let campaign of campaignSchedule" styleClass="campaign-card"
+                    [class.active]="campaign.id === activeCampaign().id">
+                    <p-tag class="campaign-period-tag" [value]="campaign.periodLabel" severity="secondary"
+                        [rounded]="true"></p-tag>
+                    <h3 class="campaign-name">{{ campaign.name }}</h3>
+                    <p class="campaign-description">{{ campaign.detailText }}</p>
+                    <p-tag class="campaign-status-tag"
+                        [value]="campaign.id === activeCampaign().id ? 'Activo ahora' : 'Programado'"
+                        [severity]="campaign.id === activeCampaign().id ? 'success' : 'info'" [rounded]="true">
+                    </p-tag>
+                </p-card>
+            </div>
+        </div>
+    </section>
 
     <!-- Collections Section -->
     <section id="collections" class="collections-section">
@@ -184,8 +182,8 @@
             </div>
 
             <div class="section-cta">
-                <a routerLink="/shop" class="btn btn-primary btn-lg">
-                    Ver Todos los Productos
+                <a pButton [routerLink]="['/shop']" label="Ver Todos los Productos" icon="pi pi-shopping-bag"
+                    iconPos="right" size="large">
                 </a>
             </div>
         </div>
@@ -265,12 +263,13 @@
                     </p>
                 </div>
                 <form class="newsletter-form" #nlForm="ngForm" (ngSubmit)="subscribeNewsletter(nlEmail.value)">
-                    <input #nlEmail type="email" name="newsletterEmail" placeholder="Ingresa tu email"
-                        class="newsletter-input" required [disabled]="newsletterStatus() === 'loading' || newsletterStatus() === 'success'">
-                    <button type="submit" class="btn btn-primary"
+                    <input #nlEmail pInputText type="email" name="newsletterEmail" placeholder="Ingresa tu email"
+                        class="newsletter-input" required
                         [disabled]="newsletterStatus() === 'loading' || newsletterStatus() === 'success'">
-                        <span *ngIf="newsletterStatus() === 'loading'">Enviando...</span>
-                        <span *ngIf="newsletterStatus() !== 'loading'">Suscribirse</span>
+                    <button pButton type="submit"
+                        [label]="newsletterStatus() === 'loading' ? 'Enviando...' : 'Suscribirse'" icon="pi pi-send"
+                        iconPos="right"
+                        [disabled]="newsletterStatus() === 'loading' || newsletterStatus() === 'success'">
                     </button>
                 </form>
                 <p *ngIf="newsletterStatus() === 'success'" class="newsletter-feedback newsletter-success">
