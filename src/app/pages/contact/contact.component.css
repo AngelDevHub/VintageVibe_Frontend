@@ -156,9 +156,24 @@ a.info-value:hover {
   border-radius: var(--radius-xl);
 }
 
+:host ::ng-deep .contact-page .contact-info.p-card,
+:host ::ng-deep .contact-page .contact-form-wrapper.p-card {
+  background: linear-gradient(180deg, rgba(255, 252, 247, 0.98) 0%, rgba(250, 244, 236, 0.96) 100%);
+  border: 1px solid rgba(212, 165, 116, 0.18);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
 :host ::ng-deep .contact-page .contact-info .p-card-body,
 :host ::ng-deep .contact-page .contact-form-wrapper .p-card-body {
   padding: 2rem;
+}
+
+:host ::ng-deep .contact-page .contact-info .p-card-body,
+:host ::ng-deep .contact-page .contact-form-wrapper .p-card-body,
+:host ::ng-deep .contact-page .contact-info .p-card-content,
+:host ::ng-deep .contact-page .contact-form-wrapper .p-card-content {
+  background: transparent;
 }
 
 :host ::ng-deep .contact-page .p-inputtext,

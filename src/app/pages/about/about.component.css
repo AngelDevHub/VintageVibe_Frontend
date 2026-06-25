@@ -37,7 +37,7 @@
 
 .mission-section,
 .team-section {
-  background: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.62);
 }
 
 .mission-grid {
@@ -181,6 +181,30 @@
 :host ::ng-deep .about-page .p-tag {
   padding-inline: 1rem;
   font-weight: 700;
+}
+
+:host ::ng-deep .about-page .stat-card.p-card,
+:host ::ng-deep .about-page .value-card.p-card,
+:host ::ng-deep .about-page .team-card.p-card {
+  background: linear-gradient(180deg, rgba(255, 252, 247, 0.98) 0%, rgba(250, 244, 236, 0.96) 100%);
+  border: 1px solid rgba(212, 165, 116, 0.18);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+:host ::ng-deep .about-page .stat-card .p-card-body,
+:host ::ng-deep .about-page .value-card .p-card-body,
+:host ::ng-deep .about-page .team-card .p-card-body,
+:host ::ng-deep .about-page .stat-card .p-card-content,
+:host ::ng-deep .about-page .value-card .p-card-content,
+:host ::ng-deep .about-page .team-card .p-card-content {
+  background: transparent;
+}
+
+:host ::ng-deep .about-page .stat-card .p-card-body,
+:host ::ng-deep .about-page .value-card .p-card-body,
+:host ::ng-deep .about-page .team-card .p-card-body {
+  padding: 1.75rem;
 }
 
 @media (max-width: 768px) {
