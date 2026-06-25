@@ -15,26 +15,6 @@
     padding: var(--spacing-4xl);
 }
 
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid var(--color-primary);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto var(--spacing-md);
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
 .empty-cart {
     text-align: center;
     padding: var(--spacing-4xl);
@@ -56,21 +36,6 @@
     margin-bottom: var(--spacing-xl);
 }
 
-.shop-btn {
-    display: inline-block;
-    padding: var(--spacing-md) var(--spacing-3xl);
-    background: var(--color-primary);
-    color: white;
-    text-decoration: none;
-    border-radius: var(--radius-md);
-    font-size: var(--font-size-lg);
-    transition: opacity var(--transition-base);
-}
-
-.shop-btn:hover {
-    opacity: 0.9;
-}
-
 .cart-layout {
     display: grid;
     grid-template-columns: 1fr 350px;
@@ -87,10 +52,6 @@
     display: grid;
     grid-template-columns: 100px 1fr auto;
     gap: var(--spacing-lg);
-    padding: var(--spacing-lg);
-    background: white;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
     margin-bottom: var(--spacing-md);
     align-items: center;
 }
@@ -139,26 +100,6 @@
     padding: 4px;
 }
 
-.qty-controls button {
-    width: 28px;
-    height: 28px;
-    border: none;
-    background: none;
-    cursor: pointer;
-    font-size: var(--font-size-lg);
-    border-radius: var(--radius-sm);
-    transition: background var(--transition-base);
-}
-
-.qty-controls button:hover:not(:disabled) {
-    background: #f5f5f5;
-}
-
-.qty-controls button:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-}
-
 .qty-controls span {
     min-width: 24px;
     text-align: center;
@@ -172,23 +113,10 @@
 }
 
 .remove-btn {
-    background: none;
-    border: none;
-    color: #ef4444;
-    cursor: pointer;
     font-size: var(--font-size-sm);
-    transition: opacity var(--transition-base);
-}
-
-.remove-btn:hover {
-    opacity: 0.7;
 }
 
 .cart-summary {
-    background: white;
-    border-radius: var(--radius-md);
-    padding: var(--spacing-xl);
-    box-shadow: var(--shadow-sm);
     height: fit-content;
     position: sticky;
     top: var(--spacing-xl);
@@ -219,29 +147,39 @@
 
 .checkout-btn {
     width: 100%;
-    padding: var(--spacing-md);
-    background: var(--color-primary);
-    color: white;
-    border: none;
-    border-radius: var(--radius-md);
-    font-size: var(--font-size-lg);
-    cursor: pointer;
-    transition: opacity var(--transition-base);
     margin-bottom: var(--spacing-md);
-}
-
-.checkout-btn:hover {
-    opacity: 0.9;
 }
 
 .continue-btn {
     display: block;
     text-align: center;
-    color: var(--color-gray);
-    text-decoration: none;
     font-size: var(--font-size-sm);
 }
 
-.continue-btn:hover {
-    color: var(--color-primary);
+:host ::ng-deep .cart-page .empty-cart .p-card-body,
+:host ::ng-deep .cart-page .cart-summary .p-card-body {
+    padding: var(--spacing-xl);
+}
+
+:host ::ng-deep .cart-page .cart-item .p-card-body {
+    padding: var(--spacing-lg);
+}
+
+:host ::ng-deep .cart-page .p-progressspinner {
+    width: 42px;
+    height: 42px;
+    margin-bottom: var(--spacing-md);
+}
+
+:host ::ng-deep .cart-page .item-details .p-tag {
+    margin-top: var(--spacing-sm);
+}
+
+:host ::ng-deep .cart-page .qty-controls .p-button {
+    width: 28px;
+    height: 28px;
+}
+
+:host ::ng-deep .cart-page .continue-btn.p-button {
+    justify-content: center;
 }

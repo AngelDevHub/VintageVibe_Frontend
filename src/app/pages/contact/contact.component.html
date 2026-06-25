@@ -1,8 +1,7 @@
 <div class="contact-page">
-  <!-- Hero -->
   <section class="contact-hero">
     <div class="container">
-      <span class="section-badge">Estamos aquí para ti</span>
+      <p-tag value="Estamos aqui para ti" severity="secondary" [rounded]="true"></p-tag>
       <h1>Cont<span class="highlight">áctanos</span></h1>
       <p>¿Tienes preguntas sobre un pedido, una pieza, o simplemente quieres saludar? Escríbenos.</p>
     </div>
@@ -12,11 +11,11 @@
     <div class="container">
       <div class="contact-grid">
 
-        <!-- Contact Info -->
-        <div class="contact-info">
+        <p-card styleClass="contact-info">
           <h2>Información de Contacto</h2>
           <div class="info-list">
             <div *ngFor="let info of contactInfo" class="info-item">
+              <div class="info-icon"><i [class]="info.icon"></i></div>
               <div>
                 <p class="info-label">{{ info.label }}</p>
                 <a *ngIf="info.href" [href]="info.href" class="info-value">{{ info.value }}</a>
@@ -38,58 +37,52 @@
               title="Ubicación VintageVibe — Ciudad de México">
             </iframe>
           </div>
-        </div>
+        </p-card>
 
-        <!-- Contact Form -->
-        <div class="contact-form-wrapper">
+        <p-card styleClass="contact-form-wrapper">
           <h2>Envíanos un mensaje</h2>
 
-          <div *ngIf="formStatus() === 'success'" class="form-success">
-            <h3>¡Mensaje enviado!</h3>
-            <p>Te responderemos en menos de 24 horas. ¡Gracias!</p>
-          </div>
+          <p-message *ngIf="formStatus() === 'success'" severity="success" styleClass="contact-success">
+            Mensaje enviado con exito. Te responderemos en menos de 24 horas.
+          </p-message>
 
           <form *ngIf="formStatus() !== 'success'" class="contact-form" #contactForm="ngForm"
             (ngSubmit)="submitForm(contactForm)">
 
             <div class="form-group">
               <label for="fullName">Nombre completo *</label>
-              <input id="fullName" type="text" name="fullName" ngModel required
+              <input id="fullName" pInputText type="text" name="fullName" ngModel required
                 placeholder="Tu nombre" class="form-input">
             </div>
 
             <div class="form-group">
               <label for="email">Correo electrónico *</label>
-              <input id="email" type="email" name="email" ngModel required
+              <input id="email" pInputText type="email" name="email" ngModel required
                 placeholder="tu@email.com" class="form-input">
             </div>
 
             <div class="form-group">
               <label for="subject">Asunto *</label>
-              <select id="subject" name="subject" ngModel required class="form-input">
+              <select id="subject" name="subject" ngModel required class="form-input native-select">
                 <option value="">Selecciona un tema</option>
-                <option value="order">Consulta sobre un pedido</option>
-                <option value="product">Consulta sobre un producto</option>
-                <option value="return">Devoluciones y cambios</option>
-                <option value="shipping">Información de envío</option>
-                <option value="other">Otro</option>
+                <option *ngFor="let option of subjectOptions" [value]="option.value">{{ option.label }}</option>
               </select>
             </div>
 
             <div class="form-group">
               <label for="message">Mensaje *</label>
-              <textarea id="message" name="message" ngModel required rows="5"
+              <textarea id="message" pTextarea name="message" ngModel required rows="5"
                 placeholder="Describe tu consulta con el mayor detalle posible..."
                 class="form-input form-textarea"></textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-full"
+            <button pButton type="submit" class="btn-full"
+              [label]="formStatus() === 'loading' ? 'Enviando...' : 'Enviar Mensaje'"
+              icon="pi pi-send" iconPos="right"
               [disabled]="contactForm.invalid || formStatus() === 'loading'">
-              <span *ngIf="formStatus() === 'loading'">Enviando...</span>
-              <span *ngIf="formStatus() !== 'loading'">Enviar Mensaje</span>
             </button>
           </form>
-        </div>
+        </p-card>
 
       </div>
     </div>

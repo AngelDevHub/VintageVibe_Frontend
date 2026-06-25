@@ -12,6 +12,12 @@
   padding: var(--spacing-4xl) 0;
 }
 
+.loading-spinner-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
 .skeleton-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -134,16 +140,6 @@
   position: absolute;
   top: 1rem;
   left: 1rem;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(6px);
-  color: var(--color-dark);
-  padding: 5px 14px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  border: 1px solid rgba(0,0,0,0.08);
 }
 
 .image-thumbnails {
@@ -274,13 +270,7 @@
 }
 
 .discount-badge {
-  background: #fef2f2;
-  color: #ef4444;
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 20px;
-  border: 1px solid #fecaca;
+  display: inline-flex;
 }
 
 /* Description */
@@ -372,22 +362,8 @@
   opacity: 0.75;
 }
 
-.v-stock {
-  font-size: 0.65rem;
-  font-weight: 600;
+.v-stock-tag {
   margin-top: 2px;
-}
-
-.v-stock.in {
-  color: #16a34a;
-}
-
-.variant-btn.selected .v-stock.in {
-  color: #86efac;
-}
-
-.v-stock.out {
-  color: #ef4444;
 }
 
 /* Stock bar */
@@ -480,14 +456,9 @@
 
 .add-to-cart-btn {
   width: 100%;
-  padding: 16px;
-  background: var(--color-dark);
-  color: white;
-  border: none;
   border-radius: 14px;
   font-size: 1rem;
   font-weight: 700;
-  cursor: pointer;
   transition: all 0.25s ease;
   display: flex;
   align-items: center;
@@ -498,7 +469,6 @@
 }
 
 .add-to-cart-btn:hover:not(:disabled) {
-  background: var(--color-primary);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(139,107,74,0.35);
 }
@@ -508,76 +478,26 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.add-to-cart-btn:disabled {
-  background: #d1d5db;
-  color: #9ca3af;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-.cart-icon {
-  width: 20px;
-  height: 20px;
-}
-
-.btn-spinner {
-  width: 18px;
-  height: 18px;
-  border: 2px solid rgba(255,255,255,0.35);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  flex-shrink: 0;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
 .login-to-buy-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 16px;
-  background: transparent;
-  color: var(--color-dark);
   text-align: center;
-  text-decoration: none;
   border-radius: 14px;
   font-size: 1rem;
   font-weight: 700;
-  border: 2px solid var(--color-dark);
   transition: all 0.25s ease;
 }
 
 .login-to-buy-btn:hover {
-  background: var(--color-dark);
-  color: white;
   transform: translateY(-2px);
 }
 
 /* Toast */
-.toast {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 18px;
-  border-radius: 12px;
-  color: white;
-  font-weight: 600;
-  font-size: 0.9rem;
-  animation: slideUp 0.3s ease;
+.detail-toast {
+  display: block;
 }
-
-.toast svg {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-}
-
-.toast-success { background: linear-gradient(135deg, #16a34a, #22c55e); }
-.toast-error   { background: linear-gradient(135deg, #dc2626, #ef4444); }
 
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(8px); }
@@ -655,24 +575,9 @@
 }
 
 /* No reviews */
-.no-reviews {
-  text-align: center;
-  padding: 3rem;
-  color: var(--color-gray);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-}
-
-.no-reviews svg {
-  width: 48px;
-  height: 48px;
-  opacity: 0.35;
-}
-
-.no-reviews p {
-  font-size: 0.95rem;
+.no-reviews-message {
+  display: block;
+  margin-bottom: 1.5rem;
 }
 
 /* Reviews grid */
@@ -777,19 +682,22 @@
 }
 
 .back-btn {
-  display: inline-block;
   margin-top: 0.5rem;
-  padding: 12px 28px;
-  background: var(--color-dark);
-  color: white;
-  text-decoration: none;
   border-radius: 50px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
 }
 
-.back-btn:hover {
-  background: var(--color-primary);
-  transform: translateY(-2px);
+:host ::ng-deep .product-detail-page .condition-badge .p-tag,
+:host ::ng-deep .product-detail-page .discount-badge .p-tag,
+:host ::ng-deep .product-detail-page .v-stock-tag .p-tag {
+  font-weight: 700;
+}
+
+:host ::ng-deep .product-detail-page .detail-toast .p-message,
+:host ::ng-deep .product-detail-page .no-reviews-message .p-message {
+  border-radius: 14px;
+}
+
+:host ::ng-deep .product-detail-page .loading-spinner-wrap .p-progressspinner {
+  width: 44px;
+  height: 44px;
 }

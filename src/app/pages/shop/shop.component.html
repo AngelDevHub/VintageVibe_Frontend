@@ -13,12 +13,12 @@
 
     <!-- ────── Filters Bar ────── -->
     <div class="filters-bar">
-      <!-- Search -->
       <div class="search-wrap">
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
         </svg>
         <input
+          pInputText
           type="text"
           class="search-input"
           placeholder="Buscar productos..."
@@ -26,41 +26,31 @@
           (ngModelChange)="onSearchChange($event)"
         />
         @if (searchTerm()) {
-        <button class="clear-search" (click)="onSearchChange('')" title="Limpiar búsqueda">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <button pButton class="clear-search" (click)="onSearchChange('')" title="Limpiar búsqueda" severity="secondary" [rounded]="true" [text]="true" icon="pi pi-times">
         </button>
         }
       </div>
 
-      <!-- Category select -->
       <div class="select-wrap">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M4 6h16M7 12h10M10 18h4"/>
-        </svg>
-        <select class="filter-select" [ngModel]="selectedCategory()" (ngModelChange)="onCategoryChange($event)">
-          <option value="">Todas las categorías</option>
-          @for (cat of categories(); track cat.id) {
-          <option [value]="cat.id">{{ cat.name }}</option>
+        <select class="filter-select native-select" [ngModel]="selectedCategory()" (ngModelChange)="onCategoryChange($event)">
+          <option value="">Todas las categorias</option>
+          @for (cat of categoryOptions(); track cat.value) {
+          <option [value]="cat.value">{{ cat.label }}</option>
           }
         </select>
       </div>
 
-      <!-- Sort select -->
       <div class="select-wrap">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M3 6h6M3 12h9M3 18h12M21 6l-3-3-3 3M18 3v12"/>
-        </svg>
-        <select class="filter-select" [ngModel]="sortBy()" (ngModelChange)="onSortChange($event)">
+        <select class="filter-select native-select" [ngModel]="sortBy()" (ngModelChange)="onSortChange($event)">
           <option value="">Ordenar por</option>
-          <option value="name,asc">Nombre A–Z</option>
-          <option value="name,desc">Nombre Z–A</option>
-          <option value="createdAt,desc">Más recientes</option>
+          @for (option of sortOptions; track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+          }
         </select>
       </div>
 
-      <!-- Result count -->
       @if (!isLoading() && totalElements() > 0) {
-      <span class="result-count">{{ totalElements() }} producto{{ totalElements() !== 1 ? 's' : '' }}</span>
+      <p-tag class="result-count" [value]="totalElements() + ' producto' + (totalElements() !== 1 ? 's' : '')" severity="secondary" [rounded]="true"></p-tag>
       }
     </div>
 
@@ -105,13 +95,12 @@
               <span class="overlay-label">Ver producto</span>
             </div>
 
-            <!-- Badges -->
             <div class="card-badges">
               @if (product.conditionName) {
-              <span class="badge badge-condition">{{ product.conditionName }}</span>
+              <p-tag class="badge badge-condition" [value]="product.conditionName" severity="contrast" [rounded]="true"></p-tag>
               }
               @if ((product.variants[0]?.stock ?? 0) === 0) {
-              <span class="badge badge-out">Agotado</span>
+              <p-tag class="badge badge-out" value="Agotado" severity="danger" [rounded]="true"></p-tag>
               }
             </div>
           </div>
@@ -130,21 +119,16 @@
               <span class="card-brand">{{ product.brandName }}</span>
             </div>
             <button
+              pButton
               class="quick-add-btn"
               (click)="addToCart(product)"
               [disabled]="!authService.isLoggedIn() || (product.variants[0]?.stock ?? 0) === 0"
               [class.out-of-stock]="(product.variants[0]?.stock ?? 0) === 0"
               [title]="!authService.isLoggedIn() ? 'Inicia sesión para comprar' : 'Añadir al carrito'"
+              [label]="!authService.isLoggedIn() ? 'Inicia sesion' : ((product.variants[0]?.stock ?? 0) === 0 ? 'Sin stock' : 'Anadir')"
+              [icon]="!authService.isLoggedIn() ? 'pi pi-user' : ((product.variants[0]?.stock ?? 0) === 0 ? 'pi pi-ban' : 'pi pi-shopping-bag')"
+              iconPos="right"
             >
-              @if (!authService.isLoggedIn()) {
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              Inicia sesión
-              } @else if ((product.variants[0]?.stock ?? 0) === 0) {
-              Sin stock
-              } @else {
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-              Añadir
-              }
             </button>
           </div>
         </div>
@@ -155,22 +139,22 @@
     <!-- Pagination -->
     @if (totalPages() > 1) {
     <nav class="pagination">
-      <button class="pag-btn pag-arrow" [disabled]="currentPage() === 0" (click)="changePage(currentPage() - 1)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      <button pButton class="pag-btn pag-arrow" [disabled]="currentPage() === 0" (click)="changePage(currentPage() - 1)" icon="pi pi-chevron-left" [text]="true">
       </button>
 
       <div class="pag-pages">
         @for (p of pageArray(); track p) {
         <button
+          pButton
           class="pag-btn"
           [class.active]="p === currentPage()"
           (click)="changePage(p)"
+          [text]="p !== currentPage()"
         >{{ p + 1 }}</button>
         }
       </div>
 
-      <button class="pag-btn pag-arrow" [disabled]="currentPage() === totalPages() - 1" (click)="changePage(currentPage() + 1)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <button pButton class="pag-btn pag-arrow" [disabled]="currentPage() === totalPages() - 1" (click)="changePage(currentPage() + 1)" icon="pi pi-chevron-right" [text]="true">
       </button>
     </nav>
     }
@@ -185,22 +169,14 @@
       </svg>
       <h3>Sin resultados</h3>
       <p>No encontramos productos que coincidan con tu búsqueda.</p>
-      <button (click)="clearFilters()" class="clear-btn">Ver todos los productos</button>
+      <button pButton (click)="clearFilters()" class="clear-btn" label="Ver todos los productos" icon="pi pi-refresh"></button>
     </div>
     }
   </div>
 
-  <!-- ────── Toast ────── -->
   @if (toastMessage()) {
-  <div class="toast" [class.toast-success]="toastType() === 'success'" [class.toast-error]="toastType() === 'error'">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-      @if (toastType() === 'success') {
-      <polyline points="20 6 9 17 4 12"/>
-      } @else {
-      <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
-      }
-    </svg>
+  <p-message class="toast-message" [severity]="toastType() === 'success' ? 'success' : 'error'">
     {{ toastMessage() }}
-  </div>
+  </p-message>
   }
 </div>

@@ -3,6 +3,9 @@
   <!-- ────── Loading ────── -->
   @if (isLoading()) {
   <div class="loading-container">
+    <div class="loading-spinner-wrap">
+      <p-progressSpinner strokeWidth="4" animationDuration=".8s" ariaLabel="Cargando producto"></p-progressSpinner>
+    </div>
     <div class="skeleton-layout">
       <div class="skeleton skeleton-image"></div>
       <div class="skeleton-info">
@@ -36,7 +39,7 @@
           <span>Sin imagen</span>
         </div>
         }
-        <span class="condition-badge">{{ product()!.conditionName }}</span>
+        <p-tag class="condition-badge" [value]="product()!.conditionName" severity="contrast" [rounded]="true"></p-tag>
       </div>
 
       @if (product()!.images.length > 1) {
@@ -82,9 +85,7 @@
       <div class="price-section">
         @if (selectedVariant()!.discountPrice && selectedVariant()!.discountPrice < selectedVariant()!.price) {
         <span class="original-price">\${{ selectedVariant()!.price | number:'1.0-0' }}</span>
-        <span class="discount-badge">
-          -{{ discountPercent() }}%
-        </span>
+        <p-tag class="discount-badge" [value]="'-' + discountPercent() + '%'" severity="danger" [rounded]="true"></p-tag>
         }
         <span class="current-price">\${{ (selectedVariant()!.discountPrice || selectedVariant()!.price) | number:'1.0-0' }}</span>
       </div>
@@ -111,9 +112,9 @@
             <span class="v-size">{{ variant.size }}</span>
             <span class="v-color">{{ variant.color }}</span>
             @if (variant.stock === 0) {
-            <span class="v-stock out">Agotado</span>
+            <p-tag class="v-stock-tag out" value="Agotado" severity="danger" [rounded]="true"></p-tag>
             } @else {
-            <span class="v-stock in">{{ variant.stock }} disp.</span>
+            <p-tag class="v-stock-tag in" [value]="variant.stock + ' disp.'" severity="success" [rounded]="true"></p-tag>
             }
           </button>
           }
@@ -148,41 +149,24 @@
       <!-- CTA -->
       <div class="cta-group">
         @if (authService.isLoggedIn()) {
-        <button class="add-to-cart-btn" (click)="addToCart()"
+        <button pButton class="add-to-cart-btn" (click)="addToCart()"
           [disabled]="!selectedVariant() || isAddingToCart() || (selectedVariant()?.stock || 0) === 0"
-          [class.adding]="isAddingToCart()">
-          @if (isAddingToCart()) {
-          <span class="btn-spinner"></span>
-          Añadiendo...
-          } @else if ((selectedVariant()?.stock || 0) === 0) {
-          Sin stock
-          } @else {
-          <svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
-            <path d="M16 10a4 4 0 01-8 0"/>
-          </svg>
-          Añadir al carrito
-          }
+          [class.adding]="isAddingToCart()"
+          [label]="isAddingToCart() ? 'Anadiendo...' : ((selectedVariant()?.stock || 0) === 0 ? 'Sin stock' : 'Anadir al carrito')"
+          [icon]="isAddingToCart() ? 'pi pi-spin pi-spinner' : 'pi pi-shopping-bag'"
+          iconPos="right">
         </button>
         } @else {
-        <a routerLink="/login" class="login-to-buy-btn">
-          Inicia sesión para comprar
+        <a pButton [routerLink]="['/login']" class="login-to-buy-btn"
+          label="Inicia sesion para comprar" icon="pi pi-user" [outlined]="true">
         </a>
         }
       </div>
 
-      <!-- Toast -->
       @if (toastMessage()) {
-      <div class="toast" [class.toast-success]="toastType() === 'success'" [class.toast-error]="toastType() === 'error'">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          @if (toastType() === 'success') {
-          <polyline points="20 6 9 17 4 12"/>
-          } @else {
-          <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
-          }
-        </svg>
+      <p-message class="detail-toast" [severity]="toastType() === 'success' ? 'success' : 'error'">
         {{ toastMessage() }}
-      </div>
+      </p-message>
       }
 
       <!-- Features strip -->
@@ -223,12 +207,9 @@
     </div>
 
     @if (reviews().length === 0) {
-    <div class="no-reviews">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-      </svg>
-      <p>Aún no hay reseñas para este producto.</p>
-    </div>
+    <p-message severity="secondary" styleClass="no-reviews-message">
+      Aun no hay reseñas para este producto.
+    </p-message>
     }
 
     <div class="reviews-grid">
@@ -262,7 +243,7 @@
     </svg>
     <h2>Producto no encontrado</h2>
     <p>El producto que buscas no existe o ya no está disponible.</p>
-    <a routerLink="/shop" class="back-btn">← Volver a la tienda</a>
+    <a pButton [routerLink]="['/shop']" class="back-btn" label="Volver a la tienda" icon="pi pi-arrow-left" [outlined]="true"></a>
   </div>
   }
 </div>

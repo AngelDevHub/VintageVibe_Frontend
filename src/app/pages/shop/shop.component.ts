@@ -1,8 +1,12 @@
-import { Component, OnInit, OnDestroy, inject, signal, NgZone, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed, NgZone, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
+import { TagModule } from 'primeng/tag';
 import { ProductService } from '../../core/services/product.service';
 import { CategoryService } from '../../core/services/category.service';
 import { CartService } from '../../core/services/cart.service';
@@ -11,7 +15,7 @@ import { Product, Category, PageResponse } from '../../core/models';
 
 @Component({
   selector: 'app-shop',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, ButtonModule, InputTextModule, MessageModule, TagModule],
   templateUrl: './shop.component.html',
   styleUrls: ['./shop.component.css']
 })
@@ -36,6 +40,12 @@ export class ShopComponent implements OnInit {
   totalElements = signal(0);
   toastMessage = signal('');
   toastType = signal<'success' | 'error'>('success');
+  categoryOptions = computed(() => this.categories().map((cat) => ({ label: cat.name, value: String(cat.id) })));
+  sortOptions = [
+    { label: 'Nombre A-Z', value: 'name,asc' },
+    { label: 'Nombre Z-A', value: 'name,desc' },
+    { label: 'Mas recientes', value: 'createdAt,desc' }
+  ];
 
   private searchTimeout: any;
   private bc: BroadcastChannel | null = null;
