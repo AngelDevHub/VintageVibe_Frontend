@@ -17,6 +17,39 @@
           Tienda
         </a>
       </li>
+      <li class="nav-item nav-item-dropdown" (pointerenter)="openCollectionsMenu()" (pointerleave)="closeCollectionsMenu()">
+        <button
+          type="button"
+          class="nav-link nav-link-button"
+          [class.active]="isCollectionsMenuOpen()"
+          (pointerdown)="toggleCollectionsMenu($event)"
+          (keydown.enter)="toggleCollectionsMenu($event)"
+          (keydown.space)="toggleCollectionsMenu($event)"
+          aria-haspopup="true"
+          [attr.aria-expanded]="isCollectionsMenuOpen()">
+          Colecciones
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+
+        <div class="collections-dropdown" [class.open]="isCollectionsMenuOpen()">
+          <a
+            *ngFor="let category of categories()"
+            [routerLink]="['/shop']"
+            [queryParams]="{ categoryId: category.id }"
+            class="dropdown-link"
+            (click)="closeCollectionsMenu()">
+            <span class="dropdown-link-title">{{ category.name }}</span>
+            <span class="dropdown-link-description">{{ category.description || 'Explora esta colección vintage' }}</span>
+          </a>
+
+          <a routerLink="/shop" class="dropdown-link dropdown-link-all" (click)="closeCollectionsMenu()">
+            <span class="dropdown-link-title">Ver toda la tienda</span>
+            <span class="dropdown-link-description">Accede al catálogo completo de VintageVibe</span>
+          </a>
+        </div>
+      </li>
 
       <li class="nav-item">
         <a routerLink="/about" routerLinkActive="active" class="nav-link">
@@ -106,6 +139,19 @@
         <a routerLink="/shop" (click)="closeMenu()" routerLinkActive="active" class="mobile-nav-link">
           Tienda
         </a>
+      </li>
+      <li *ngIf="categories().length > 0" class="mobile-submenu-block">
+        <p class="mobile-submenu-title">Colecciones</p>
+        <div class="mobile-submenu">
+          <a
+            *ngFor="let category of categories()"
+            [routerLink]="['/shop']"
+            [queryParams]="{ categoryId: category.id }"
+            (click)="closeMenu()"
+            class="mobile-submenu-link">
+            {{ category.name }}
+          </a>
+        </div>
       </li>
 
       <li>

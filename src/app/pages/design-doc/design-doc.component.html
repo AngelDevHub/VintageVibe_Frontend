@@ -27,6 +27,8 @@
       <a href="#seguridad">8. Seguridad Visual</a>
       <a href="#checklist">9. Checklist</a>
       <a href="#conclusion">10. Conclusión</a>
+      <a href="#eventos-interactivos">11. Eventos Interactivos</a>
+      <a href="#evidencias">12. Evidencias</a>
     </nav>
   </div>
 
@@ -571,6 +573,89 @@
               <li>Generalizar breadcrumbs a todas las páginas internas</li>
               <li>Añadir logos de Visa/Mastercard y sello SSL en el checkout</li>
             </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="doc-section" id="eventos-interactivos">
+      <div class="section-number">11</div>
+      <div class="section-content">
+        <h2>Eventos Interactivos Implementados</h2>
+        <p>Se agregaron dos mejoras orientadas a la consigna: un menu desplegable basado en eventos del puntero y un cambio visual automatico de la interfaz basado en periodos del calendario.</p>
+
+        <div class="feature-proof-grid">
+          <article class="proof-card">
+            <span class="proof-tag">Menu por puntero</span>
+            <h3>Colecciones en el navbar</h3>
+            <p>El elemento <code>Colecciones</code> abre un submenu con categorias usando <code>pointerenter</code> y <code>pointerleave</code>. Para pantallas tactiles y uso mixto tambien responde a <code>pointerdown</code>.</p>
+            <ul class="proof-list">
+              <li>Despliega categorias reales obtenidas desde el servicio del frontend</li>
+              <li>Permite navegar directo a la tienda filtrada por categoria</li>
+              <li>Se adapta a escritorio y movil con una variante en el menu lateral</li>
+            </ul>
+          </article>
+
+          <article class="proof-card">
+            <span class="proof-tag">Evento basado en periodo</span>
+            <h3>Hero dinamico por calendario</h3>
+            <p>La portada principal ahora consulta la fecha actual y activa una campana visual. El cambio modifica el fondo, el banner superior, los textos del hero y el CTA principal.</p>
+            <ul class="proof-list">
+              <li>San Valentin Retro: 10 al 16 de febrero</li>
+              <li>Summer Vintage Fest: 1 al 30 de junio</li>
+              <li>Halloween Clasico: 20 al 31 de octubre</li>
+              <li>Holiday Classics: 1 al 31 de diciembre</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="alert alert-success">
+          <strong>Resultado:</strong> La aplicacion ya muestra una interaccion disparada por eventos del puntero y una modificacion visual automatica basada en periodos calendarizados, cumpliendo con el requerimiento funcional solicitado.
+        </div>
+      </div>
+    </section>
+
+    <section class="doc-section" id="evidencias">
+      <div class="section-number">12</div>
+      <div class="section-content">
+        <h2>Evidencias y Capturas de Pantalla</h2>
+        <p>Esta seccion queda lista para anexar las capturas solicitadas dentro de la misma pagina. Puedes abrir <a routerLink="/">Inicio</a>, tomar la evidencia y luego sustituir cada marcador visual por tu captura final si tu entrega lo requiere.</p>
+
+        <div class="evidence-grid">
+          <article class="evidence-card">
+            <div class="evidence-placeholder">
+              <span>Captura 1</span>
+              <p>Navbar con el cursor o puntero sobre <code>Colecciones</code> antes de desplegar el submenu.</p>
+            </div>
+            <h3>Estado inicial del menu</h3>
+            <p>Muestra el encabezado principal y el acceso disponible para que el usuario interactue con el elemento del navbar.</p>
+          </article>
+
+          <article class="evidence-card">
+            <div class="evidence-placeholder">
+              <span>Captura 2</span>
+              <p>Menu desplegado por evento del puntero, mostrando categorias y enlaces interactivos.</p>
+            </div>
+            <h3>Menu desplegable en uso</h3>
+            <p>Demuestra la respuesta al evento del puntero y la interaccion del usuario con el submenu de colecciones.</p>
+          </article>
+
+          <article class="evidence-card">
+            <div class="evidence-placeholder">
+              <span>Captura 3</span>
+              <p>Banner superior y portada principal con la campana activa segun la fecha del sistema.</p>
+            </div>
+            <h3>Evento calendarizado aplicado</h3>
+            <p>Sirve para comprobar el cambio de interfaz, ya sea en fondo, mensaje principal o banner activo.</p>
+          </article>
+        </div>
+
+        <div class="capture-guide">
+          <h3>Guia rapida para documentar</h3>
+          <div class="capture-steps">
+            <div class="capture-step"><strong>1.</strong> Abre la ruta principal <code>/</code> y deja visible el hero con su banner tematico.</div>
+            <div class="capture-step"><strong>2.</strong> Coloca el puntero sobre <code>Colecciones</code> para abrir el menu y toma la evidencia del despliegue.</div>
+            <div class="capture-step"><strong>3.</strong> Usa esta misma pagina <code>/design-doc</code> como anexo para describir cada captura en tu entrega.</div>
           </div>
         </div>
       </div>

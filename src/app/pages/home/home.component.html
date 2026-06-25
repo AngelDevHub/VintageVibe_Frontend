@@ -1,29 +1,36 @@
 <div class="home-page">
     <!-- Hero Section -->
-    <section class="hero-section">
+  <section class="hero-section" [ngClass]="activeCampaign().themeClass">
+    <div class="season-banner container">
+      <span class="season-banner-tag">
+        {{ activeCampaign().isSpecial ? 'Evento calendarizado activo' : 'Programacion automatica disponible' }}
+      </span>
+      <p class="season-banner-text">
+        <strong>{{ activeCampaign().name }}</strong> · {{ activeCampaign().detailText }}
+      </p>
+    </div>
         <div class="hero-overlay">
             <div class="hero-content container">
                 <div class="hero-text">
-                    <span class="hero-badge">Nueva Colección</span>
+          <span class="hero-badge">{{ activeCampaign().badge }}</span>
                     <h1 class="hero-title">
-                        Descubre el Encanto
-                        <span class="highlight">del Pasado</span>
+            {{ activeCampaign().title }}
+            <span class="highlight">{{ activeCampaign().highlight }}</span>
                     </h1>
                     <p class="hero-description">
-                        Piezas únicas y auténticas de las décadas más icónicas.
-                        Cada prenda cuenta una historia, crea la tuya.
+            {{ activeCampaign().description }}
                     </p>
                     <div class="hero-actions">
                         <a routerLink="/shop" class="btn btn-primary btn-lg">
-                            Explorar Tienda
+              {{ activeCampaign().primaryCta }}
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2">
                                 <line x1="5" y1="12" x2="19" y2="12" />
                                 <polyline points="12 5 19 12 12 19" />
                             </svg>
                         </a>
-                        <a href="#collections" class="btn btn-outline btn-lg">
-                            Ver Colecciones
+            <a routerLink="/design-doc" class="btn btn-outline btn-lg">
+              {{ activeCampaign().secondaryCta }}
                         </a>
                     </div>
                     <div class="hero-stats">
@@ -55,6 +62,32 @@
             </div>
         </div>
     </section>
+
+  <section class="event-schedule-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Eventos Basados en Periodo</span>
+        <h2 class="section-title">Calendario de cambios visuales</h2>
+        <p class="section-description">
+          La portada se actualiza automaticamente para reflejar eventos calendarizados y reforzar la experiencia del usuario.
+        </p>
+      </div>
+
+      <div class="campaign-grid">
+        <article
+          *ngFor="let campaign of campaignSchedule"
+          class="campaign-card"
+          [class.active]="campaign.id === activeCampaign().id">
+          <span class="campaign-period">{{ campaign.periodLabel }}</span>
+          <h3 class="campaign-name">{{ campaign.name }}</h3>
+          <p class="campaign-description">{{ campaign.detailText }}</p>
+          <span class="campaign-status">
+            {{ campaign.id === activeCampaign().id ? 'Activo ahora' : 'Programado' }}
+          </span>
+        </article>
+      </div>
+    </div>
+  </section>
 
     <!-- Collections Section -->
     <section id="collections" class="collections-section">

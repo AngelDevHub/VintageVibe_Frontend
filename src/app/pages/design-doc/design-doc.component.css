@@ -190,6 +190,12 @@ code {
   color: #1e3a5f;
 }
 
+.alert-success {
+  background: #f0fdf4;
+  border-left: 4px solid #16a34a;
+  color: #14532d;
+}
+
 /* ── Principles ── */
 .principles-grid {
   display: grid;
@@ -668,6 +674,106 @@ code {
 }
 
 .rec-block li { font-size: 0.83rem; color: #444; }
+
+/* ── Evidence blocks ── */
+.feature-proof-grid,
+.evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.proof-card,
+.evidence-card {
+  background: white;
+  border: 1px solid #eeebe7;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 18px rgba(44, 36, 22, 0.05);
+}
+
+.proof-tag {
+  display: inline-block;
+  margin-bottom: 0.85rem;
+  padding: 0.3rem 0.75rem;
+  background: rgba(212,165,116,0.12);
+  color: #8B7355;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.proof-card h3,
+.evidence-card h3 {
+  margin-top: 0;
+  border: none;
+  padding-bottom: 0;
+}
+
+.proof-list {
+  margin: 0.75rem 0 0;
+  padding-left: 1.1rem;
+  color: #6B6458;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.evidence-placeholder {
+  min-height: 180px;
+  border: 2px dashed #d6c9b9;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fcfaf7 0%, #f3ece4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.evidence-placeholder span {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font-weight: 800;
+  color: #8B7355;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.76rem;
+}
+
+.evidence-placeholder p {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.capture-guide {
+  margin-top: 1.75rem;
+  background: white;
+  border: 1px solid #eeebe7;
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.capture-guide h3 {
+  margin-top: 0;
+}
+
+.capture-steps {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.capture-step {
+  padding: 0.95rem 1rem;
+  border-radius: 12px;
+  background: #f7f5f2;
+  color: #6B6458;
+  font-size: 0.88rem;
+}
 
 /* ── Doc Footer ── */
 .doc-footer {

@@ -7,10 +7,48 @@
    =================================== */
 
 .hero-section {
+    --hero-start: #F5F1ED;
+    --hero-end: #E8C9A0;
+    --hero-highlight-start: var(--color-primary);
+    --hero-highlight-end: var(--color-secondary);
+    --season-banner-bg: rgba(44, 36, 22, 0.78);
+    --season-banner-text: rgba(255, 255, 255, 0.92);
     position: relative;
     min-height: 90vh;
-    background: linear-gradient(135deg, #F5F1ED 0%, #E8C9A0 100%);
+    background: linear-gradient(135deg, var(--hero-start) 0%, var(--hero-end) 100%);
     overflow: hidden;
+}
+
+.hero-section.campaign-valentine {
+    --hero-start: #fff1f2;
+    --hero-end: #fecdd3;
+    --hero-highlight-start: #be123c;
+    --hero-highlight-end: #fb7185;
+    --season-banner-bg: rgba(131, 24, 67, 0.82);
+}
+
+.hero-section.campaign-summer {
+    --hero-start: #fff7d6;
+    --hero-end: #f9bf73;
+    --hero-highlight-start: #ea580c;
+    --hero-highlight-end: #facc15;
+    --season-banner-bg: rgba(120, 53, 15, 0.84);
+}
+
+.hero-section.campaign-halloween {
+    --hero-start: #22161f;
+    --hero-end: #6b341f;
+    --hero-highlight-start: #f97316;
+    --hero-highlight-end: #facc15;
+    --season-banner-bg: rgba(17, 24, 39, 0.88);
+}
+
+.hero-section.campaign-holidays {
+    --hero-start: #f7efe2;
+    --hero-end: #d9b26f;
+    --hero-highlight-start: #b91c1c;
+    --hero-highlight-end: #d4a574;
+    --season-banner-bg: rgba(89, 26, 24, 0.86);
 }
 
 .hero-section::before {
@@ -22,6 +60,38 @@
     bottom: 0;
     background: url('data:image/svg+xml,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="1.5" fill="rgba(212,165,116,0.1)"/></svg>');
     opacity: 0.4;
+}
+
+.season-banner {
+    position: relative;
+    z-index: 2;
+    padding-top: var(--spacing-lg);
+}
+
+.season-banner-text {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+    margin: 0;
+    padding: 0.85rem 1.2rem;
+    background: var(--season-banner-bg);
+    color: var(--season-banner-text);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-lg);
+}
+
+.season-banner-tag {
+    display: inline-block;
+    margin-right: 0.75rem;
+    padding: 0.3rem 0.75rem;
+    background: rgba(255, 255, 255, 0.14);
+    color: var(--color-white);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
 }
 
 .hero-overlay {
@@ -67,7 +137,7 @@
 
 .highlight {
     display: block;
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    background: linear-gradient(135deg, var(--hero-highlight-start) 0%, var(--hero-highlight-end) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -180,6 +250,71 @@
     50% {
         transform: translateY(-20px);
     }
+}
+
+/* ===================================
+   Seasonal Schedule Section
+   =================================== */
+
+.event-schedule-section {
+    padding: var(--spacing-4xl) 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(245, 241, 237, 0.95) 100%);
+}
+
+.campaign-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-xl);
+}
+
+.campaign-card {
+    padding: var(--spacing-xl);
+    background: var(--color-white);
+    border: 1px solid rgba(212, 165, 116, 0.2);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+}
+
+.campaign-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-xl);
+}
+
+.campaign-card.active {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-xl);
+    background: linear-gradient(180deg, rgba(212, 165, 116, 0.12) 0%, rgba(255, 255, 255, 1) 100%);
+}
+
+.campaign-period {
+    display: inline-block;
+    margin-bottom: var(--spacing-md);
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-full);
+    background: rgba(212, 165, 116, 0.12);
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.campaign-name {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-sm);
+}
+
+.campaign-description {
+    min-height: 5.5rem;
+    margin-bottom: var(--spacing-lg);
+}
+
+.campaign-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-secondary);
 }
 
 /* ===================================
@@ -572,6 +707,10 @@
 }
 
 @media (max-width: 992px) {
+    .campaign-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
     .collections-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -582,10 +721,16 @@
 }
 
 @media (max-width: 768px) {
+    .season-banner-text {
+        border-radius: var(--radius-lg);
+        padding: 1rem;
+    }
+
     .hero-title {
         font-size: var(--font-size-4xl);
     }
 
+    .campaign-grid,
     .collections-grid,
     .products-grid,
     .features-grid {
@@ -668,4 +813,4 @@
 
 .newsletter-error {
     color: #fca5a5;
-}
+}

@@ -21,25 +21,50 @@ export class NavbarComponent implements OnInit {
   categories = signal<Category[]>([]);
   isMenuOpen = signal(false);
   isSearchOpen = signal(false);
+  isCollectionsMenuOpen = signal(false);
 
   ngOnInit() {
+    this.categoryService.getAll().subscribe({
+      next: (categories) => this.categories.set(categories.slice(0, 6)),
+      error: () => this.categories.set([])
+    });
   }
   
   toggleMenu() {
     this.isMenuOpen.update(value => !value);
     if (this.isMenuOpen()) {
       this.isSearchOpen.set(false);
+      this.isCollectionsMenuOpen.set(false);
     }
   }
   
   closeMenu() {
     this.isMenuOpen.set(false);
+    this.isCollectionsMenuOpen.set(false);
   }
 
   toggleSearch() {
     this.isSearchOpen.update(value => !value);
     if (this.isSearchOpen()) {
       this.isMenuOpen.set(false);
+      this.isCollectionsMenuOpen.set(false);
+    }
+  }
+
+  openCollectionsMenu() {
+    this.isCollectionsMenuOpen.set(true);
+  }
+
+  closeCollectionsMenu() {
+    this.isCollectionsMenuOpen.set(false);
+  }
+
+  toggleCollectionsMenu(event?: Event) {
+    event?.preventDefault();
+    this.isCollectionsMenuOpen.update(value => !value);
+    if (this.isCollectionsMenuOpen()) {
+      this.isMenuOpen.set(false);
+      this.isSearchOpen.set(false);
     }
   }
 
