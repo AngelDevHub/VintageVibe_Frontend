@@ -2,9 +2,11 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { MessageModule } from 'primeng/message';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TagModule } from 'primeng/tag';
+import { MessageModule } from 'primeng/message';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 import { ProductService } from '../../core/services/product.service';
 import { ReviewService } from '../../core/services/review.service';
 import { CartService } from '../../core/services/cart.service';
@@ -13,14 +15,16 @@ import { Product, Review, ProductVariant } from '../../core/models';
 
 @Component({
   selector: 'app-product-detail',
-  imports: [CommonModule, RouterLink, ButtonModule, MessageModule, ProgressSpinnerModule, TagModule],
+  imports: [CommonModule, RouterLink, ButtonModule, MessageModule, ProgressSpinnerModule, TagModule, ToastModule],
   templateUrl: './product-detail.component.html',
-  styleUrls: ['./product-detail.component.css']
+  styleUrls: ['./product-detail.component.css'],
+  providers: [MessageService]
 })
 export class ProductDetailComponent implements OnInit {
   private productService = inject(ProductService);
   private reviewService = inject(ReviewService);
   private cartService = inject(CartService);
+  private messageService = inject(MessageService);
   authService = inject(AuthService);
   private route = inject(ActivatedRoute);
 
@@ -31,9 +35,6 @@ export class ProductDetailComponent implements OnInit {
   quantity = signal(1);
   isLoading = signal(true);
   isAddingToCart = signal(false);
-  toastMessage = signal('');
-  toastType = signal<'success' | 'error'>('success');
-
   /** Average review rating (0-5) */
   avgRating = computed(() => {
     const list = this.reviews();
@@ -117,7 +118,7 @@ export class ProductDetailComponent implements OnInit {
     this.cartService.addItem(variant.id, this.quantity()).subscribe({
       next: () => {
         this.isAddingToCart.set(false);
-        this.showToast('Producto añadido al carrito ✓', 'success');
+        this.showToast('Producto anadido al carrito', 'success');
       },
       error: () => {
         this.isAddingToCart.set(false);
@@ -127,8 +128,11 @@ export class ProductDetailComponent implements OnInit {
   }
 
   showToast(message: string, type: 'success' | 'error') {
-    this.toastMessage.set(message);
-    this.toastType.set(type);
-    setTimeout(() => this.toastMessage.set(''), 3000);
+    this.messageService.add({
+      severity: type,
+      summary: type === 'success' ? 'Listo' : 'Atencion',
+      detail: message,
+      life: 3200
+    });
   }
 }

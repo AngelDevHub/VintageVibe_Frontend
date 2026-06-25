@@ -5,8 +5,9 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { MessageModule } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 import { ProductService } from '../../core/services/product.service';
 import { CategoryService } from '../../core/services/category.service';
 import { CartService } from '../../core/services/cart.service';
@@ -15,9 +16,10 @@ import { Product, Category, PageResponse } from '../../core/models';
 
 @Component({
   selector: 'app-shop',
-  imports: [CommonModule, FormsModule, RouterLink, ButtonModule, InputTextModule, MessageModule, TagModule],
+  imports: [CommonModule, FormsModule, RouterLink, ButtonModule, InputTextModule, TagModule, ToastModule],
   templateUrl: './shop.component.html',
-  styleUrls: ['./shop.component.css']
+  styleUrls: ['./shop.component.css'],
+  providers: [MessageService]
 })
 export class ShopComponent implements OnInit {
   private productService = inject(ProductService);
@@ -28,6 +30,7 @@ export class ShopComponent implements OnInit {
   private router = inject(Router);
   private zone = inject(NgZone);
   private platformId = inject(PLATFORM_ID);
+  private messageService = inject(MessageService);
 
   products = signal<Product[]>([]);
   categories = signal<Category[]>([]);
@@ -38,8 +41,6 @@ export class ShopComponent implements OnInit {
   currentPage = signal(0);
   totalPages = signal(0);
   totalElements = signal(0);
-  toastMessage = signal('');
-  toastType = signal<'success' | 'error'>('success');
   categoryOptions = computed(() => this.categories().map((cat) => ({ label: cat.name, value: String(cat.id) })));
   sortOptions = [
     { label: 'Nombre A-Z', value: 'name,asc' },
@@ -191,9 +192,12 @@ export class ShopComponent implements OnInit {
   }
 
   showToast(message: string, type: 'success' | 'error') {
-    this.toastMessage.set(message);
-    this.toastType.set(type);
-    setTimeout(() => this.toastMessage.set(''), 3000);
+    this.messageService.add({
+      severity: type,
+      summary: type === 'success' ? 'Listo' : 'Atencion',
+      detail: message,
+      life: 3200
+    });
   }
 
   ngOnDestroy() {

@@ -4,15 +4,22 @@
 
 /* ───── Hero ───── */
 .shop-hero {
-  background: linear-gradient(160deg, #f7f4ef 0%, #ede9e0 100%);
+  background:
+    radial-gradient(circle at top right, rgba(212, 165, 116, 0.2), transparent 30%),
+    linear-gradient(160deg, #f7f4ef 0%, #ede9e0 100%);
   border-bottom: 1px solid #e5dfd4;
   padding: clamp(3rem, 8vw, 5.5rem) 1rem;
-  text-align: center;
 }
 
 .shop-hero-content {
-  max-width: 620px;
-  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+  gap: 1.5rem;
+  align-items: end;
+}
+
+.shop-hero-copy {
+  max-width: 680px;
 }
 
 .hero-eyebrow {
@@ -33,10 +40,48 @@
 }
 
 .hero-sub {
-  color: #888;
-  font-size: 1rem;
-  line-height: 1.6;
+  color: #6f6b64;
+  font-size: 1.02rem;
+  line-height: 1.8;
   margin: 0;
+}
+
+.shop-hero-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.hero-panel {
+  padding: 1.35rem;
+  background: rgba(255,255,255,0.76);
+  border: 1px solid rgba(212, 165, 116, 0.18);
+  border-radius: 18px;
+  box-shadow: var(--shadow-md);
+}
+
+.panel-label {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary-dark);
+}
+
+.hero-panel strong {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  color: var(--color-dark);
+}
+
+.hero-panel p {
+  margin: 0.35rem 0 0;
+  color: var(--color-gray);
+  line-height: 1.6;
+  font-size: 0.88rem;
 }
 
 /* ───── Body ───── */
@@ -47,16 +92,49 @@
 /* ───── Filters Bar ───── */
 .filters-bar {
   display: flex;
-  gap: 12px;
+  gap: 1rem;
   margin-bottom: 2.5rem;
   flex-wrap: wrap;
+  align-items: flex-end;
+  padding: 1.35rem;
+  border-radius: 22px;
+  background: rgba(255,255,255,0.88);
+  border: 1px solid rgba(212, 165, 116, 0.16);
+  box-shadow: var(--shadow-md);
+}
+
+.filters-copy {
+  min-width: 220px;
+}
+
+.filters-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-primary-dark);
+}
+
+.filters-copy h2 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+  color: var(--color-dark);
+}
+
+.filters-controls {
+  display: flex;
   align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  flex: 1;
 }
 
 /* Search wrap */
 .search-wrap {
   flex: 1;
-  min-width: 200px;
+  min-width: 260px;
   position: relative;
   display: flex;
   align-items: center;
@@ -192,9 +270,9 @@
 /* ───── Product Card ───── */
 .product-card {
   background: white;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
-  border: 1px solid #f0ede8;
+  border: 1px solid rgba(212, 165, 116, 0.14);
   display: flex;
   flex-direction: column;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -292,7 +370,7 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  gap: 4px;
+  gap: 0.45rem;
 }
 
 .card-category {
@@ -319,6 +397,13 @@
 
 .card-name a:hover {
   color: var(--color-primary);
+}
+
+.card-copy {
+  margin: 0;
+  color: var(--color-gray);
+  line-height: 1.65;
+  font-size: 0.84rem;
 }
 
 .card-footer {
@@ -352,11 +437,15 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  border-radius: 50px;
+  border-radius: 999px;
   font-size: 0.8rem;
   font-weight: 700;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+.reset-btn {
+  border-radius: 999px;
 }
 
 .quick-add-btn:hover:not(:disabled) {
@@ -461,13 +550,6 @@
 }
 
 /* ───── Toast ───── */
-.toast-message {
-  position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  z-index: 9999;
-}
-
 :host ::ng-deep .shop-page .result-count .p-tag {
   font-weight: 700;
   padding-inline: 1rem;
@@ -490,8 +572,35 @@
   color: white;
 }
 
-:host ::ng-deep .shop-page .toast-message .p-message {
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+:host ::ng-deep .shop-page .p-toast {
+  max-width: 24rem;
+}
+
+@media (max-width: 900px) {
+  .shop-hero-content {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-hero-panels {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .shop-hero-panels {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-controls {
+    width: 100%;
+  }
+
+  .search-wrap,
+  .select-wrap,
+  .filter-select,
+  .reset-btn {
+    width: 100%;
+  }
 }
 
 @keyframes slideToast {

@@ -3,7 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
+import { TagModule } from 'primeng/tag';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 import { ProductService } from '../../core/services/product.service';
 import { CategoryService } from '../../core/services/category.service';
 import { Product, Category, PageResponse } from '../../core/models';
@@ -129,14 +133,16 @@ const SEASONAL_CAMPAIGNS: SeasonalCampaign[] = [
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, RouterLink, FormsModule, ButtonModule, InputTextModule],
+  imports: [CommonModule, RouterLink, FormsModule, ButtonModule, CardModule, InputTextModule, TagModule, ToastModule],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
+  providers: [MessageService]
 })
 export class HomeComponent implements OnInit {
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);
   private zone = inject(NgZone);
+  private messageService = inject(MessageService);
 
   featuredProducts = signal<Product[]>([]);
   categories = signal<Category[]>([]);
@@ -146,6 +152,40 @@ export class HomeComponent implements OnInit {
   activeCampaign = signal<SeasonalCampaign>(DEFAULT_CAMPAIGN);
   campaignSchedule = SEASONAL_CAMPAIGNS;
   private bc = new BroadcastChannel('vintage_vibe_updates');
+  categoryIcons: Record<string, string> = {
+    dresses: 'pi pi-sparkles',
+    chaquetas: 'pi pi-star',
+    jackets: 'pi pi-star',
+    accesorios: 'pi pi-shopping-bag',
+    accessories: 'pi pi-shopping-bag',
+    zapatos: 'pi pi-box',
+    shoes: 'pi pi-box',
+    camisas: 'pi pi-briefcase',
+    shirts: 'pi pi-briefcase'
+  };
+
+  homeBenefits = [
+    {
+      icon: 'pi pi-truck',
+      title: 'Entrega rapida',
+      description: 'Preparamos cada pedido con cuidado para enviarlo cuanto antes.'
+    },
+    {
+      icon: 'pi pi-shield',
+      title: 'Compra segura',
+      description: 'Todo el flujo esta pensado para comprar con confianza y claridad.'
+    },
+    {
+      icon: 'pi pi-refresh',
+      title: 'Devoluciones faciles',
+      description: 'Tienes margen para revisar tu compra y gestionar cambios con calma.'
+    },
+    {
+      icon: 'pi pi-verified',
+      title: 'Curaduria real',
+      description: 'Cada pieza pasa por una seleccion que cuida estilo, estado y coherencia.'
+    }
+  ];
 
   ngOnInit() {
     this.activeCampaign.set(this.getCurrentCampaign(new Date()));
@@ -193,6 +233,12 @@ export class HomeComponent implements OnInit {
   subscribeNewsletter(email: string): void {
     if (!email || !this.isValidEmail(email)) {
       this.newsletterStatus.set('error');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Email invalido',
+        detail: 'Ingresa un correo valido para suscribirte.',
+        life: 3000
+      });
       return;
     }
     this.newsletterStatus.set('loading');
@@ -200,8 +246,19 @@ export class HomeComponent implements OnInit {
     setTimeout(() => {
       this.newsletterStatus.set('success');
       this.newsletterEmail.set('');
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Suscripcion confirmada',
+        detail: 'Revisa tu correo para terminar de activar el beneficio.',
+        life: 3200
+      });
       setTimeout(() => this.newsletterStatus.set('idle'), 4000);
     }, 800);
+  }
+
+  getCategoryIcon(categoryName: string): string {
+    const normalized = categoryName.toLowerCase();
+    return Object.entries(this.categoryIcons).find(([key]) => normalized.includes(key))?.[1] || 'pi pi-tag';
   }
 
   private isValidEmail(email: string): boolean {

@@ -1,6 +1,6 @@
 <div class="product-detail-page container">
+  <p-toast position="top-right"></p-toast>
 
-  <!-- ────── Loading ────── -->
   @if (isLoading()) {
   <div class="loading-container">
     <div class="loading-spinner-wrap">
@@ -20,11 +20,9 @@
   </div>
   }
 
-  <!-- ────── Product ────── -->
   @if (!isLoading() && product()) {
   <div class="product-layout">
 
-    <!-- === Gallery === -->
     <div class="product-gallery">
       <div class="main-image-wrap">
         @if (selectedImage()) {
@@ -54,10 +52,7 @@
       }
     </div>
 
-    <!-- === Info === -->
     <div class="product-info">
-
-      <!-- Breadcrumb -->
       <nav class="breadcrumb">
         <a routerLink="/shop">Tienda</a>
         <span class="sep">›</span>
@@ -68,7 +63,12 @@
 
       <h1 class="product-name">{{ product()!.name }}</h1>
 
-      <!-- Rating summary (stars from reviews) -->
+      <div class="product-meta-tags">
+        <p-tag [value]="product()!.categoryName" severity="secondary" [rounded]="true"></p-tag>
+        <p-tag [value]="product()!.brandName" severity="contrast" [rounded]="true"></p-tag>
+        <p-tag [value]="reviews().length + ' resenas'" severity="info" [rounded]="true"></p-tag>
+      </div>
+
       @if (reviews().length > 0) {
       <div class="rating-summary">
         <div class="stars-row">
@@ -80,22 +80,37 @@
       </div>
       }
 
-      <!-- Price -->
       @if (selectedVariant()) {
       <div class="price-section">
         @if (selectedVariant()!.discountPrice && selectedVariant()!.discountPrice < selectedVariant()!.price) {
-        <span class="original-price">\${{ selectedVariant()!.price | number:'1.0-0' }}</span>
+        <span class="original-price">MXN {{ selectedVariant()!.price | number:'1.0-0' }}</span>
         <p-tag class="discount-badge" [value]="'-' + discountPercent() + '%'" severity="danger" [rounded]="true"></p-tag>
         }
-        <span class="current-price">\${{ (selectedVariant()!.discountPrice || selectedVariant()!.price) | number:'1.0-0' }}</span>
+        <span class="current-price">MXN {{ (selectedVariant()!.discountPrice || selectedVariant()!.price) | number:'1.0-0' }}</span>
       </div>
       }
 
       <p class="product-description">{{ product()!.description }}</p>
 
+      <div class="product-support-strip">
+        <div class="support-card">
+          <i class="pi pi-shield"></i>
+          <div>
+            <strong>Compra protegida</strong>
+            <span>Flujo seguro y revision antes del pago</span>
+          </div>
+        </div>
+        <div class="support-card">
+          <i class="pi pi-refresh"></i>
+          <div>
+            <strong>Devoluciones faciles</strong>
+            <span>Hasta 30 dias para gestionar cambios</span>
+          </div>
+        </div>
+      </div>
+
       <div class="divider"></div>
 
-      <!-- Variants -->
       @if (product()!.variants.length > 0) {
       <div class="variants-section">
         <div class="section-label">
@@ -122,7 +137,6 @@
       </div>
       }
 
-      <!-- Stock indicator -->
       @if (selectedVariant() && selectedVariant()!.stock > 0) {
       <div class="stock-bar-wrap">
         <span class="stock-text">
@@ -132,21 +146,19 @@
       </div>
       }
 
-      <!-- Quantity -->
       <div class="quantity-row">
         <span class="section-label">Cantidad</span>
         <div class="quantity-controls">
           <button class="qty-btn" (click)="decreaseQty()" [disabled]="quantity() <= 1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <i class="pi pi-minus"></i>
           </button>
           <span class="qty-val">{{ quantity() }}</span>
           <button class="qty-btn" (click)="increaseQty()" [disabled]="quantity() >= (selectedVariant()?.stock || 1)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <i class="pi pi-plus"></i>
           </button>
         </div>
       </div>
 
-      <!-- CTA -->
       <div class="cta-group">
         @if (authService.isLoggedIn()) {
         <button pButton class="add-to-cart-btn" (click)="addToCart()"
@@ -163,31 +175,23 @@
         }
       </div>
 
-      @if (toastMessage()) {
-      <p-message class="detail-toast" [severity]="toastType() === 'success' ? 'success' : 'error'">
-        {{ toastMessage() }}
-      </p-message>
-      }
-
-      <!-- Features strip -->
       <div class="features-strip">
         <div class="feature">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <i class="pi pi-refresh"></i>
           <span>Devoluciones en 30 días</span>
         </div>
         <div class="feature">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/></svg>
+          <i class="pi pi-truck"></i>
           <span>Envío rápido</span>
         </div>
         <div class="feature">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <i class="pi pi-lock"></i>
           <span>Compra segura</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ────── Reviews ────── -->
   <section class="reviews-section">
     <div class="reviews-header">
       <h2>Reseñas de clientes</h2>
@@ -234,7 +238,6 @@
   </section>
   }
 
-  <!-- ────── Not found ────── -->
   @if (!isLoading() && !product()) {
   <div class="not-found">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
