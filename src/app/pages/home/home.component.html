@@ -2,10 +2,9 @@
     <!-- Hero Section -->
     <section class="hero-section" [ngClass]="activeCampaign().themeClass">
         <div class="season-banner container">
-            <p-tag class="season-banner-tag-prime"
-                [value]="activeCampaign().isSpecial ? 'Evento calendarizado activo' : 'Programacion automatica disponible'"
-                severity="contrast" [rounded]="true">
-            </p-tag>
+            <span class="season-banner-chip" [class.active]="activeCampaign().isSpecial">
+                {{ activeCampaign().bannerText }}
+            </span>
             <p class="season-banner-text">
                 <strong>{{ activeCampaign().name }}</strong> · {{ activeCampaign().detailText }}
             </p>
@@ -13,7 +12,7 @@
         <div class="hero-overlay">
             <div class="hero-content container">
                 <div class="hero-text">
-                    <p-tag class="hero-badge-prime" [value]="activeCampaign().badge" [rounded]="true"></p-tag>
+                    <span class="hero-badge">{{ activeCampaign().badge }}</span>
                     <h1 class="hero-title">
                         {{ activeCampaign().title }}
                         <span class="highlight">{{ activeCampaign().highlight }}</span>
@@ -63,26 +62,29 @@
     <section class="event-schedule-section">
         <div class="container">
             <div class="section-header">
-                <span class="section-badge">Eventos Basados en Periodo</span>
-                <h2 class="section-title">Calendario de cambios visuales</h2>
+                <span class="section-badge">Ediciones de Temporada</span>
+                <h2 class="section-title">Momentos que transforman la portada</h2>
                 <p class="section-description">
-                    La portada se actualiza automaticamente para reflejar eventos calendarizados y reforzar la
-                    experiencia del usuario.
+                    La interfaz se adapta a fechas clave con una curaduría visual distinta, manteniendo el mismo ADN
+                    vintage de la marca.
                 </p>
             </div>
 
             <div class="campaign-grid">
-                <p-card *ngFor="let campaign of campaignSchedule" styleClass="campaign-card"
+                <article *ngFor="let campaign of campaignSchedule" class="campaign-card"
                     [class.active]="campaign.id === activeCampaign().id">
-                    <p-tag class="campaign-period-tag" [value]="campaign.periodLabel" severity="secondary"
-                        [rounded]="true"></p-tag>
+                    <div class="campaign-topline">
+                        <span class="campaign-period">{{ campaign.periodLabel }}</span>
+                        <span class="campaign-marker" [class.active]="campaign.id === activeCampaign().id">
+                            {{ campaign.id === activeCampaign().id ? 'Edicion visible' : 'Proxima edicion' }}
+                        </span>
+                    </div>
                     <h3 class="campaign-name">{{ campaign.name }}</h3>
                     <p class="campaign-description">{{ campaign.detailText }}</p>
-                    <p-tag class="campaign-status-tag"
-                        [value]="campaign.id === activeCampaign().id ? 'Activo ahora' : 'Programado'"
-                        [severity]="campaign.id === activeCampaign().id ? 'success' : 'info'" [rounded]="true">
-                    </p-tag>
-                </p-card>
+                    <div class="campaign-footer">
+                        <span class="campaign-badge">{{ campaign.badge }}</span>
+                    </div>
+                </article>
             </div>
         </div>
     </section>
