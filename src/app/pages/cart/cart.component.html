@@ -1,4 +1,6 @@
 <div class="cart-page container">
+    <p-toast position="top-right"></p-toast>
+
     <h1 class="page-title">Mi Carrito</h1>
 
     @if (isLoading()) {
@@ -9,33 +11,53 @@
     }
 
     @if (!isLoading() && (cart()?.items?.length ?? 0) === 0) {
-    <p-card styleClass="empty-cart">
-        <div class="empty-icon">🛒</div>
+    <section class="empty-cart">
+        <div class="empty-icon">
+            <i class="pi pi-shopping-bag"></i>
+        </div>
         <h2>Tu carrito está vacío</h2>
-        <p>Explora nuestra colección y añade productos</p>
+        <p>Explora nuestra colección y guarda tus piezas favoritas aquí para finalizar la compra.</p>
         <a pButton [routerLink]="['/shop']" label="Ir a la Tienda" icon="pi pi-arrow-right" iconPos="right"></a>
-    </p-card>
+    </section>
     }
 
     @if (!isLoading() && (cart()?.items?.length ?? 0) > 0) {
     <div class="cart-layout">
-        <div class="cart-items">
+        <section class="cart-items">
+            <div class="cart-headline">
+                <p class="cart-kicker">Seleccion actual</p>
+                <h2>Revisa tus productos antes de pagar</h2>
+            </div>
             @for (item of cart()!.items; track item.id) {
-            <p-card styleClass="cart-item">
-                <div class="item-image">
-                    @if (item.imageUrl) {
-                    <img [src]="item.imageUrl" [alt]="item.productName" />
-                    } @else {
-                    <div class="img-placeholder">🛍️</div>
-                    }
+            <article class="cart-item">
+                <div class="item-media">
+                    <div class="item-image">
+                        @if (item.imageUrl) {
+                        <img [src]="item.imageUrl" [alt]="item.productName" />
+                        } @else {
+                        <div class="img-placeholder">
+                            <i class="pi pi-image"></i>
+                        </div>
+                        }
+                    </div>
                 </div>
+
                 <div class="item-details">
+                    <p class="item-brand">VintageVibe Collection</p>
                     <h3>{{ item.productName }}</h3>
                     <p class="item-variant">{{ item.size }} · {{ item.color }}</p>
                     <p class="item-sku">SKU: {{ item.variantSku }}</p>
-                    <p-tag [value]="item.stock > 5 ? 'En stock' : 'Ultimas unidades'" [severity]="item.stock > 5 ? 'success' : 'warn'" [rounded]="true"></p-tag>
+                    <div class="item-tags">
+                        <p-tag [value]="item.stock > 5 ? 'En stock' : 'Ultimas unidades'" [severity]="item.stock > 5 ? 'success' : 'warn'" [rounded]="true"></p-tag>
+                        <p-tag [value]="'Cantidad: ' + item.quantity" severity="secondary" [rounded]="true"></p-tag>
+                    </div>
                 </div>
+
                 <div class="item-controls">
+                    <div class="item-subtotal">
+                        <span class="price-label">Subtotal</span>
+                        <p class="item-price">MXN {{ item.subtotal | number:'1.0-0' }}</p>
+                    </div>
                     <div class="qty-controls">
                         <button pButton (click)="updateQty(item.id, item.quantity - 1)"
                             [disabled]="item.quantity <= 1" icon="pi pi-minus" [text]="true" severity="secondary"></button>
@@ -43,32 +65,43 @@
                         <button pButton (click)="updateQty(item.id, item.quantity + 1)"
                             [disabled]="item.quantity >= item.stock" icon="pi pi-plus" [text]="true" severity="secondary"></button>
                     </div>
-                    <p class="item-price">\${{ item.subtotal | number:'1.0-0' }}</p>
                     <button pButton class="remove-btn" (click)="removeItem(item.id)" label="Eliminar" icon="pi pi-trash" [text]="true" severity="danger"></button>
                 </div>
-            </p-card>
+            </article>
             }
-        </div>
+        </section>
 
-        <p-card styleClass="cart-summary">
-            <h2>Resumen del Pedido</h2>
-            <div class="summary-row">
-                <span>Subtotal</span>
-                <span>\${{ cart()!.total | number:'1.0-0' }}</span>
+        <aside class="cart-summary">
+            <div class="summary-header">
+                <p class="summary-kicker">Resumen</p>
+                <h2>Pedido listo para checkout</h2>
             </div>
             <div class="summary-row">
-                <span>Envío</span>
+                <span>Subtotal</span>
+                <span>MXN {{ cart()!.total | number:'1.0-0' }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Envio</span>
                 <p-tag value="Gratis" severity="success" [rounded]="true"></p-tag>
+            </div>
+            <div class="summary-row muted">
+                <span>Productos</span>
+                <span>{{ cart()!.items.length }}</span>
             </div>
             <div class="summary-total">
                 <span>Total</span>
-                <span>\${{ cart()!.total | number:'1.0-0' }}</span>
+                <span>MXN {{ cart()!.total | number:'1.0-0' }}</span>
             </div>
 
-            <button pButton class="checkout-btn" (click)="goToCheckout()" label="Proceder al Pago" icon="pi pi-arrow-right" iconPos="right">
+            <button pButton class="checkout-btn" (click)="goToCheckout()" label="Continuar al checkout" icon="pi pi-arrow-right" iconPos="right">
             </button>
-            <a pButton [routerLink]="['/shop']" class="continue-btn" label="Seguir comprando" icon="pi pi-arrow-left" [text]="true" severity="secondary"></a>
-        </p-card>
+            <a pButton [routerLink]="['/shop']" class="continue-btn" label="Seguir comprando" icon="pi pi-arrow-left" [outlined]="true" severity="secondary"></a>
+
+            <div class="summary-note">
+                <i class="pi pi-shield"></i>
+                <span>Compra protegida y revision final antes de confirmar el pedido.</span>
+            </div>
+        </aside>
     </div>
     }
 </div>

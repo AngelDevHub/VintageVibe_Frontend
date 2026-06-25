@@ -1,35 +1,34 @@
 <div class="checkout-page container">
+    <p-toast position="top-right"></p-toast>
     <h1 class="page-title">Finalizar Compra</h1>
 
-    <!-- SUCCESS STATE -->
     @if (orderSuccess()) {
-    <div class="success-card">
-        <div class="success-icon">✅</div>
-        <h2>¡Pedido realizado con éxito!</h2>
-        <p>Número de orden: <strong>{{ orderSuccess()!.orderNumber }}</strong></p>
-        <p>Total: <strong>${{ orderSuccess()!.totalAmount | number:'1.0-0' }}</strong></p>
-        <p class="success-note">Recibirás un correo de confirmación en breve.</p>
-        <a routerLink="/profile" class="view-orders-btn">Ver mis pedidos →</a>
-    </div>
+    <section class="success-card">
+        <div class="success-icon-wrap">
+            <i class="pi pi-check-circle success-icon"></i>
+        </div>
+        <p class="success-kicker">Pedido confirmado</p>
+        <h2>Tu compra ya quedó registrada</h2>
+        <p>Numero de orden: <strong>{{ orderSuccess()!.orderNumber }}</strong></p>
+        <p>Total final: <strong>MXN {{ orderSuccess()!.totalAmount | number:'1.0-0' }}</strong></p>
+        <p class="success-note">Te enviaremos seguimiento y confirmacion al correo asociado a tu cuenta.</p>
+        <a pButton [routerLink]="['/profile']" label="Ver mis pedidos" icon="pi pi-arrow-right" iconPos="right"></a>
+    </section>
     }
 
     @if (!orderSuccess()) {
     <div class="checkout-layout">
-
-        <!-- LEFT COLUMN -->
         <div class="checkout-main">
-
-            <!-- ① DIRECCIÓN -->
-            <div class="checkout-card">
+            <section class="checkout-card">
                 <div class="card-header">
                     <span class="step-badge">1</span>
-                    <h2>Dirección de Envío</h2>
+                    <h2>Direccion de envio</h2>
                 </div>
 
                 @if (addresses().length > 0) {
                 <div class="addresses-list">
                     @for (addr of addresses(); track addr.id) {
-                    <div class="address-card" [class.selected]="selectedAddressId() === addr.id"
+                    <article class="address-card" [class.selected]="selectedAddressId() === addr.id"
                         (click)="selectedAddressId.set(addr.id)">
                         <div class="address-radio-wrap">
                             <div class="radio-custom" [class.active]="selectedAddressId() === addr.id">
@@ -44,35 +43,35 @@
                             <p>{{ addr.country }} · Tel: {{ addr.phoneNumber }}</p>
                         </div>
                         @if (selectedAddressId() === addr.id) {
-                        <div class="selected-badge">✓ Seleccionada</div>
+                        <p-tag styleClass="selected-badge-tag" value="Seleccionada" severity="success" [rounded]="true"></p-tag>
                         }
-                    </div>
+                    </article>
                     }
                 </div>
                 }
 
                 <div class="new-address-toggle">
-                    <h3>{{ addresses().length > 0 ? '+ Añadir nueva dirección' : 'Añade una dirección de envío' }}</h3>
+                    <h3>{{ addresses().length > 0 ? 'Añadir una direccion nueva' : 'Agrega tu direccion para continuar' }}</h3>
                     <form class="address-form" [formGroup]="addressForm" (ngSubmit)="saveAddress()">
                         <div class="form-group">
                             <label for="fullName">Nombre completo *</label>
-                            <input id="fullName" class="form-input" placeholder="Ej: Juan Pérez" formControlName="fullName" />
+                            <input id="fullName" class="form-input" placeholder="Ej: Juan Perez" formControlName="fullName" />
                             @if (addressForm.get('fullName')?.touched && addressForm.get('fullName')?.invalid) {
-                                <small class="error-text">
-                                    @if (addressForm.get('fullName')?.hasError('required')) { Requerido. }
-                                    @if (addressForm.get('fullName')?.hasError('pattern')) { Solo letras y espacios. }
-                                </small>
+                            <small class="error-text">
+                                @if (addressForm.get('fullName')?.hasError('required')) { Requerido. }
+                                @if (addressForm.get('fullName')?.hasError('pattern')) { Solo letras y espacios. }
+                            </small>
                             }
                         </div>
-                        
+
                         <div class="form-group">
-                            <label for="addressLine1">Calle y número *</label>
+                            <label for="addressLine1">Calle y numero *</label>
                             <input id="addressLine1" class="form-input" placeholder="Calle Falsa 123" formControlName="addressLine1" />
                             @if (addressForm.get('addressLine1')?.touched && addressForm.get('addressLine1')?.invalid) {
-                                <small class="error-text">Requerido.</small>
+                            <small class="error-text">Requerido.</small>
                             }
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="addressLine2">Interior, colonia, etc. (opcional)</label>
                             <input id="addressLine2" class="form-input" placeholder="Apto 4B, Col. Centro" formControlName="addressLine2" />
@@ -85,43 +84,45 @@
                             </div>
                             <div class="form-group">
                                 <label for="state">Estado / Provincia</label>
-                                <input id="state" class="form-input" placeholder="Ciudad de México" formControlName="state" />
+                                <input id="state" class="form-input" placeholder="Ciudad de Mexico" formControlName="state" />
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="postalCode">Código postal *</label>
+                                <label for="postalCode">Codigo postal *</label>
                                 <input id="postalCode" class="form-input" placeholder="06700" formControlName="postalCode" />
                             </div>
                             <div class="form-group">
-                                <label for="country">País *</label>
-                                <input id="country" class="form-input" placeholder="México" formControlName="country" />
+                                <label for="country">Pais *</label>
+                                <input id="country" class="form-input" placeholder="Mexico" formControlName="country" />
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="phoneNumber">Teléfono *</label>
+                            <label for="phoneNumber">Telefono *</label>
                             <input id="phoneNumber" class="form-input" placeholder="5512345678" formControlName="phoneNumber" />
                         </div>
-                        
-                        <button type="submit" class="save-address-btn" [disabled]="addressForm.invalid || isSavingAddress()">
-                            {{ isSavingAddress() ? 'Guardando...' : '+ Guardar dirección' }}
+
+                        <button pButton type="submit" class="save-address-btn"
+                            [label]="isSavingAddress() ? 'Guardando...' : 'Guardar direccion'"
+                            [icon]="isSavingAddress() ? 'pi pi-spin pi-spinner' : 'pi pi-plus'"
+                            iconPos="right"
+                            [disabled]="addressForm.invalid || isSavingAddress()">
                         </button>
                     </form>
                 </div>
-            </div>
+            </section>
 
-            <!-- ② MÉTODO DE PAGO -->
-            <div class="checkout-card">
+            <section class="checkout-card">
                 <div class="card-header">
                     <span class="step-badge">2</span>
-                    <h2>Método de Pago</h2>
+                    <h2>Metodo de pago</h2>
                 </div>
 
                 <div class="payment-methods-grid">
                     @for (pm of paymentMethods(); track pm.id) {
-                    <div class="payment-method-card" [class.pm-selected]="selectedPaymentMethod() === pm.name"
+                    <article class="payment-method-card" [class.pm-selected]="selectedPaymentMethod() === pm.name"
                         (click)="selectedPaymentMethod.set(pm.name)">
                         <div class="pm-radio">
                             <div class="radio-custom" [class.active]="selectedPaymentMethod() === pm.name">
@@ -129,25 +130,22 @@
                             </div>
                         </div>
                         <div class="pm-icon">
-                            @if (pm.name === 'CREDIT_CARD' || pm.name === 'DEBIT_CARD') {
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-                            } @else if (pm.name === 'PAYPAL') {
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.729C5.01 3.312 5.372 3 5.796 3h14.508c.424 0 .786.312.852.729l1.974 12.558c.066.417-.258.789-.682.789H18.33l-1.144 7.261h-4.606l1.341-8.52h-2.186l-1.341 8.52h-3.318l1.341-8.52H7.076l-1.341 8.52z"></path></svg>
-                            } @else {
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"></path><path d="M3 10h18"></path><path d="M5 6l7-3 7 3"></path><path d="M4 10v11"></path><path d="M20 10v11"></path><path d="M8 14v3"></path><path d="M12 14v3"></path><path d="M16 14v3"></path></svg>
-                            }
+                            <i [class]="getPaymentIconClass(pm.name)"></i>
                         </div>
                         <div class="pm-info">
                             <p class="pm-name">{{ getPaymentLabel(pm.name) }}</p>
                             <p class="pm-desc">
-                                @if (pm.name === 'CREDIT_CARD') { Visa, Mastercard, Amex }
-                                @else if (pm.name === 'DEBIT_CARD') { Tarjeta de débito bancaria }
-                                @else if (pm.name === 'PAYPAL') { Paga seguro con tu cuenta PayPal }
-                                @else if (pm.name === 'BANK_TRANSFER') { Transferencia segura }
-                                @else if (pm.name === 'CASH_ON_DELIVERY') { Pago al repartidor }
+                                @if (pm.name === 'CREDIT_CARD') { Visa, Mastercard y American Express }
+                                @else if (pm.name === 'DEBIT_CARD') { Tarjeta de debito bancaria }
+                                @else if (pm.name === 'PAYPAL') { Pago seguro con tu cuenta PayPal }
+                                @else if (pm.name === 'BANK_TRANSFER') { Transferencia bancaria verificada }
+                                @else if (pm.name === 'CASH_ON_DELIVERY') { Pago al momento de la entrega }
                             </p>
                         </div>
-                    </div>
+                        @if (selectedPaymentMethod() === pm.name) {
+                        <p-tag value="Activo" severity="contrast" [rounded]="true"></p-tag>
+                        }
+                    </article>
                     }
                 </div>
 
@@ -156,12 +154,11 @@
                     <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
                     <div class="ssl-shield">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"></path></svg>
-                        SSL Secure
+                        <i class="pi pi-shield"></i>
+                        Seguridad SSL
                     </div>
                 </div>
 
-                <!-- Formulario de tarjeta (solo si aplica) -->
                 @if (isCardPayment()) {
                 <div class="card-form-section">
                     <h3 class="card-form-title">Datos de la tarjeta</h3>
@@ -174,7 +171,7 @@
                     </div>
                     <div class="card-fields">
                         <div class="form-group">
-                            <label>Número de tarjeta</label>
+                            <label>Numero de tarjeta</label>
                             <input class="form-input" type="text" placeholder="1234 5678 9012 3456"
                                 [value]="cardForm.number" (input)="formatCardNumber($event)" maxlength="19">
                         </div>
@@ -197,66 +194,67 @@
                         </div>
                     </div>
                     @if (cardError()) {
-                    <div class="card-error">⚠️ {{ cardError() }}</div>
+                    <div class="card-error"><i class="pi pi-exclamation-triangle"></i> {{ cardError() }}</div>
                     }
-                    <p class="card-note">🔒 Pago simulado — no se procesará ningún cargo real</p>
+                    <p class="card-note"><i class="pi pi-lock"></i> Pago simulado: no se procesara ningun cargo real.</p>
                 </div>
                 }
 
-                <!-- Info transferencia bancaria -->
                 @if (isBankTransfer()) {
                 <div class="payment-info-box transfer-info">
-                    <h4>📋 Datos para transferencia</h4>
-                    <p><strong>Banco:</strong> BBVA México</p>
+                    <h4><i class="pi pi-building"></i> Datos para transferencia</h4>
+                    <p><strong>Banco:</strong> BBVA Mexico</p>
                     <p><strong>Cuenta:</strong> 0123 4567 8901 2345</p>
                     <p><strong>CLABE:</strong> 012 345 67890 1234 5 6</p>
                     <p><strong>Beneficiario:</strong> VintageVibe S.A. de C.V.</p>
-                    <p class="transfer-note">Recibirás los datos completos en tu correo de confirmación. Tu pedido se procesará al verificar el pago (1–2 días hábiles).</p>
+                    <p class="transfer-note">Recibiras los datos completos en tu correo de confirmacion. Tu pedido se procesara al verificar el pago.</p>
                 </div>
                 }
 
-                <!-- Info PayPal -->
                 @if (isPayPal()) {
                 <div class="payment-info-box paypal-info">
-                    <h4>🅿️ Pago con PayPal</h4>
-                    <p>Al confirmar tu pedido, serás redirigido a PayPal para autorizar el pago de forma segura.</p>
-                    <p class="transfer-note">Pago simulado — no se procesará ninguna transacción real.</p>
+                    <h4><i class="pi pi-wallet"></i> Pago con PayPal</h4>
+                    <p>Al confirmar tu pedido, seras redirigido a PayPal para autorizar el pago de forma segura.</p>
+                    <p class="transfer-note">Pago simulado: no se procesara ninguna transaccion real.</p>
                 </div>
                 }
 
-                <!-- Info pago en efectivo -->
                 @if (isCashOnDelivery()) {
                 <div class="payment-info-box cash-info">
-                    <h4>💵 Pago en efectivo al recibir</h4>
+                    <h4><i class="pi pi-money-bill"></i> Pago en efectivo al recibir</h4>
                     <p>Prepara el monto exacto al momento de la entrega. El repartidor no da cambio.</p>
                 </div>
                 }
-            </div>
+            </section>
 
-            <!-- ③ CUPÓN -->
-            <div class="checkout-card">
+            <section class="checkout-card">
                 <div class="card-header">
                     <span class="step-badge">3</span>
-                    <h2>Código de Descuento</h2>
+                    <h2>Codigo de descuento</h2>
                 </div>
                 <div class="coupon-row">
                     <div class="input-with-action">
-                        <input class="form-input coupon-input" placeholder="¿Tienes un cupón? Ingrésalo aquí"
+                        <input class="form-input coupon-input" placeholder="¿Tienes un cupon? Ingresalo aqui"
                             [(ngModel)]="couponCode" />
-                        <button class="apply-coupon-btn" (click)="applyCoupon()" [disabled]="isValidatingCoupon() || !couponCode">
-                            {{ isValidatingCoupon() ? '...' : 'Aplicar' }}
+                        <button pButton class="apply-coupon-btn" (click)="applyCoupon()"
+                            [label]="isValidatingCoupon() ? 'Validando' : 'Aplicar'"
+                            [icon]="isValidatingCoupon() ? 'pi pi-spin pi-spinner' : 'pi pi-ticket'"
+                            iconPos="right"
+                            [disabled]="isValidatingCoupon() || !couponCode">
                         </button>
                     </div>
                     @if (appliedCoupon()) {
-                        <span class="coupon-success">✅ Cupón aplicado: {{ appliedCoupon()?.discount }}{{ appliedCoupon()?.percentage ? '%' : '$' }} OFF</span>
+                    <p-tag styleClass="coupon-success-tag"
+                        [value]="'Cupon activo: ' + appliedCoupon()!.discount + (appliedCoupon()!.percentage ? '%' : ' MXN') + ' OFF'"
+                        severity="success" [rounded]="true">
+                    </p-tag>
                     }
                 </div>
-            </div>
+            </section>
         </div>
 
-        <!-- RIGHT COLUMN — Order Summary -->
-        <div class="order-summary">
-            <h2>Resumen del Pedido</h2>
+        <aside class="order-summary">
+            <h2>Resumen del pedido</h2>
 
             @if (cart()) {
             <div class="summary-items">
@@ -264,16 +262,16 @@
                 <div class="summary-item">
                     <div class="item-img-mini">
                         @if (item.imageUrl) {
-                            <img [src]="item.imageUrl" [alt]="item.productName">
+                        <img [src]="item.imageUrl" [alt]="item.productName">
                         } @else {
-                            <div class="img-mini-placeholder">🛍️</div>
+                        <div class="img-mini-placeholder"><i class="pi pi-image"></i></div>
                         }
                     </div>
                     <div class="item-details">
                         <span class="item-name">{{ item.productName }}</span>
                         <span class="item-meta">{{ item.size }} · x{{ item.quantity }}</span>
                     </div>
-                    <span class="item-price">${{ item.subtotal | number:'1.0-0' }}</span>
+                    <span class="item-price">MXN {{ item.subtotal | number:'1.0-0' }}</span>
                 </div>
                 }
             </div>
@@ -282,43 +280,37 @@
 
             <div class="summary-row">
                 <span>Subtotal</span>
-                <span>${{ cart()!.total | number:'1.0-0' }}</span>
+                <span>MXN {{ cart()!.total | number:'1.0-0' }}</span>
             </div>
             <div class="summary-row">
-                <span>Envío</span>
+                <span>Envio</span>
                 <span class="free-shipping">Gratis</span>
             </div>
             @if (appliedCoupon()) {
             <div class="summary-row discount-row">
                 <span>Descuento ({{ appliedCoupon()?.code }})</span>
-                <span>- ${{ discountAmount() | number:'1.0-0' }}</span>
+                <span>- MXN {{ discountAmount() | number:'1.0-0' }}</span>
             </div>
             }
             <div class="summary-divider"></div>
             <div class="summary-total">
                 <span>Total</span>
-                <span>${{ finalTotal() | number:'1.0-0' }}</span>
+                <span>MXN {{ finalTotal() | number:'1.0-0' }}</span>
             </div>
             }
 
-            @if (errorMessage()) {
-            <div class="error-msg">{{ errorMessage() }}</div>
-            }
-
-            <button class="place-order-btn" (click)="placeOrder()"
+            <button pButton class="place-order-btn" (click)="placeOrder()"
+                [label]="isPlacingOrder() ? 'Procesando...' : 'Confirmar pedido'"
+                [icon]="isPlacingOrder() ? 'pi pi-spin pi-spinner' : 'pi pi-lock'"
+                iconPos="right"
                 [disabled]="!selectedAddressId() || isPlacingOrder()">
-                @if (isPlacingOrder()) {
-                <div class="btn-loader"></div> Procesando...
-                } @else {
-                🔒 Confirmar Pedido
-                }
             </button>
 
             <p class="checkout-terms">Al confirmar aceptas nuestros
-                <a routerLink="/terms-of-use" target="_blank">Términos de Uso</a> y
-                <a routerLink="/privacy" target="_blank">Política de Privacidad</a>.
+                <a routerLink="/terms-of-use" target="_blank">Terminos de Uso</a> y
+                <a routerLink="/privacy" target="_blank">Politica de Privacidad</a>.
             </p>
-        </div>
+        </aside>
     </div>
     }
 </div>

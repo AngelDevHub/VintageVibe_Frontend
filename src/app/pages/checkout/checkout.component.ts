@@ -2,6 +2,10 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 import { OrderService } from '../../core/services/order.service';
 import { AddressService } from '../../core/services/address.service';
 import { CartService } from '../../core/services/cart.service';
@@ -18,9 +22,10 @@ export interface CardForm {
 
 @Component({
   selector: 'app-checkout',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, ButtonModule, TagModule, ToastModule],
   templateUrl: './checkout.component.html',
-  styleUrls: ['./checkout.component.css']
+  styleUrls: ['./checkout.component.css'],
+  providers: [MessageService]
 })
 export class CheckoutComponent implements OnInit {
   private orderService = inject(OrderService);
@@ -28,6 +33,7 @@ export class CheckoutComponent implements OnInit {
   private cartService = inject(CartService);
   private pmService = inject(PaymentMethodService);
   private couponService = inject(CouponService);
+  private messageService = inject(MessageService);
 
   cart = this.cartService.cart;
   addresses = signal<Address[]>([]);
@@ -36,7 +42,6 @@ export class CheckoutComponent implements OnInit {
   isPlacingOrder = signal(false);
   isSavingAddress = signal(false);
   orderSuccess = signal<Order | null>(null);
-  errorMessage = signal('');
   couponCode = '';
   appliedCoupon = signal<Coupon | null>(null);
   isValidatingCoupon = signal(false);
@@ -87,14 +92,6 @@ export class CheckoutComponent implements OnInit {
     isDefault: [false]
   });
 
-  paymentIcons: Record<string, string> = {
-    CREDIT_CARD: '💳',
-    DEBIT_CARD: '🏧',
-    PAYPAL: '🅿️',
-    BANK_TRANSFER: '🏦',
-    CASH_ON_DELIVERY: '💵'
-  };
-
   paymentLabels: Record<string, string> = {
     CREDIT_CARD: 'Tarjeta de Crédito',
     DEBIT_CARD: 'Tarjeta de Débito',
@@ -139,29 +136,37 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
-  getPaymentIcon(name: string): string {
-    return this.paymentIcons[name] || '💰';
-  }
-
   getPaymentLabel(name: string): string {
     return this.paymentLabels[name] || name;
+  }
+
+  getPaymentIconClass(name: string): string {
+    const icons: Record<string, string> = {
+      CREDIT_CARD: 'pi pi-credit-card',
+      DEBIT_CARD: 'pi pi-credit-card',
+      PAYPAL: 'pi pi-wallet',
+      BANK_TRANSFER: 'pi pi-building-columns',
+      CASH_ON_DELIVERY: 'pi pi-money-bill'
+    };
+
+    return icons[name] || 'pi pi-wallet';
   }
 
   saveAddress() {
     if (this.addressForm.invalid) {
       this.addressForm.markAllAsTouched();
-      this.errorMessage.set('Por favor completa todos los campos obligatorios y corrige los errores de formato.');
+      this.showToast('warn', 'Formulario incompleto', 'Completa los campos obligatorios y corrige los errores.');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
     this.isSavingAddress.set(true);
-    this.errorMessage.set('');
     this.addressService.create(this.addressForm.getRawValue() as Address).subscribe({
       next: (addr: Address) => {
         this.addresses.update((addrs: Address[]) => [...addrs, addr]);
         this.selectedAddressId.set(addr.id);
         this.isSavingAddress.set(false);
         this.addressForm.reset({ addressType: 'SHIPPING', isDefault: false });
+        this.showToast('success', 'Direccion guardada', 'La nueva direccion ya se puede usar en este pedido.');
       },
       error: (err: any) => {
         this.isSavingAddress.set(false);
@@ -174,9 +179,9 @@ export class CheckoutComponent implements OnInit {
               control.markAsTouched();
             }
           });
-          this.errorMessage.set('Existen errores en el formulario, revisa los campos señalados debajo.');
+          this.showToast('error', 'Revisa el formulario', 'Hay campos con errores que deben corregirse.');
         } else {
-          this.errorMessage.set('Error al guardar la dirección');
+          this.showToast('error', 'No se pudo guardar', 'Intenta de nuevo en unos segundos.');
         }
       }
     });
@@ -227,31 +232,31 @@ export class CheckoutComponent implements OnInit {
       next: (coupon) => {
         this.appliedCoupon.set(coupon);
         this.isValidatingCoupon.set(false);
+        this.showToast('success', 'Cupon aplicado', 'El descuento ya se reflejo en el resumen del pedido.');
       },
       error: () => {
         this.appliedCoupon.set(null);
         this.isValidatingCoupon.set(false);
-        this.errorMessage.set('Cupón no válido o expirado');
-        setTimeout(() => this.errorMessage.set(''), 3000);
+        this.showToast('error', 'Cupon no valido', 'Revisa el codigo o intenta con otro cupon.');
       }
     });
   }
 
   placeOrder() {
     if (!this.selectedAddressId()) {
-      this.errorMessage.set('Selecciona una dirección de envío');
+      this.showToast('warn', 'Direccion requerida', 'Selecciona una direccion de envio antes de continuar.');
       return;
     }
     if (!this.selectedPaymentMethod()) {
-      this.errorMessage.set('Selecciona un método de pago');
+      this.showToast('warn', 'Metodo de pago requerido', 'Selecciona un metodo de pago para continuar.');
       return;
     }
     if (this.isCardPayment() && !this.validateCardForm()) {
+      this.showToast('warn', 'Tarjeta incompleta', this.cardError() || 'Revisa los datos de tu tarjeta.');
       return;
     }
 
     this.isPlacingOrder.set(true);
-    this.errorMessage.set('');
 
     // ✅ FIX: Enviamos el name exacto de la BD
     this.orderService.checkout({
@@ -263,12 +268,22 @@ export class CheckoutComponent implements OnInit {
         this.isPlacingOrder.set(false);
         this.orderSuccess.set(order);
         this.cartService.clearLocalCart();
+        this.showToast('success', 'Pedido confirmado', `Tu orden ${order.orderNumber} se genero correctamente.`);
       },
       error: (err: any) => {
         this.isPlacingOrder.set(false);
         const msg = err.error?.message || err.error?.error || 'Error al procesar el pedido. Intenta de nuevo.';
-        this.errorMessage.set(msg);
+        this.showToast('error', 'No se pudo procesar', msg);
       }
+    });
+  }
+
+  private showToast(severity: 'success' | 'info' | 'warn' | 'error', summary: string, detail: string) {
+    this.messageService.add({
+      severity,
+      summary,
+      detail,
+      life: 3500
     });
   }
 }
