@@ -84,6 +84,98 @@
     margin-bottom: var(--spacing-3xl);
 }
 
+.account-pulse {
+    margin-bottom: var(--spacing-3xl);
+}
+
+.pulse-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-xl);
+    padding: var(--spacing-2xl);
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: var(--radius-xl);
+    border: 1px solid rgba(212, 165, 116, 0.18);
+    box-shadow: var(--shadow-lg);
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.pulse-kicker,
+.pulse-label {
+    display: block;
+    margin: 0 0 0.45rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-primary-dark);
+}
+
+.pulse-hero h2 {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 2.8vw, 2.5rem);
+    color: var(--color-dark);
+}
+
+.pulse-hero p {
+    margin: 0;
+    max-width: 720px;
+    color: var(--color-gray);
+    line-height: 1.6;
+}
+
+.pulse-highlight {
+    min-width: 180px;
+    padding: 1rem 1.15rem;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(212, 165, 116, 0.18), rgba(255, 255, 255, 0.96));
+    border: 1px solid rgba(212, 165, 116, 0.2);
+    text-align: right;
+}
+
+.pulse-highlight span {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--color-gray);
+}
+
+.pulse-highlight strong {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: clamp(1.9rem, 3vw, 2.5rem);
+    color: var(--color-dark);
+}
+
+.pulse-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.pulse-card {
+    padding: var(--spacing-xl);
+    background: rgba(255, 255, 255, 0.82);
+    border-radius: 22px;
+    border: 1px solid rgba(212, 165, 116, 0.18);
+    box-shadow: var(--shadow-md);
+}
+
+.pulse-card strong {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+    color: var(--color-dark);
+}
+
+.pulse-card p {
+    margin: 0;
+    color: var(--color-gray);
+    line-height: 1.6;
+}
+
 .summary-card {
     border-radius: var(--radius-xl);
 }
@@ -125,6 +217,17 @@
     font-size: clamp(2rem, 3vw, 2.6rem);
     margin: 0;
     color: var(--color-dark);
+}
+
+.orders-subtitle {
+    margin: 0.45rem 0 0;
+    color: var(--color-gray);
+}
+
+.orders-actions {
+    display: flex;
+    gap: 0.85rem;
+    flex-wrap: wrap;
 }
 
 .loading-container {
@@ -288,6 +391,7 @@
 }
 
 @media (max-width: 900px) {
+    .pulse-grid,
     .profile-summary {
         grid-template-columns: 1fr;
     }
@@ -296,6 +400,11 @@
 @media (max-width: 640px) {
     .profile-page {
         padding-inline: 1rem;
+    }
+
+    .pulse-highlight {
+        width: 100%;
+        text-align: left;
     }
 
     .order-header,

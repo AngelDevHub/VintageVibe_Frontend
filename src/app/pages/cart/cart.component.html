@@ -22,6 +22,44 @@
     }
 
     @if (!isLoading() && (cart()?.items?.length ?? 0) > 0) {
+    <section class="cart-insights">
+        <article class="insight-hero">
+            <div>
+                <p class="insight-kicker">Compra dinamica</p>
+                <h2>{{ purchaseStage().label }}</h2>
+                <p>{{ purchaseStage().detail }}</p>
+            </div>
+            <div class="insight-pill">
+                <span>Progreso comercial</span>
+                <strong>{{ goalProgress() }}%</strong>
+            </div>
+        </article>
+
+        <div class="insight-grid">
+            <article class="insight-card">
+                <span class="insight-label">Productos</span>
+                <strong>{{ itemCount() }}</strong>
+                <p>{{ unitCount() }} unidades seleccionadas en total.</p>
+            </article>
+            <article class="insight-card">
+                <span class="insight-label">Stock sensible</span>
+                <strong>{{ lowStockItems().length }}</strong>
+                <p>{{ cartPulseMessage() }}</p>
+            </article>
+            <article class="insight-card">
+                <span class="insight-label">Meta visual</span>
+                <strong>MXN {{ cartGoal | number:'1.0-0' }}</strong>
+                <p>
+                    @if (amountToGoal() > 0) {
+                    Te faltan MXN {{ amountToGoal() | number:'1.0-0' }} para llegar a la meta del carrito.
+                    } @else {
+                    Ya alcanzaste la meta del carrito y tu pedido se ve completo.
+                    }
+                </p>
+            </article>
+        </div>
+    </section>
+
     <div class="cart-layout">
         <section class="cart-items">
             <div class="cart-headline">
@@ -51,6 +89,10 @@
                         <p-tag [value]="item.stock > 5 ? 'En stock' : 'Ultimas unidades'" [severity]="item.stock > 5 ? 'success' : 'warn'" [rounded]="true"></p-tag>
                         <p-tag [value]="'Cantidad: ' + item.quantity" severity="secondary" [rounded]="true"></p-tag>
                     </div>
+                    <div class="stock-hint" [class.stock-hint-warn]="item.stock <= 3">
+                        <i class="pi" [ngClass]="getStockTone(item.stock) === 'warn' ? 'pi-bolt' : getStockTone(item.stock) === 'info' ? 'pi-info-circle' : 'pi-check-circle'"></i>
+                        <span>{{ getStockMessage(item.stock, item.quantity) }}</span>
+                    </div>
                 </div>
 
                 <div class="item-controls">
@@ -75,6 +117,30 @@
             <div class="summary-header">
                 <p class="summary-kicker">Resumen</p>
                 <h2>Pedido listo para checkout</h2>
+            </div>
+            <div class="summary-progress">
+                <div class="summary-progress-top">
+                    <span>Meta de carrito</span>
+                    <strong>{{ goalProgress() }}%</strong>
+                </div>
+                <div class="progress-track">
+                    <span class="progress-fill" [style.width.%]="goalProgress()"></span>
+                </div>
+                <p>{{ cartPulseMessage() }}</p>
+            </div>
+            <div class="summary-metrics">
+                <div>
+                    <span>Items</span>
+                    <strong>{{ itemCount() }}</strong>
+                </div>
+                <div>
+                    <span>Unidades</span>
+                    <strong>{{ unitCount() }}</strong>
+                </div>
+                <div>
+                    <span>Stock critico</span>
+                    <strong>{{ lowStockItems().length }}</strong>
+                </div>
             </div>
             <div class="summary-row">
                 <span>Subtotal</span>

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -10,7 +10,7 @@ import { MessageService } from 'primeng/api';
 import { OrderService } from '../../core/services/order.service';
 import { AuthService } from '../../core/services/auth.service';
 import { WebAuthnService } from '../../core/services/webauthn.service';
-import { Order } from '../../core/models';
+import { Order, PageResponse } from '../../core/models';
 
 @Component({
   selector: 'app-profile',
@@ -29,6 +29,47 @@ export class ProfileComponent implements OnInit {
   isLoading = signal(true);
   currentPage = signal(0);
   totalPages = signal(0);
+  totalOrders = signal(0);
+  visibleSpent = computed(() => this.orders().reduce((total, order) => total + order.totalAmount, 0));
+  visibleItems = computed(() => this.orders().reduce((total, order) => total + order.items.reduce((sum, item) => sum + item.quantity, 0), 0));
+  activeOrders = computed(() => this.orders().filter(order => ['PENDING', 'PAID', 'SHIPPED'].includes(order.status.toUpperCase())).length);
+  deliveredOrders = computed(() => this.orders().filter(order => order.status.toUpperCase() === 'DELIVERED').length);
+  averageTicket = computed(() => {
+    const orders = this.orders();
+    if (!orders.length) return 0;
+    return this.visibleSpent() / orders.length;
+  });
+  latestOrder = computed(() => this.orders()[0] ?? null);
+  customerTier = computed(() => {
+    const totalOrders = this.totalOrders();
+
+    if (totalOrders >= 8) return 'Cliente recurrente';
+    if (totalOrders >= 3) return 'Comprador activo';
+    if (totalOrders >= 1) return 'Nueva coleccionista';
+    return 'Cuenta lista para estrenar';
+  });
+  accountPulse = computed(() => {
+    const latest = this.latestOrder();
+
+    if (!latest) {
+      return 'Tu cuenta ya esta lista para guardar direcciones, finalizar compras y seguir tus proximos pedidos.';
+    }
+
+    const latestStatus = latest.status.toUpperCase();
+    if (latestStatus === 'SHIPPED') {
+      return `Tu pedido ${latest.orderNumber} ya va en camino.`;
+    }
+
+    if (latestStatus === 'DELIVERED') {
+      return `Tu pedido ${latest.orderNumber} ya fue entregado; es un buen momento para volver a tienda.`;
+    }
+
+    if (latestStatus === 'PENDING' || latestStatus === 'PAID') {
+      return `Tu pedido ${latest.orderNumber} sigue en proceso. Revisa los detalles desde esta cuenta.`;
+    }
+
+    return `Tu ultimo pedido visible es ${latest.orderNumber}.`;
+  });
 
   ngOnInit() {
     this.loadOrders(0);
@@ -38,9 +79,10 @@ export class ProfileComponent implements OnInit {
     this.currentPage.set(page);
     this.isLoading.set(true);
     this.orderService.getMyOrders(page).subscribe({
-      next: (response: any) => {
+      next: (response: PageResponse<Order>) => {
         this.orders.set(response.content || []);
         this.totalPages.set(response.totalPages || 0);
+        this.totalOrders.set(response.totalElements || response.content.length || 0);
         this.isLoading.set(false);
       },
       error: () => this.isLoading.set(false)

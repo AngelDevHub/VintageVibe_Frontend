@@ -31,21 +31,53 @@
         </div>
     </section>
 
+    <section class="account-pulse">
+        <article class="pulse-hero">
+            <div>
+                <p class="pulse-kicker">Actividad dinamica</p>
+                <h2>{{ customerTier() }}</h2>
+                <p>{{ accountPulse() }}</p>
+            </div>
+            <div class="pulse-highlight">
+                <span>Pedidos totales</span>
+                <strong>{{ totalOrders() }}</strong>
+            </div>
+        </article>
+
+        <div class="pulse-grid">
+            <article class="pulse-card">
+                <span class="pulse-label">Pedidos activos</span>
+                <strong>{{ activeOrders() }}</strong>
+                <p>Ordenes visibles que siguen en proceso, pago o envio.</p>
+            </article>
+            <article class="pulse-card">
+                <span class="pulse-label">Gasto visible</span>
+                <strong>MXN {{ visibleSpent() | number:'1.0-0' }}</strong>
+                <p>Total acumulado de los pedidos cargados en esta vista.</p>
+            </article>
+            <article class="pulse-card">
+                <span class="pulse-label">Ticket promedio</span>
+                <strong>MXN {{ averageTicket() | number:'1.0-0' }}</strong>
+                <p>Promedio por pedido visible para entender tu ritmo de compra.</p>
+            </article>
+        </div>
+    </section>
+
     <section class="profile-summary">
         <p-card styleClass="summary-card">
-            <p class="summary-label">Pedidos registrados</p>
-            <h2>{{ orders().length }}</h2>
-            <span>Pedidos cargados en esta pagina</span>
+            <p class="summary-label">Pedidos totales</p>
+            <h2>{{ totalOrders() }}</h2>
+            <span>Pedidos registrados en tu cuenta.</span>
         </p-card>
         <p-card styleClass="summary-card">
-            <p class="summary-label">Pagina actual</p>
-            <h2>{{ currentPage() + 1 }}</h2>
-            <span>De {{ totalPages() || 1 }} disponibles</span>
+            <p class="summary-label">Unidades visibles</p>
+            <h2>{{ visibleItems() }}</h2>
+            <span>Piezas incluidas en los pedidos cargados actualmente.</span>
         </p-card>
         <p-card styleClass="summary-card">
-            <p class="summary-label">Seguridad</p>
-            <h2>Passkey</h2>
-            <span>Agrega acceso rapido y seguro a tu cuenta</span>
+            <p class="summary-label">Pedidos entregados</p>
+            <h2>{{ deliveredOrders() }}</h2>
+            <span>Ordenes visibles que ya terminaron su recorrido.</span>
         </p-card>
     </section>
 
@@ -54,10 +86,16 @@
             <div>
                 <p class="orders-kicker">Historial</p>
                 <h2>Mis pedidos</h2>
+                <p class="orders-subtitle">Pagina {{ currentPage() + 1 }} de {{ totalPages() || 1 }} con actividad real de tu cuenta.</p>
             </div>
-            <a pButton [routerLink]="['/shop']" label="Seguir comprando" icon="pi pi-shopping-bag" iconPos="right"
-                [outlined]="true" severity="secondary">
-            </a>
+            <div class="orders-actions">
+                <button pButton (click)="registerPasskey()" label="Configurar passkey" icon="pi pi-shield"
+                    iconPos="right" [outlined]="true" severity="secondary">
+                </button>
+                <a pButton [routerLink]="['/shop']" label="Seguir comprando" icon="pi pi-shopping-bag" iconPos="right"
+                    [outlined]="true" severity="secondary">
+                </a>
+            </div>
         </div>
 
         @if (isLoading()) {

@@ -270,6 +270,105 @@
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(245, 241, 237, 0.95) 100%);
 }
 
+.home-pulse-section {
+    padding: var(--spacing-3xl) 0;
+    background: linear-gradient(180deg, rgba(255, 252, 247, 0.96) 0%, rgba(255, 247, 238, 0.92) 100%);
+}
+
+.pulse-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+}
+
+.pulse-hero-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-xl);
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-xl);
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(212, 165, 116, 0.22);
+    box-shadow: var(--shadow-lg);
+    flex-wrap: wrap;
+}
+
+.pulse-badge {
+    margin-bottom: var(--spacing-md);
+}
+
+.pulse-title {
+    margin-bottom: var(--spacing-sm);
+}
+
+.pulse-description {
+    max-width: 760px;
+    color: var(--color-gray);
+    line-height: 1.7;
+    margin: 0;
+}
+
+.pulse-chip {
+    min-width: 240px;
+    padding: 1rem 1.15rem;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(212, 165, 116, 0.18), rgba(255, 255, 255, 0.95));
+    border: 1px solid rgba(212, 165, 116, 0.18);
+    text-align: right;
+}
+
+.pulse-chip span {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--color-gray);
+}
+
+.pulse-chip strong {
+    display: block;
+    margin-top: 0.45rem;
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    line-height: 1.5;
+    color: var(--color-dark);
+}
+
+.pulse-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.pulse-card {
+    padding: var(--spacing-xl);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.86);
+    border: 1px solid rgba(212, 165, 116, 0.18);
+    box-shadow: var(--shadow-md);
+}
+
+.pulse-label {
+    display: block;
+    margin: 0 0 0.45rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-primary-dark);
+}
+
+.pulse-card strong {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-size: clamp(1.55rem, 2.2vw, 2rem);
+    color: var(--color-dark);
+}
+
+.pulse-card p {
+    margin: 0;
+    color: var(--color-gray);
+    line-height: 1.6;
+}
+
 .campaign-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -840,6 +939,7 @@
 }
 
 @media (max-width: 992px) {
+    .pulse-grid,
     .campaign-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -868,10 +968,16 @@
     }
 
     .campaign-grid,
+    .pulse-grid,
     .collections-grid,
     .products-grid,
     .features-grid {
         grid-template-columns: 1fr;
+    }
+
+    .pulse-chip {
+        width: 100%;
+        text-align: left;
     }
 
     .newsletter-content {

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, NgZone } from '@angular/core';
+import { Component, OnInit, computed, inject, signal, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -151,6 +151,7 @@ export class HomeComponent implements OnInit {
   newsletterStatus = signal<'idle' | 'success' | 'error' | 'loading'>('idle');
   activeCampaign = signal<SeasonalCampaign>(DEFAULT_CAMPAIGN);
   campaignSchedule = SEASONAL_CAMPAIGNS;
+  today = signal(new Date());
   private bc = new BroadcastChannel('vintage_vibe_updates');
   categoryIcons: Record<string, string> = {
     dresses: 'pi pi-sparkles',
@@ -186,6 +187,67 @@ export class HomeComponent implements OnInit {
       description: 'Cada pieza pasa por una seleccion que cuida estilo, estado y coherencia.'
     }
   ];
+  categoryCount = computed(() => this.categories().length);
+  featuredCount = computed(() => this.featuredProducts().length);
+  featuredFromPrice = computed(() => {
+    const prices = this.featuredProducts()
+      .map(product => this.getProductPrice(product))
+      .filter(price => price > 0);
+
+    return prices.length ? Math.min(...prices) : 0;
+  });
+  featuredAveragePrice = computed(() => {
+    const prices = this.featuredProducts()
+      .map(product => this.getProductPrice(product))
+      .filter(price => price > 0);
+
+    if (!prices.length) return 0;
+
+    return prices.reduce((total, price) => total + price, 0) / prices.length;
+  });
+  campaignCountdown = computed(() => {
+    const campaign = this.activeCampaign();
+
+    if (!campaign.isSpecial) {
+      return 'Curaduria permanente disponible todo el año.';
+    }
+
+    const daysLeft = this.getCampaignDaysLeft(campaign, this.today());
+    if (daysLeft <= 0) {
+      return 'Ultimo dia de la edicion activa.';
+    }
+
+    return `Quedan ${daysLeft} ${daysLeft === 1 ? 'dia' : 'dias'} de esta edicion.`;
+  });
+  homePulse = computed(() => {
+    const campaign = this.activeCampaign();
+    const categories = this.categoryCount();
+    const featured = this.featuredCount();
+
+    if (campaign.isSpecial && featured > 0) {
+      return `La portada esta en modo ${campaign.name.toLowerCase()} con ${featured} novedades destacadas listas para explorar.`;
+    }
+
+    if (categories > 0) {
+      return `La tienda ya muestra ${categories} categorias activas para navegar tu estilo por tipo de pieza.`;
+    }
+
+    return 'Estamos preparando la curaduria principal para que descubras nuevas piezas.';
+  });
+  heroStats = computed(() => ([
+    {
+      value: `${this.categoryCount() || 0}`,
+      label: 'Categorias activas'
+    },
+    {
+      value: `${this.featuredCount() || 0}`,
+      label: 'Novedades visibles'
+    },
+    {
+      value: this.activeCampaign().isSpecial ? this.activeCampaign().periodLabel : 'Todo el ano',
+      label: 'Ventana de campaña'
+    }
+  ]));
 
   ngOnInit() {
     this.activeCampaign.set(this.getCurrentCampaign(new Date()));
@@ -276,5 +338,12 @@ export class HomeComponent implements OnInit {
 
   private getMonthDayValue(month: number, day: number): number {
     return month * 100 + day;
+  }
+
+  private getCampaignDaysLeft(campaign: SeasonalCampaign, today: Date): number {
+    const endDate = new Date(today.getFullYear(), campaign.endMonth - 1, campaign.endDay);
+    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const diffMs = endDate.getTime() - startOfToday.getTime();
+    return Math.ceil(diffMs / (1000 * 60 * 60 * 24));
   }
 }

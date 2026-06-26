@@ -17,6 +17,38 @@
     }
 
     @if (!orderSuccess()) {
+    <section class="checkout-insights">
+        <article class="checkout-pulse-card">
+            <div>
+                <p class="checkout-kicker">Checkout dinamico</p>
+                <h2>{{ checkoutReadiness().label }}</h2>
+                <p>{{ checkoutReadiness().detail }}</p>
+            </div>
+            <div class="checkout-progress-pill">
+                <span>Progreso</span>
+                <strong>{{ checkoutProgress() }}%</strong>
+            </div>
+        </article>
+
+        <div class="checkout-insight-grid">
+            <article class="checkout-insight">
+                <span class="insight-label">Productos</span>
+                <strong>{{ itemCount() }}</strong>
+                <p>{{ unitCount() }} unidades listas para enviarse.</p>
+            </article>
+            <article class="checkout-insight">
+                <span class="insight-label">Pago actual</span>
+                <strong>{{ selectedPaymentMethod() ? selectedPaymentLabel() : 'Sin definir' }}</strong>
+                <p>{{ paymentSupportText() }}</p>
+            </article>
+            <article class="checkout-insight">
+                <span class="insight-label">Pulso del pedido</span>
+                <strong>MXN {{ finalTotal() | number:'1.0-0' }}</strong>
+                <p>{{ checkoutPulse() }}</p>
+            </article>
+        </div>
+    </section>
+
     <div class="checkout-layout">
         <div class="checkout-main">
             <section class="checkout-card">
@@ -255,6 +287,31 @@
 
         <aside class="order-summary">
             <h2>Resumen del pedido</h2>
+            <div class="summary-progress-card">
+                <div class="summary-progress-top">
+                    <span>Estado del checkout</span>
+                    <strong>{{ checkoutProgress() }}%</strong>
+                </div>
+                <div class="summary-progress-track">
+                    <span class="summary-progress-fill" [style.width.%]="checkoutProgress()"></span>
+                </div>
+                <p>{{ checkoutPulse() }}</p>
+            </div>
+
+            <div class="summary-meta-grid">
+                <div>
+                    <span>Direccion</span>
+                    <strong>{{ selectedAddress() ? 'Lista' : 'Pendiente' }}</strong>
+                </div>
+                <div>
+                    <span>Pago</span>
+                    <strong>{{ selectedPaymentMethod() ? 'Activo' : 'Pendiente' }}</strong>
+                </div>
+                <div>
+                    <span>Ahorro</span>
+                    <strong>MXN {{ discountAmount() | number:'1.0-0' }}</strong>
+                </div>
+            </div>
 
             @if (cart()) {
             <div class="summary-items">

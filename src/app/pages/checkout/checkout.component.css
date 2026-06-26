@@ -85,6 +85,98 @@
     align-items: start;
 }
 
+.checkout-insights {
+    margin-bottom: 2rem;
+}
+
+.checkout-pulse-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.8rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 24px;
+    border: 1px solid rgba(212, 165, 116, 0.18);
+    box-shadow: 0 18px 42px rgba(44, 36, 22, 0.08);
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.checkout-kicker,
+.insight-label {
+    display: block;
+    margin: 0 0 0.45rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-primary-dark);
+}
+
+.checkout-pulse-card h2 {
+    margin: 0 0 0.55rem;
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    color: var(--color-dark);
+}
+
+.checkout-pulse-card p {
+    margin: 0;
+    color: var(--color-gray);
+    line-height: 1.6;
+    max-width: 760px;
+}
+
+.checkout-progress-pill {
+    min-width: 165px;
+    padding: 1rem 1.15rem;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(212, 165, 116, 0.18), rgba(255, 255, 255, 0.96));
+    border: 1px solid rgba(212, 165, 116, 0.18);
+    text-align: right;
+}
+
+.checkout-progress-pill span {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--color-gray);
+}
+
+.checkout-progress-pill strong {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    color: var(--color-dark);
+}
+
+.checkout-insight-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.checkout-insight {
+    padding: 1.35rem;
+    background: rgba(255, 255, 255, 0.84);
+    border-radius: 20px;
+    border: 1px solid rgba(212, 165, 116, 0.16);
+    box-shadow: 0 10px 28px rgba(44, 36, 22, 0.06);
+}
+
+.checkout-insight strong {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-size: clamp(1.35rem, 2vw, 1.8rem);
+    color: var(--color-dark);
+}
+
+.checkout-insight p {
+    margin: 0;
+    color: var(--color-gray);
+    line-height: 1.55;
+}
+
 @media (max-width: 980px) {
     .checkout-layout {
         grid-template-columns: 1fr;
@@ -529,11 +621,12 @@
    ORDER SUMMARY
    =========================== */
 .order-summary {
-    background: #17161c;
-    color: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.96);
+    color: var(--color-dark);
     border-radius: 24px;
     padding: 1.8rem;
-    box-shadow: 0 24px 50px rgba(23, 22, 28, 0.22);
+    box-shadow: 0 24px 50px rgba(44, 36, 22, 0.12);
+    border: 1px solid rgba(212, 165, 116, 0.16);
     position: sticky;
     top: 1.5rem;
 }
@@ -542,7 +635,79 @@
     font-family: var(--font-heading);
     font-size: 1.7rem;
     margin-bottom: 1.25rem;
-    color: white;
+    color: var(--color-dark);
+}
+
+.summary-progress-card {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(248, 244, 239, 0.98), rgba(255, 255, 255, 1));
+    border: 1px solid rgba(212, 165, 116, 0.16);
+}
+
+.summary-progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.summary-progress-top span,
+.summary-meta-grid span {
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-gray);
+}
+
+.summary-progress-top strong,
+.summary-meta-grid strong {
+    color: var(--color-dark);
+}
+
+.summary-progress-track {
+    width: 100%;
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(212, 165, 116, 0.16);
+    overflow: hidden;
+}
+
+.summary-progress-fill {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-dark));
+    border-radius: inherit;
+}
+
+.summary-progress-card p {
+    margin: 0.75rem 0 0;
+    color: var(--color-gray);
+    font-size: 0.9rem;
+    line-height: 1.55;
+}
+
+.summary-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin-bottom: 1rem;
+}
+
+.summary-meta-grid div {
+    padding: 0.85rem 0.75rem;
+    border-radius: 18px;
+    background: rgba(248, 244, 239, 0.72);
+    text-align: center;
+}
+
+.summary-meta-grid strong {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 1rem;
 }
 
 .summary-items {
@@ -561,10 +726,10 @@
 .item-img-mini {
     width: 56px;
     height: 64px;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(248, 244, 239, 0.86);
     border-radius: 12px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(212, 165, 116, 0.14);
     flex-shrink: 0;
 }
 
@@ -580,7 +745,7 @@
     align-items: center;
     justify-content: center;
     font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.58);
+    color: var(--color-gray);
 }
 
 .item-details {
@@ -592,24 +757,24 @@
 .item-name {
     font-size: 0.9rem;
     font-weight: 600;
-    color: white;
+    color: var(--color-dark);
     line-height: 1.3;
 }
 
 .item-meta {
     font-size: 0.78rem;
-    color: rgba(255, 255, 255, 0.62);
+    color: var(--color-gray);
 }
 
 .item-price {
     font-size: 0.85rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.92);
+    color: var(--color-dark);
 }
 
 .summary-divider {
     border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(212, 165, 116, 0.16);
     margin: 1rem 0;
 }
 
@@ -617,7 +782,7 @@
     display: flex;
     justify-content: space-between;
     font-size: 0.92rem;
-    color: rgba(255, 255, 255, 0.72);
+    color: var(--color-gray);
     margin-bottom: 0.6rem;
 }
 
@@ -635,7 +800,7 @@
     justify-content: space-between;
     font-size: 1.25rem;
     font-weight: 800;
-    color: white;
+    color: var(--color-dark);
     margin-top: 0.75rem;
 }
 
@@ -646,14 +811,14 @@
 
 .checkout-terms {
     font-size: 0.76rem;
-    color: rgba(255, 255, 255, 0.55);
+    color: var(--color-gray);
     text-align: center;
     margin-top: 0.85rem;
     line-height: 1.6;
 }
 
 .checkout-terms a {
-    color: var(--color-primary-light);
+    color: var(--color-primary-dark);
     text-decoration: none;
 }
 
@@ -685,6 +850,16 @@
 @media (max-width: 768px) {
     .checkout-page {
         padding-inline: 1rem;
+    }
+
+    .checkout-insight-grid,
+    .summary-meta-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .checkout-progress-pill {
+        width: 100%;
+        text-align: left;
     }
 
     .form-row,

@@ -72,6 +72,101 @@ export class CheckoutComponent implements OnInit {
     const subtotal = this.cart()?.total || 0;
     return Math.max(0, subtotal - this.discountAmount());
   });
+  itemCount = computed(() => this.cart()?.items.length ?? 0);
+  unitCount = computed(() => (this.cart()?.items ?? []).reduce((total, item) => total + item.quantity, 0));
+  selectedAddress = computed(() => this.addresses().find(addr => addr.id === this.selectedAddressId()) ?? null);
+  cardLooksComplete = computed(() => {
+    const digits = this.cardForm.number.replace(/\s/g, '');
+    return digits.length >= 13
+      && !!this.cardForm.name.trim()
+      && /^\d{2}\/\d{2}$/.test(this.cardForm.expiry)
+      && this.cardForm.cvv.length >= 3;
+  });
+  canPlaceOrder = computed(() => {
+    if (!this.selectedAddressId() || !this.selectedPaymentMethod() || this.itemCount() === 0) {
+      return false;
+    }
+
+    if (this.isCardPayment()) {
+      return this.cardLooksComplete();
+    }
+
+    return true;
+  });
+  checkoutProgress = computed(() => {
+    let completed = 1; // carrito con productos
+
+    if (this.selectedAddressId()) completed += 1;
+    if (this.selectedPaymentMethod()) completed += 1;
+    if (this.canPlaceOrder()) completed += 1;
+
+    return Math.round((completed / 4) * 100);
+  });
+  checkoutPulse = computed(() => {
+    if (!this.selectedAddressId()) {
+      return 'Selecciona una direccion para desbloquear la entrega de tu pedido.';
+    }
+
+    if (!this.selectedPaymentMethod()) {
+      return 'Elige un metodo de pago para terminar de preparar tu compra.';
+    }
+
+    if (this.isCardPayment() && !this.cardLooksComplete()) {
+      return 'Completa los datos de tu tarjeta para confirmar el pedido.';
+    }
+
+    if (this.appliedCoupon()) {
+      return `Tu descuento ya esta aplicado y ahorras MXN ${this.discountAmount().toLocaleString('es-MX')}.`;
+    }
+
+    return 'Tu pedido esta listo para confirmarse cuando quieras.';
+  });
+  selectedPaymentLabel = computed(() => this.getPaymentLabel(this.selectedPaymentMethod()));
+  paymentSupportText = computed(() => {
+    const method = this.selectedPaymentMethod();
+
+    if (method === 'CREDIT_CARD' || method === 'DEBIT_CARD') {
+      return 'Confirmacion inmediata con validacion visual de tarjeta.';
+    }
+    if (method === 'PAYPAL') {
+      return 'Pago rapido con autorizacion externa y flujo seguro.';
+    }
+    if (method === 'BANK_TRANSFER') {
+      return 'Tu pedido se aparta y se confirma al validar el deposito.';
+    }
+    if (method === 'CASH_ON_DELIVERY') {
+      return 'Ideal si prefieres pagar al recibir, con monto exacto.';
+    }
+
+    return 'Selecciona un metodo para conocer la modalidad de cierre.';
+  });
+  checkoutReadiness = computed(() => {
+    if (this.canPlaceOrder()) {
+      return {
+        label: 'Listo para confirmar',
+        detail: 'Ya tienes direccion, metodo y resumen completo para cerrar tu compra.'
+      };
+    }
+
+    if (this.selectedAddressId() && this.selectedPaymentMethod()) {
+      return {
+        label: 'Ultimo ajuste',
+        detail: 'Solo falta completar los datos finales del pago para confirmar.'
+      };
+    }
+
+    if (this.selectedAddressId() || this.selectedPaymentMethod()) {
+      return {
+        label: 'Pedido en preparacion',
+        detail: 'Tu checkout ya avanzo. Completa el paso faltante para seguir.'
+      };
+    }
+
+    return {
+      label: 'Empezando checkout',
+      detail: 'Selecciona tu direccion y tu metodo de pago para continuar.'
+    };
+  });
 
   // Formulario de tarjeta (simulado)
   cardForm: CardForm = { number: '', name: '', expiry: '', cvv: '' };
