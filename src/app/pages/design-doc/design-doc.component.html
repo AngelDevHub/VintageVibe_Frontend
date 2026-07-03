@@ -581,36 +581,74 @@
     <section class="doc-section" id="eventos-interactivos">
       <div class="section-number">11</div>
       <div class="section-content">
-        <h2>Eventos Interactivos Implementados</h2>
-        <p>Se agregaron dos mejoras orientadas a la consigna: un menu desplegable basado en eventos del puntero y un cambio visual automatico de la interfaz basado en periodos del calendario.</p>
+        <h2>Documentacion de Eventos JavaScript</h2>
+        <p>Para esta version del proyecto se documentan dos comportamientos interactivos solicitados en la consigna: una actualizacion visual automatica por temporada y un evento de puntero que destaca contenido dentro del sitio. Ambos eventos ya quedaron integrados en la rama de trabajo del proyecto.</p>
+
+        <div class="version-card">
+          <div class="version-item">
+            <span class="version-label">Rama documentada</span>
+            <strong>develop</strong>
+          </div>
+          <div class="version-item">
+            <span class="version-label">Version del cambio</span>
+            <strong>v1.1 · eventos de temporada</strong>
+          </div>
+          <div class="version-item">
+            <span class="version-label">Commit base</span>
+            <strong><code>ebb7680</code></strong>
+          </div>
+        </div>
 
         <div class="feature-proof-grid">
           <article class="proof-card">
-            <span class="proof-tag">Menu por puntero</span>
-            <h3>Colecciones en el navbar</h3>
-            <p>El elemento <code>Colecciones</code> abre un submenu con categorias usando <code>pointerenter</code> y <code>pointerleave</code>. Para pantallas tactiles y uso mixto tambien responde a <code>pointerdown</code>.</p>
+            <span class="proof-tag">Evento JavaScript por fecha</span>
+            <h3>Actualizacion de temporada en la portada</h3>
+            <p>El componente principal del inicio evalua la fecha actual del sistema mediante <code>new Date()</code> y selecciona una temporada activa. A partir de esa verificacion, la interfaz actualiza automaticamente banner, colores, titulos y mensajes destacados del hero.</p>
             <ul class="proof-list">
-              <li>Despliega categorias reales obtenidas desde el servicio del frontend</li>
-              <li>Permite navegar directo a la tienda filtrada por categoria</li>
-              <li>Se adapta a escritorio y movil con una variante en el menu lateral</li>
+              <li>Tipo de evento: ejecucion automatica en carga del componente con logica condicional por fecha</li>
+              <li>Objetivo: adaptar la identidad visual del sitio a campañas estacionales sin editar manualmente el contenido</li>
+              <li>Impacto visible: cambia el fondo del hero, el texto principal, la etiqueta de temporada y el mensaje comercial</li>
+              <li>Ventanas activas: 10 al 16 de febrero, 1 al 30 de junio, 20 al 31 de octubre y 1 al 31 de diciembre</li>
             </ul>
           </article>
 
           <article class="proof-card">
-            <span class="proof-tag">Evento basado en periodo</span>
-            <h3>Hero dinamico por calendario</h3>
-            <p>La portada principal ahora consulta la fecha actual y activa una campana visual. El cambio modifica el fondo, el banner superior, los textos del hero y el CTA principal.</p>
+            <span class="proof-tag">Evento por puntero</span>
+            <h3>Destacar contenido mediante el puntero</h3>
+            <p>Dentro de la seccion de temporadas del <code>home</code> se aplico un destacado de contenido usando <code>pointerenter</code> y <code>pointerleave</code>. Cuando el usuario pasa el puntero sobre una tarjeta de campaña, esa tarjeta se resalta y el hero muestra una vista previa de esa temporada.</p>
             <ul class="proof-list">
-              <li>San Valentin Retro: 10 al 16 de febrero</li>
-              <li>Summer Vintage Fest: 1 al 30 de junio</li>
-              <li>Halloween Clasico: 20 al 31 de octubre</li>
-              <li>Holiday Classics: 1 al 31 de diciembre</li>
+              <li>Tipo de evento: <code>pointerenter</code>, <code>pointerleave</code>, <code>focusin</code> y <code>focusout</code></li>
+              <li>Objetivo: llamar la atencion del usuario hacia una campaña concreta sin cambiar de ruta</li>
+              <li>Impacto visible: elevacion de la tarjeta, cambio de etiqueta y actualizacion del contenido destacado de la portada</li>
+              <li>Ventaja UX: el usuario entiende la propuesta de temporada antes de hacer clic</li>
+            </ul>
+          </article>
+
+          <article class="proof-card">
+            <span class="proof-tag">Menu por puntero</span>
+            <h3>Navegacion desplegable en Colecciones</h3>
+            <p>Adicionalmente, el navbar conserva el submenu de <code>Colecciones</code> activado por puntero. Esto refuerza que el proyecto usa eventos reales del puntero tanto en navegacion como en destacado de contenido.</p>
+            <ul class="proof-list">
+              <li><code>pointerenter</code> abre el submenu en escritorio</li>
+              <li><code>pointerleave</code> lo cierra cuando el usuario sale del area interactiva</li>
+              <li><code>pointerdown</code> mantiene compatibilidad con interaccion tactil o mixta</li>
             </ul>
           </article>
         </div>
 
+        <div class="doc-detail-grid">
+          <article class="detail-card">
+            <h3>Descripcion tecnica del evento de temporada</h3>
+            <p>La logica se implementa en el <code>HomeComponent</code> con una lista de campañas y un metodo que compara mes y dia actual contra rangos definidos. El resultado se guarda en una senal reactiva, por lo que la interfaz se recompone sin recargar la pagina.</p>
+          </article>
+          <article class="detail-card">
+            <h3>Descripcion tecnica del evento por puntero</h3>
+            <p>La tarjeta recibe el evento del puntero y activa una senal de vista previa temporal. Mientras el puntero permanece sobre la tarjeta, la campaña queda destacada. Al salir, el sistema restaura la campaña calendarizada que corresponde por fecha.</p>
+          </article>
+        </div>
+
         <div class="alert alert-success">
-          <strong>Resultado:</strong> La aplicacion ya muestra una interaccion disparada por eventos del puntero y una modificacion visual automatica basada en periodos calendarizados, cumpliendo con el requerimiento funcional solicitado.
+          <strong>Resultado:</strong> La aplicacion cumple con la consigna al incluir un evento JavaScript de actualizacion por temporada y un evento de puntero para destacar contenido de forma visible y demostrable dentro del sitio.
         </div>
       </div>
     </section>
@@ -618,45 +656,54 @@
     <section class="doc-section" id="evidencias">
       <div class="section-number">12</div>
       <div class="section-content">
-        <h2>Evidencias y Capturas de Pantalla</h2>
-        <p>Esta seccion queda lista para anexar las capturas solicitadas dentro de la misma pagina. Puedes abrir <a routerLink="/">Inicio</a>, tomar la evidencia y luego sustituir cada marcador visual por tu captura final si tu entrega lo requiere.</p>
+        <h2>Evidencias, Capturas y Grabacion</h2>
+        <p>Esta seccion sirve como anexo de entrega. Desde aqui puedes tomar capturas y preparar la grabacion breve solicitada. La demostracion recomendada se realiza en <a routerLink="/">Inicio</a> y en el menu principal del sitio.</p>
 
         <div class="evidence-grid">
           <article class="evidence-card">
             <div class="evidence-placeholder">
               <span>Captura 1</span>
-              <p>Navbar con el cursor o puntero sobre <code>Colecciones</code> antes de desplegar el submenu.</p>
+              <p>Estado inicial del <code>home</code> con la campaña activa segun la fecha del sistema.</p>
             </div>
-            <h3>Estado inicial del menu</h3>
-            <p>Muestra el encabezado principal y el acceso disponible para que el usuario interactue con el elemento del navbar.</p>
+            <h3>Evento JavaScript de temporada</h3>
+            <p>Captura el hero mostrando el banner, el titulo y la temporada activa para evidenciar el cambio automatico de interfaz.</p>
           </article>
 
           <article class="evidence-card">
             <div class="evidence-placeholder">
               <span>Captura 2</span>
-              <p>Menu desplegado por evento del puntero, mostrando categorias y enlaces interactivos.</p>
+              <p>Puntero sobre una tarjeta de temporada dentro del <code>home</code>, mostrando el destacado visual y la vista previa activa.</p>
             </div>
-            <h3>Menu desplegable en uso</h3>
-            <p>Demuestra la respuesta al evento del puntero y la interaccion del usuario con el submenu de colecciones.</p>
+            <h3>Destacado de contenido por puntero</h3>
+            <p>Demuestra que el contenido cambia de estado cuando el usuario coloca el puntero sobre una tarjeta de campaña.</p>
           </article>
 
           <article class="evidence-card">
             <div class="evidence-placeholder">
               <span>Captura 3</span>
-              <p>Banner superior y portada principal con la campana activa segun la fecha del sistema.</p>
+              <p>Menu <code>Colecciones</code> desplegado por puntero en el navbar.</p>
             </div>
-            <h3>Evento calendarizado aplicado</h3>
-            <p>Sirve para comprobar el cambio de interfaz, ya sea en fondo, mensaje principal o banner activo.</p>
+            <h3>Menu por puntero</h3>
+            <p>Sirve como evidencia complementaria de uso de eventos del puntero en otra parte funcional del sitio.</p>
           </article>
         </div>
 
         <div class="capture-guide">
-          <h3>Guia rapida para documentar</h3>
+          <h3>Guia breve para la grabacion de pantalla</h3>
           <div class="capture-steps">
-            <div class="capture-step"><strong>1.</strong> Abre la ruta principal <code>/</code> y deja visible el hero con su banner tematico.</div>
-            <div class="capture-step"><strong>2.</strong> Coloca el puntero sobre <code>Colecciones</code> para abrir el menu y toma la evidencia del despliegue.</div>
-            <div class="capture-step"><strong>3.</strong> Usa esta misma pagina <code>/design-doc</code> como anexo para describir cada captura en tu entrega.</div>
+            <div class="capture-step"><strong>1.</strong> Abre la ruta <code>/</code> y deja visible el hero con su banner de temporada y la seccion de campañas.</div>
+            <div class="capture-step"><strong>2.</strong> Mueve el puntero sobre una tarjeta de temporada para que se active el destacado visual y se actualice la vista previa del hero.</div>
+            <div class="capture-step"><strong>3.</strong> Desplaza el puntero al navbar y colocalo sobre <code>Colecciones</code> para mostrar el submenu.</div>
+            <div class="capture-step"><strong>4.</strong> Graba entre 15 y 30 segundos mostrando primero la temporada activa y despues la reaccion del sitio al puntero.</div>
+            <div class="capture-step"><strong>5.</strong> Inserta esta pagina <code>/design-doc</code> como anexo documental junto con las capturas o el enlace al video.</div>
           </div>
+        </div>
+
+        <div class="recording-script">
+          <h3>Guion sugerido para explicar tu evidencia</h3>
+          <div class="script-line"><strong>Inicio:</strong> "La portada cambia automaticamente segun la temporada configurada con JavaScript y la fecha actual del sistema."</div>
+          <div class="script-line"><strong>Puntero:</strong> "Al pasar el puntero sobre una campaña, el contenido se destaca visualmente y la portada muestra una vista previa de esa temporada."</div>
+          <div class="script-line"><strong>Navegacion:</strong> "Ademas, el menu Colecciones responde al puntero para desplegar opciones de navegacion de forma interactiva."</div>
         </div>
       </div>
     </section>

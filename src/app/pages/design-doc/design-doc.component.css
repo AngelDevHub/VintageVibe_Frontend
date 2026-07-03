@@ -719,6 +719,48 @@ code {
   gap: 0.45rem;
 }
 
+.version-card,
+.doc-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.version-item,
+.detail-card {
+  background: white;
+  border: 1px solid #eeebe7;
+  border-radius: 16px;
+  padding: 1.35rem 1.5rem;
+  box-shadow: 0 8px 18px rgba(44, 36, 22, 0.05);
+}
+
+.version-label {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8B7355;
+}
+
+.version-item strong,
+.detail-card h3 {
+  color: #2C2416;
+}
+
+.detail-card h3 {
+  margin-top: 0;
+  border: none;
+  padding-bottom: 0;
+}
+
+.detail-card p {
+  margin-bottom: 0;
+}
+
 .evidence-placeholder {
   min-height: 180px;
   border: 2px dashed #d6c9b9;
@@ -771,6 +813,30 @@ code {
   background: #f7f5f2;
   color: #6B6458;
   font-size: 0.88rem;
+}
+
+.recording-script {
+  margin-top: 1.5rem;
+  background: #fcfaf7;
+  border: 1px solid #e5dfd4;
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.recording-script h3 {
+  margin-top: 0;
+}
+
+.script-line {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid #efe7db;
+  color: #6B6458;
+  line-height: 1.7;
+}
+
+.script-line:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 /* ── Doc Footer ── */

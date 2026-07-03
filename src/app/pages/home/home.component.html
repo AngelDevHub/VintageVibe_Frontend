@@ -115,15 +115,21 @@
 
             <div class="campaign-grid">
                 <p-card *ngFor="let campaign of campaignSchedule" styleClass="campaign-card"
-                    [class.active]="campaign.id === activeCampaign().id">
+                    [class.active]="isCampaignHighlighted(campaign.id)"
+                    [class.previewing]="highlightedCampaign()?.id === campaign.id"
+                    (pointerenter)="previewCampaign(campaign)"
+                    (pointerleave)="resetCampaignPreview()"
+                    (focusin)="previewCampaign(campaign)"
+                    (focusout)="resetCampaignPreview()">
                     <div class="campaign-topline">
                         <span class="campaign-period">{{ campaign.periodLabel }}</span>
-                        <p-tag class="campaign-marker" [value]="campaign.id === activeCampaign().id ? 'Edicion visible' : 'Proxima edicion'" [severity]="campaign.id === activeCampaign().id ? 'success' : 'info'" [rounded]="true"></p-tag>
+                        <p-tag class="campaign-marker" [value]="isCampaignHighlighted(campaign.id) ? 'Edicion destacada' : 'Proxima edicion'" [severity]="isCampaignHighlighted(campaign.id) ? 'success' : 'info'" [rounded]="true"></p-tag>
                     </div>
                     <h3 class="campaign-name">{{ campaign.name }}</h3>
                     <p class="campaign-description">{{ campaign.detailText }}</p>
                     <div class="campaign-footer">
                         <p-tag class="campaign-badge" [value]="campaign.badge" severity="contrast" [rounded]="true"></p-tag>
+                        <span class="campaign-pointer-note">{{ highlightedCampaign()?.id === campaign.id ? 'Vista previa por puntero activa' : 'Pasa el puntero para destacarla' }}</span>
                     </div>
                 </p-card>
             </div>

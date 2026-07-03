@@ -149,7 +149,9 @@ export class HomeComponent implements OnInit {
   isLoading = signal(true);
   newsletterEmail = signal('');
   newsletterStatus = signal<'idle' | 'success' | 'error' | 'loading'>('idle');
-  activeCampaign = signal<SeasonalCampaign>(DEFAULT_CAMPAIGN);
+  calendarCampaign = signal<SeasonalCampaign>(DEFAULT_CAMPAIGN);
+  highlightedCampaign = signal<SeasonalCampaign | null>(null);
+  activeCampaign = computed(() => this.highlightedCampaign() ?? this.calendarCampaign());
   campaignSchedule = SEASONAL_CAMPAIGNS;
   today = signal(new Date());
   private bc = new BroadcastChannel('vintage_vibe_updates');
@@ -250,7 +252,7 @@ export class HomeComponent implements OnInit {
   ]));
 
   ngOnInit() {
-    this.activeCampaign.set(this.getCurrentCampaign(new Date()));
+    this.calendarCampaign.set(this.getCurrentCampaign(new Date()));
     this.bc.onmessage = (event) => {
       if (event.data?.type === 'DATA_UPDATED') {
         this.zone.run(() => {
@@ -321,6 +323,18 @@ export class HomeComponent implements OnInit {
   getCategoryIcon(categoryName: string): string {
     const normalized = categoryName.toLowerCase();
     return Object.entries(this.categoryIcons).find(([key]) => normalized.includes(key))?.[1] || 'pi pi-tag';
+  }
+
+  previewCampaign(campaign: SeasonalCampaign): void {
+    this.highlightedCampaign.set(campaign);
+  }
+
+  resetCampaignPreview(): void {
+    this.highlightedCampaign.set(null);
+  }
+
+  isCampaignHighlighted(campaignId: string): boolean {
+    return this.activeCampaign().id === campaignId;
   }
 
   private isValidEmail(email: string): boolean {

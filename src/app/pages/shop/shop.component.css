@@ -123,6 +123,13 @@
   color: var(--color-dark);
 }
 
+.filters-note {
+  margin: 0.45rem 0 0;
+  color: var(--color-gray);
+  line-height: 1.6;
+  font-size: 0.92rem;
+}
+
 .filters-controls {
   display: flex;
   align-items: center;

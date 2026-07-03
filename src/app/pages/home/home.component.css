@@ -388,6 +388,10 @@
     box-shadow: var(--shadow-xl);
 }
 
+.campaign-card.previewing {
+    transform: translateY(-8px) scale(1.01);
+}
+
 .campaign-topline {
     display: flex;
     align-items: center;
@@ -429,12 +433,21 @@
 }
 
 .campaign-footer {
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
 }
 
 .campaign-badge {
     font-weight: 700;
+}
+
+.campaign-pointer-note {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-secondary-dark);
 }
 
 /* ===================================

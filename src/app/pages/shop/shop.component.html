@@ -28,6 +28,7 @@
       <div class="filters-copy">
         <p class="filters-kicker">Busqueda y filtros</p>
         <h2>Encuentra una pieza con identidad</h2>
+        <p class="filters-note">{{ searchExperienceText() }}</p>
       </div>
 
       <div class="filters-controls">
@@ -39,7 +40,7 @@
             pInputText
             type="text"
             class="search-input"
-            placeholder="Buscar por nombre o estilo..."
+            placeholder="Buscar con coincidencia flexible por nombre, marca, categoria o descripcion..."
             [ngModel]="searchTerm()"
             (ngModelChange)="onSearchChange($event)"
           />
@@ -72,6 +73,9 @@
 
       @if (!isLoading() && totalElements() > 0) {
       <p-tag class="result-count" [value]="totalElements() + ' producto' + (totalElements() !== 1 ? 's' : '')" severity="secondary" [rounded]="true"></p-tag>
+      }
+      @if (searchTerm()) {
+      <p-tag class="result-count" value="Busqueda flexible activa" severity="contrast" [rounded]="true"></p-tag>
       }
     </div>
 
