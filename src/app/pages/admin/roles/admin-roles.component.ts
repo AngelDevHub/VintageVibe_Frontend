@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
@@ -38,15 +39,15 @@ export class AdminRolesComponent implements OnInit {
         }
         this.loading.set(false);
       },
-      error: () => {
+      error: (error) => {
         this.loading.set(false);
-        this.showToast('error', 'No se pudieron cargar los roles');
+        this.showToast('error', this.getErrorDetail(error, 'No se pudieron cargar los roles.'));
       }
     });
 
     this.adminService.getPermissions().subscribe({
       next: (permissions) => this.permissions.set(permissions),
-      error: () => this.showToast('error', 'No se pudieron cargar los permisos')
+      error: (error) => this.showToast('error', this.getErrorDetail(error, 'No se pudieron cargar los permisos.'))
     });
   }
 
@@ -57,7 +58,10 @@ export class AdminRolesComponent implements OnInit {
   }
 
   saveRoleName() {
-    if (!this.roleName.trim()) return;
+    if (!this.roleName.trim()) {
+      this.showToast('error', 'Escribe un nombre para el rol antes de guardarlo.');
+      return;
+    }
 
     if (!this.selectedRoleId()) {
       this.adminService.createRole(this.roleName.trim()).subscribe({
@@ -66,7 +70,7 @@ export class AdminRolesComponent implements OnInit {
           this.selectRole(role);
           this.showToast('success', 'Rol creado');
         },
-        error: () => this.showToast('error', 'No se pudo crear el rol')
+        error: (error) => this.showToast('error', this.getErrorDetail(error, 'No se pudo crear el rol.'))
       });
       return;
     }
@@ -77,13 +81,21 @@ export class AdminRolesComponent implements OnInit {
         this.selectRole(role);
         this.showToast('success', 'Rol actualizado');
       },
-      error: () => this.showToast('error', 'No se pudo actualizar el rol')
+      error: (error) => this.showToast('error', this.getErrorDetail(error, 'No se pudo actualizar el rol.'))
     });
   }
 
   savePermissions() {
     const roleId = this.selectedRoleId();
-    if (!roleId || !this.selectedPermissionIds.length) return;
+    if (!roleId) {
+      this.showToast('error', 'Selecciona o crea un rol antes de guardar permisos.');
+      return;
+    }
+
+    if (!this.selectedPermissionIds.length) {
+      this.showToast('error', 'Selecciona al menos un permiso para el rol.');
+      return;
+    }
 
     this.adminService.updateRolePermissions(roleId, this.selectedPermissionIds).subscribe({
       next: (role) => {
@@ -91,7 +103,7 @@ export class AdminRolesComponent implements OnInit {
         this.selectRole(role);
         this.showToast('success', 'Permisos actualizados');
       },
-      error: () => this.showToast('error', 'No se pudieron actualizar los permisos')
+      error: (error) => this.showToast('error', this.getErrorDetail(error, 'No se pudieron actualizar los permisos.'))
     });
   }
 
@@ -123,5 +135,22 @@ export class AdminRolesComponent implements OnInit {
       detail,
       life: 3000
     });
+  }
+
+  private getErrorDetail(error: unknown, fallback: string): string {
+    if (error instanceof HttpErrorResponse) {
+      if (typeof error.error?.message === 'string' && error.error.message.trim()) {
+        return error.error.message;
+      }
+
+      if (error.error && typeof error.error === 'object') {
+        const validationErrors = Object.values(error.error).filter(value => typeof value === 'string');
+        if (validationErrors.length) {
+          return String(validationErrors[0]);
+        }
+      }
+    }
+
+    return fallback;
   }
 }

@@ -76,8 +76,39 @@
 /* ── Form inside table / modal ── */
 .table-loader { padding: 2rem; text-align: center; color: #9ca3af; font-size: 0.9rem; }
 
-.role-select { border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 4px 8px; font-size: 0.82rem; cursor: pointer; outline: none; background: white; }
-.role-select:focus { border-color: #D4A574; }
+.role-select {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px 36px 8px 12px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  background-color: #ffffff;
+  color: #1f2937;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #8b5e34 50%),
+    linear-gradient(135deg, #8b5e34 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 3px),
+    calc(100% - 12px) calc(50% - 3px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.role-select:focus {
+  border-color: #D4A574;
+  box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.18);
+}
+
+.role-select option,
+.form-field select option {
+  color: #1f2937;
+  background: #ffffff;
+}
 
 /* ── Form Panel (for modals/create forms) ── */
 .form-panel { padding: 1.5rem; background: #f9fafb; border-top: 1px solid #f0f0f0; }
@@ -86,7 +117,7 @@
 .form-field label { font-size: 0.77rem; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
 .form-field input, .form-field select, .form-field textarea {
   padding: 9px 12px; border: 1.5px solid #e5e7eb; border-radius: 10px;
-  font-size: 0.875rem; outline: none; background: white; transition: border-color 0.15s;
+  font-size: 0.875rem; outline: none; background: white; transition: border-color 0.15s; color: #1f2937;
 }
 .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: #D4A574; }
 .form-actions { display: flex; gap: 10px; justify-content: flex-end; }

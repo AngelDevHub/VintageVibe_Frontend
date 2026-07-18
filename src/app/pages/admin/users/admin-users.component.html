@@ -46,13 +46,13 @@
         </div>
         <div class="form-field">
           <label>Rol</label>
-          <select [(ngModel)]="userForm.roleName">
+          <select class="role-select" [(ngModel)]="userForm.roleName">
             <option *ngFor="let role of roles()" [value]="role.name">{{ role.name }}</option>
           </select>
         </div>
         <div class="form-field">
           <label>Cuenta activa</label>
-          <select [(ngModel)]="userForm.isActive">
+          <select class="role-select" [(ngModel)]="userForm.isActive">
             <option [ngValue]="true">Activa</option>
             <option [ngValue]="false">Inactiva</option>
           </select>

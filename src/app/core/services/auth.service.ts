@@ -30,8 +30,12 @@ export class AuthService {
       const savedToken = sessionStorage.getItem('vv_token');
       const savedUser = sessionStorage.getItem('vv_user');
       if (savedToken && savedUser) {
-        this._token.set(savedToken);
-        this._user.set(JSON.parse(savedUser));
+        try {
+          this._token.set(savedToken);
+          this._user.set(JSON.parse(savedUser));
+        } catch {
+          this.clearSession(false);
+        }
       }
     }
   }
@@ -64,17 +68,23 @@ export class AuthService {
     });
   }
 
+  expireSession(): void {
+    this.clearSession();
+  }
+
   getToken(): string | null {
     return this._token();
   }
 
-  private clearSession(): void {
+  private clearSession(redirect = true): void {
     this._token.set(null);
     this._user.set(null);
     if (isPlatformBrowser(this.platformId)) {
       sessionStorage.removeItem('vv_token');
       sessionStorage.removeItem('vv_user');
     }
-    this.router.navigate(['/login']);
+    if (redirect) {
+      this.router.navigate(['/login']);
+    }
   }
 }

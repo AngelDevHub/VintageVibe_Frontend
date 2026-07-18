@@ -8,6 +8,7 @@ import Aura from '@primeuix/themes/aura';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { authErrorInterceptor } from './core/interceptors/auth-error.interceptor';
 import { baseUrlInterceptor } from './core/interceptors/base-url.interceptor';
 
 export const appConfig: ApplicationConfig = {
@@ -26,7 +27,8 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([
         baseUrlInterceptor,
-        authInterceptor
+        authInterceptor,
+        authErrorInterceptor
       ])
     )
   ]

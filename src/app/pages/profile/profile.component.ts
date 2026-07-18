@@ -1,5 +1,6 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -203,6 +204,11 @@ export class ProfileComponent implements OnInit {
   }
 
   updatePassword() {
+    if (!this.passwordForm.currentPassword.trim() || !this.passwordForm.newPassword.trim()) {
+      this.showToast('error', 'Datos incompletos', 'Escribe tu contraseña actual y la nueva contraseña.');
+      return;
+    }
+
     this.isChangingPassword.set(true);
     this.accountService.changePassword(
       this.passwordForm.currentPassword.trim(),
@@ -214,9 +220,9 @@ export class ProfileComponent implements OnInit {
         this.loadAccessHistory(0);
         this.showToast('success', 'Contraseña actualizada', 'Tu contraseña se cambió correctamente y quedó registrada en la bitácora.');
       },
-      error: () => {
+      error: (error) => {
         this.isChangingPassword.set(false);
-        this.showToast('error', 'No se pudo actualizar', 'Revisa tu contraseña actual y la política de seguridad.');
+        this.showToast('error', 'No se pudo actualizar', this.getErrorDetail(error, 'Revisa tu contraseña actual y la política de seguridad.'));
       }
     });
   }
@@ -244,5 +250,22 @@ export class ProfileComponent implements OnInit {
       detail,
       life: 3500
     });
+  }
+
+  private getErrorDetail(error: unknown, fallback: string): string {
+    if (error instanceof HttpErrorResponse) {
+      if (typeof error.error?.message === 'string' && error.error.message.trim()) {
+        return error.error.message;
+      }
+
+      if (error.error && typeof error.error === 'object') {
+        const validationErrors = Object.values(error.error).filter(value => typeof value === 'string');
+        if (validationErrors.length) {
+          return String(validationErrors[0]);
+        }
+      }
+    }
+
+    return fallback;
   }
 }

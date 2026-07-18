@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
@@ -49,14 +50,17 @@ export class AdminUsersComponent implements OnInit {
         this.total.set(p.totalElements);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false)
+      error: (error) => {
+        this.loading.set(false);
+        this.showToast('error', this.getErrorDetail(error, 'No se pudieron cargar los usuarios.'));
+      }
     });
   }
 
   loadRoles() {
     this.adminService.getRoles().subscribe({
       next: (roles) => this.roles.set(roles),
-      error: () => this.showToast('error', 'No se pudieron cargar los roles.')
+      error: (error) => this.showToast('error', this.getErrorDetail(error, 'No se pudieron cargar los roles.'))
     });
   }
 
@@ -69,7 +73,7 @@ export class AdminUsersComponent implements OnInit {
         this.users.update(list => list.map(u => u.id === id ? updated : u));
         this.showToast('success', 'Rol actualizado');
       },
-      error: () => this.showToast('error', 'Error al cambiar rol')
+      error: (error) => this.showToast('error', this.getErrorDetail(error, 'Error al cambiar rol.'))
     });
   }
 
@@ -79,7 +83,7 @@ export class AdminUsersComponent implements OnInit {
         this.users.update(list => list.map(x => x.id === u.id ? u : x));
         this.showToast('success', `Usuario ${u.isActive ? 'activado' : 'desactivado'}`);
       },
-      error: () => this.showToast('error', 'No se pudo cambiar el estatus')
+      error: (error) => this.showToast('error', this.getErrorDetail(error, 'No se pudo cambiar el estatus.'))
     });
   }
 
@@ -106,6 +110,16 @@ export class AdminUsersComponent implements OnInit {
   }
 
   saveUser() {
+    if (!this.userForm.firstName.trim() || !this.userForm.lastName.trim() || !this.userForm.email.trim()) {
+      this.showToast('error', 'Completa nombre, apellido y correo antes de guardar.');
+      return;
+    }
+
+    if (!this.editingUserId() && !this.userForm.password.trim()) {
+      this.showToast('error', 'La contraseña inicial es obligatoria para crear un usuario.');
+      return;
+    }
+
     const payload = {
       firstName: this.userForm.firstName.trim(),
       lastName: this.userForm.lastName.trim(),
@@ -124,7 +138,7 @@ export class AdminUsersComponent implements OnInit {
           this.userForm = this.createEmptyUserForm();
           this.showToast('success', 'Usuario actualizado');
         },
-        error: () => this.showToast('error', 'No se pudo actualizar el usuario')
+        error: (error) => this.showToast('error', this.getErrorDetail(error, 'No se pudo actualizar el usuario.'))
       });
       return;
     }
@@ -140,7 +154,7 @@ export class AdminUsersComponent implements OnInit {
         this.userForm = this.createEmptyUserForm();
         this.showToast('success', 'Usuario creado');
       },
-      error: () => this.showToast('error', 'No se pudo crear el usuario')
+      error: (error) => this.showToast('error', this.getErrorDetail(error, 'No se pudo crear el usuario.'))
     });
   }
 
@@ -157,7 +171,11 @@ export class AdminUsersComponent implements OnInit {
 
   savePassword() {
     const userId = this.passwordUserId();
-    if (!userId || !this.passwordForm.newPassword.trim()) return;
+    if (!userId) return;
+    if (!this.passwordForm.newPassword.trim()) {
+      this.showToast('error', 'Escribe una nueva contraseña antes de guardar.');
+      return;
+    }
 
     this.adminService.changeUserPassword(userId, this.passwordForm.newPassword.trim()).subscribe({
       next: () => {
@@ -165,7 +183,7 @@ export class AdminUsersComponent implements OnInit {
         this.passwordForm = { newPassword: '' };
         this.showToast('success', 'Contraseña actualizada');
       },
-      error: () => this.showToast('error', 'No se pudo actualizar la contraseña')
+      error: (error) => this.showToast('error', this.getErrorDetail(error, 'No se pudo actualizar la contraseña.'))
     });
   }
 
@@ -187,9 +205,9 @@ export class AdminUsersComponent implements OnInit {
         this.historyTotalPages.set(response.totalPages);
         this.historyLoading.set(false);
       },
-      error: () => {
+      error: (error) => {
         this.historyLoading.set(false);
-        this.showToast('error', 'No se pudo cargar la bitácora del usuario');
+        this.showToast('error', this.getErrorDetail(error, 'No se pudo cargar la bitácora del usuario.'));
       }
     });
   }
@@ -206,7 +224,7 @@ export class AdminUsersComponent implements OnInit {
         this.total.update(value => Math.max(0, value - 1));
         this.showToast('success', 'Usuario eliminado');
       },
-      error: () => this.showToast('error', 'Error al eliminar')
+      error: (error) => this.showToast('error', this.getErrorDetail(error, 'Error al eliminar el usuario.'))
     });
   }
 
@@ -229,5 +247,22 @@ export class AdminUsersComponent implements OnInit {
       detail,
       life: 3000
     });
+  }
+
+  private getErrorDetail(error: unknown, fallback: string): string {
+    if (error instanceof HttpErrorResponse) {
+      if (typeof error.error?.message === 'string' && error.error.message.trim()) {
+        return error.error.message;
+      }
+
+      if (error.error && typeof error.error === 'object') {
+        const validationErrors = Object.values(error.error).filter(value => typeof value === 'string');
+        if (validationErrors.length) {
+          return String(validationErrors[0]);
+        }
+      }
+    }
+
+    return fallback;
   }
 }
