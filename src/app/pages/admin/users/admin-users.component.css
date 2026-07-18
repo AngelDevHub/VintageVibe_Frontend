@@ -1,1 +1,11 @@
 @import '../admin-shared.css';
+
+.security-note {
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: #9a3412;
+}
+
+.access-header {
+  padding: 1.25rem 1.5rem 0;
+}

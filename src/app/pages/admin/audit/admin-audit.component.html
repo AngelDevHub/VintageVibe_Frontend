@@ -1,0 +1,43 @@
+<div class="admin-page">
+  <div class="page-header">
+    <div>
+      <h1>Bitácora de accesos</h1>
+      <p>{{ total() }} registros de autenticación, cambios de contraseña y administración.</p>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <input class="search-input" placeholder="Buscar por usuario o acción..." [(ngModel)]="searchTerm" (input)="load()">
+  </div>
+
+  <div class="table-card">
+    <div *ngIf="loading()" class="table-loader">Cargando bitácora...</div>
+
+    <table class="data-table" *ngIf="!loading()">
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Acción</th>
+          <th>Fecha y hora</th>
+          <th>IP</th>
+          <th>Detalle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of logs()">
+          <td>{{ log.userEmail }}</td>
+          <td>{{ log.action }}</td>
+          <td>{{ log.createdAt | date:'medium' }}</td>
+          <td>{{ log.ipAddress || 'No disponible' }}</td>
+          <td>{{ log.details || 'Sin detalle adicional' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="pagination" *ngIf="totalPages() > 1">
+      <button [disabled]="page() === 0" (click)="goPage(page() - 1)">← Anterior</button>
+      <span>Página {{ page() + 1 }} de {{ totalPages() }}</span>
+      <button [disabled]="page() + 1 >= totalPages()" (click)="goPage(page() + 1)">Siguiente →</button>
+    </div>
+  </div>
+</div>

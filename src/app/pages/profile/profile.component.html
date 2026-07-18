@@ -6,8 +6,8 @@
             <div class="avatar">{{ getInitials() }}</div>
             <div class="user-info">
                 <p class="profile-kicker">Mi cuenta</p>
-                <h1>{{ authService.currentUser()?.firstName }} {{ authService.currentUser()?.lastName }}</h1>
-                <p class="user-email">{{ authService.email() }}</p>
+                <h1>{{ profile()?.firstName || authService.currentUser()?.firstName }} {{ profile()?.lastName || authService.currentUser()?.lastName }}</h1>
+                <p class="user-email">{{ profile()?.email || authService.email() }}</p>
                 <div class="profile-tags">
                     <p-tag value="Cliente activo" severity="contrast" [rounded]="true"></p-tag>
                     @if (authService.isAdmin()) {
@@ -79,6 +79,124 @@
             <h2>{{ deliveredOrders() }}</h2>
             <span>Ordenes visibles que ya terminaron su recorrido.</span>
         </p-card>
+    </section>
+
+    <section class="account-settings">
+        <article class="settings-card">
+            <div class="settings-head">
+                <div>
+                    <p class="orders-kicker">Perfil</p>
+                    <h2>Editar datos personales</h2>
+                </div>
+                <span class="settings-helper">Solo tú puedes actualizar esta información.</span>
+            </div>
+
+            <div class="settings-grid">
+                <label class="settings-field">
+                    <span>Nombre</span>
+                    <input [(ngModel)]="profileForm.firstName" placeholder="Nombre">
+                </label>
+                <label class="settings-field">
+                    <span>Apellido</span>
+                    <input [(ngModel)]="profileForm.lastName" placeholder="Apellido">
+                </label>
+                <label class="settings-field">
+                    <span>Email</span>
+                    <input [(ngModel)]="profileForm.email" placeholder="correo@ejemplo.com">
+                </label>
+                <label class="settings-field">
+                    <span>Teléfono</span>
+                    <input [(ngModel)]="profileForm.phone" placeholder="Opcional">
+                </label>
+            </div>
+
+            <div class="settings-actions">
+                <button pButton (click)="saveProfile()" [loading]="isSavingProfile()" label="Guardar perfil"
+                    icon="pi pi-save" iconPos="right">
+                </button>
+            </div>
+        </article>
+
+        <article class="settings-card">
+            <div class="settings-head">
+                <div>
+                    <p class="orders-kicker">Seguridad</p>
+                    <h2>Cambiar contraseña</h2>
+                </div>
+                <span class="settings-helper">Usa una clave con mayúsculas, minúsculas, números y símbolo.</span>
+            </div>
+
+            <div class="settings-grid">
+                <label class="settings-field">
+                    <span>Contraseña actual</span>
+                    <input type="password" [(ngModel)]="passwordForm.currentPassword" placeholder="Contraseña actual">
+                </label>
+                <label class="settings-field">
+                    <span>Nueva contraseña</span>
+                    <input type="password" [(ngModel)]="passwordForm.newPassword" placeholder="Nueva contraseña">
+                </label>
+            </div>
+
+            <div class="settings-actions">
+                <button pButton severity="secondary" [outlined]="true" (click)="updatePassword()"
+                    [loading]="isChangingPassword()" label="Actualizar contraseña" icon="pi pi-lock" iconPos="right">
+                </button>
+            </div>
+        </article>
+    </section>
+
+    <section class="access-history-card">
+        <div class="orders-headline">
+            <div>
+                <p class="orders-kicker">Auditoría personal</p>
+                <h2>Historial de accesos</h2>
+                <p class="orders-subtitle">Aquí verás inicios de sesión, cierres de sesión y cambios de contraseña de tu cuenta.</p>
+            </div>
+        </div>
+
+        @if (isLoadingAccess()) {
+        <div class="loading-container">
+            <p-progressSpinner strokeWidth="4" animationDuration=".8s" ariaLabel="Cargando bitácora"></p-progressSpinner>
+            <p>Cargando historial de accesos...</p>
+        </div>
+        }
+
+        @if (!isLoadingAccess() && accessHistory().length > 0) {
+        <div class="access-list">
+            @for (log of accessHistory(); track log.id) {
+            <article class="access-row">
+                <div>
+                    <strong>{{ log.action }}</strong>
+                    <p>{{ log.details || 'Sin detalle adicional.' }}</p>
+                </div>
+                <div class="access-meta">
+                    <span>{{ log.createdAt | date:'medium' }}</span>
+                    <span>{{ log.ipAddress || 'IP no disponible' }}</span>
+                </div>
+            </article>
+            }
+        </div>
+        }
+
+        @if (!isLoadingAccess() && accessHistory().length === 0) {
+        <div class="empty-orders compact-empty">
+            <div class="empty-icon"><i class="pi pi-history"></i></div>
+            <h3>Aún no hay eventos registrados</h3>
+            <p>La bitácora aparecerá aquí después de los próximos accesos y cambios de seguridad.</p>
+        </div>
+        }
+
+        @if (accessTotalPages() > 1) {
+        <div class="pagination">
+            <button pButton [disabled]="accessPage() === 0" (click)="loadAccessHistory(accessPage() - 1)"
+                label="Anterior" icon="pi pi-arrow-left" [text]="true">
+            </button>
+            <span>Pagina {{ accessPage() + 1 }} de {{ accessTotalPages() }}</span>
+            <button pButton [disabled]="accessPage() === accessTotalPages() - 1" (click)="loadAccessHistory(accessPage() + 1)"
+                label="Siguiente" icon="pi pi-arrow-right" iconPos="right" [text]="true">
+            </button>
+        </div>
+        }
     </section>
 
     <section class="profile-content">

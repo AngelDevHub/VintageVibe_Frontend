@@ -1,0 +1,76 @@
+<div class="admin-page">
+  <p-toast position="top-right"></p-toast>
+
+  <div class="page-header">
+    <div>
+      <h1>Roles y permisos</h1>
+      <p>Asigna privilegios y visualiza los permisos asociados a cada rol.</p>
+    </div>
+    <button class="btn-primary" (click)="startNewRole()">Nuevo rol</button>
+  </div>
+
+  <div class="roles-layout" *ngIf="!loading(); else loadingTpl">
+    <section class="table-card">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Rol</th>
+            <th>Permisos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let role of roles()" (click)="selectRole(role)" [class.selected-row]="selectedRoleId() === role.id">
+            <td>{{ role.name }}</td>
+            <td>{{ role.permissions.length }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="table-card">
+      <div class="form-panel">
+        <div class="page-header">
+          <div>
+            <h1>{{ selectedRoleId() ? 'Editar rol' : 'Crear rol' }}</h1>
+            <p>Modifica el nombre y los permisos asociados.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Nombre del rol</label>
+            <input [(ngModel)]="roleName" placeholder="ROLE_MANAGER">
+          </div>
+        </div>
+
+        <div class="form-actions inline-actions">
+          <button class="btn-primary" (click)="saveRoleName()">{{ selectedRoleId() ? 'Guardar nombre' : 'Crear rol' }}</button>
+        </div>
+
+        <div class="permissions-grid">
+          <label class="permission-card" *ngFor="let permission of permissions()">
+            <input
+              type="checkbox"
+              [checked]="isPermissionSelected(permission.id)"
+              (change)="togglePermission(permission.id, $any($event.target).checked)">
+            <div>
+              <strong>{{ permission.name }}</strong>
+              <span>{{ permission.module }}</span>
+              <p>{{ permission.description }}</p>
+            </div>
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-primary" [disabled]="!selectedRoleId()" (click)="savePermissions()">Guardar permisos</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <ng-template #loadingTpl>
+    <div class="table-card">
+      <div class="table-loader">Cargando roles y permisos...</div>
+    </div>
+  </ng-template>
+</div>

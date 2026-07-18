@@ -62,6 +62,8 @@ export const routes: Routes = [
       { path: 'products', loadComponent: () => import('./pages/admin/products/admin-products.component').then(m => m.AdminProductsComponent) },
       { path: 'orders', loadComponent: () => import('./pages/admin/orders/admin-orders.component').then(m => m.AdminOrdersComponent) },
       { path: 'users', loadComponent: () => import('./pages/admin/users/admin-users.component').then(m => m.AdminUsersComponent) },
+      { path: 'roles', loadComponent: () => import('./pages/admin/roles/admin-roles.component').then(m => m.AdminRolesComponent) },
+      { path: 'audit', loadComponent: () => import('./pages/admin/audit/admin-audit.component').then(m => m.AdminAuditComponent) },
       { path: 'payments', loadComponent: () => import('./pages/admin/payments/admin-payments.component').then(m => m.AdminPaymentsComponent) },
       { path: 'coupons', loadComponent: () => import('./pages/admin/coupons/admin-coupons.component').then(m => m.AdminCouponsComponent) },
       { path: 'reviews', loadComponent: () => import('./pages/admin/reviews/admin-reviews.component').then(m => m.AdminReviewsComponent) },

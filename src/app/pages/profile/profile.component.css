@@ -84,6 +84,77 @@
     margin-bottom: var(--spacing-3xl);
 }
 
+.account-settings {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-3xl);
+}
+
+.settings-card,
+.access-history-card {
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: var(--radius-xl);
+    border: 1px solid rgba(212, 165, 116, 0.18);
+    box-shadow: var(--shadow-lg);
+    padding: var(--spacing-2xl);
+}
+
+.settings-head {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.settings-helper {
+    color: var(--color-gray);
+    font-size: 0.85rem;
+    max-width: 260px;
+    line-height: 1.5;
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-md);
+}
+
+.settings-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.settings-field span {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary-dark);
+}
+
+.settings-field input {
+    border: 1px solid rgba(212, 165, 116, 0.22);
+    border-radius: 14px;
+    padding: 0.85rem 1rem;
+    background: rgba(255, 255, 255, 0.98);
+    color: var(--color-dark);
+}
+
+.settings-field input:focus {
+    outline: 2px solid rgba(212, 165, 116, 0.24);
+    border-color: rgba(212, 165, 116, 0.4);
+}
+
+.settings-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--spacing-lg);
+}
+
 .account-pulse {
     margin-bottom: var(--spacing-3xl);
 }
@@ -376,6 +447,46 @@
     color: var(--color-gray);
 }
 
+.access-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.access-row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--spacing-lg);
+    padding: 1rem 1.1rem;
+    border: 1px solid rgba(212, 165, 116, 0.14);
+    border-radius: 18px;
+    background: rgba(250, 247, 242, 0.75);
+    flex-wrap: wrap;
+}
+
+.access-row strong {
+    color: var(--color-dark);
+}
+
+.access-row p {
+    margin: 0.35rem 0 0;
+    color: var(--color-gray);
+    line-height: 1.5;
+}
+
+.access-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.35rem;
+    color: var(--color-gray);
+    font-size: 0.82rem;
+}
+
+.compact-empty {
+    padding: var(--spacing-2xl);
+}
+
 :host ::ng-deep .profile-page .summary-card .p-card-body {
     padding: var(--spacing-xl);
 }
@@ -392,7 +503,9 @@
 
 @media (max-width: 900px) {
     .pulse-grid,
-    .profile-summary {
+    .profile-summary,
+    .account-settings,
+    .settings-grid {
         grid-template-columns: 1fr;
     }
 }
@@ -415,5 +528,11 @@
 
     .order-right {
         align-items: flex-start;
+    }
+
+    .access-meta,
+    .settings-actions {
+        align-items: flex-start;
+        justify-content: flex-start;
     }
 }

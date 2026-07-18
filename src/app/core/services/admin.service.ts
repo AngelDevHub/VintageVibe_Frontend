@@ -8,9 +8,56 @@ import {
   Order, Payment, PaymentMethod, Review, Brand, Category
 } from '../models';
 
+export interface Permission {
+  id: number;
+  name: string;
+  module: string;
+  description: string;
+}
+
+export interface AdminRole {
+  id: number;
+  name: string;
+  permissions: Permission[];
+}
+
 export interface AdminUser {
-  id: number; email: string; firstName: string; lastName: string;
-  role: { id: number; name: string }; isActive: boolean;
+  id: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone?: string | null;
+  role: AdminRole;
+  isActive: boolean;
+  emailVerified?: boolean;
+  failedLoginAttempts?: number;
+  lockedUntil?: string | null;
+  lastLoginAt?: string | null;
+  passwordChangedAt?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface AuditLogEntry {
+  id: number;
+  userId?: number | null;
+  userEmail: string;
+  action: string;
+  ipAddress?: string | null;
+  details?: string | null;
+  createdAt: string;
+  date: string;
+  time: string;
+}
+
+export interface AdminUserPayload {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string | null;
+  password?: string;
+  roleName?: string;
+  isActive?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -44,14 +91,51 @@ export class AdminService {
     if (search) params = params.set('search', search);
     return this.http.get<PageResponse<AdminUser>>(`${this.api}/admin/users`, { params });
   }
+  getUserById(id: number): Observable<AdminUser> {
+    return this.http.get<AdminUser>(`${this.api}/admin/users/${id}`);
+  }
+  createUser(data: AdminUserPayload): Observable<AdminUser> {
+    return this.http.post<AdminUser>(`${this.api}/admin/users`, data);
+  }
+  updateUser(id: number, data: AdminUserPayload): Observable<AdminUser> {
+    return this.http.put<AdminUser>(`${this.api}/admin/users/${id}`, data);
+  }
   changeUserRole(id: number, roleName: string): Observable<AdminUser> {
     return this.http.patch<AdminUser>(`${this.api}/admin/users/${id}/role?roleName=${roleName}`, {});
   }
   toggleUserActive(id: number): Observable<AdminUser> {
     return this.http.patch<AdminUser>(`${this.api}/admin/users/${id}/toggle-active`, {});
   }
+  changeUserPassword(id: number, newPassword: string): Observable<void> {
+    return this.http.patch<void>(`${this.api}/admin/users/${id}/password`, { newPassword });
+  }
+  getUserAccessHistory(id: number, page = 0, size = 10): Observable<PageResponse<AuditLogEntry>> {
+    const params = new HttpParams().set('page', page).set('size', size);
+    return this.http.get<PageResponse<AuditLogEntry>>(`${this.api}/admin/users/${id}/access-history`, { params });
+  }
   deleteUser(id: number): Observable<void> {
     return this.http.delete<void>(`${this.api}/admin/users/${id}`);
+  }
+
+  getRoles(): Observable<AdminRole[]> {
+    return this.http.get<AdminRole[]>(`${this.api}/admin/roles`);
+  }
+  createRole(name: string): Observable<AdminRole> {
+    return this.http.post<AdminRole>(`${this.api}/admin/roles`, { name });
+  }
+  updateRole(id: number, name: string): Observable<AdminRole> {
+    return this.http.put<AdminRole>(`${this.api}/admin/roles/${id}`, { name });
+  }
+  getPermissions(): Observable<Permission[]> {
+    return this.http.get<Permission[]>(`${this.api}/admin/roles/permissions`);
+  }
+  updateRolePermissions(id: number, permissionIds: number[]): Observable<AdminRole> {
+    return this.http.put<AdminRole>(`${this.api}/admin/roles/${id}/permissions`, { permissionIds });
+  }
+  getAuditLogs(page = 0, size = 15, search = ''): Observable<PageResponse<AuditLogEntry>> {
+    let params = new HttpParams().set('page', page).set('size', size);
+    if (search) params = params.set('search', search);
+    return this.http.get<PageResponse<AuditLogEntry>>(`${this.api}/admin/audit-logs`, { params });
   }
 
   // ── Products ───────────────────────────────

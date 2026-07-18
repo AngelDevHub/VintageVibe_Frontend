@@ -58,6 +58,17 @@ export class AuthService {
   }
 
   logout(): void {
+    this.http.post<void>(`${environment.apiUrl}/auth/logout`, {}).subscribe({
+      next: () => this.clearSession(),
+      error: () => this.clearSession()
+    });
+  }
+
+  getToken(): string | null {
+    return this._token();
+  }
+
+  private clearSession(): void {
     this._token.set(null);
     this._user.set(null);
     if (isPlatformBrowser(this.platformId)) {
@@ -65,9 +76,5 @@ export class AuthService {
       sessionStorage.removeItem('vv_user');
     }
     this.router.navigate(['/login']);
-  }
-
-  getToken(): string | null {
-    return this._token();
   }
 }
