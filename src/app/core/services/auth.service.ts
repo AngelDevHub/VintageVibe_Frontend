@@ -27,16 +27,38 @@ export class AuthService {
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
-      const savedToken = sessionStorage.getItem('vv_token');
-      const savedUser = sessionStorage.getItem('vv_user');
+      const savedToken = localStorage.getItem('vv_token') || sessionStorage.getItem('vv_token');
+      const savedUser = localStorage.getItem('vv_user') || sessionStorage.getItem('vv_user');
       if (savedToken && savedUser) {
         try {
           this._token.set(savedToken);
           this._user.set(JSON.parse(savedUser));
+          localStorage.setItem('vv_token', savedToken);
+          localStorage.setItem('vv_user', savedUser);
         } catch {
           this.clearSession(false);
         }
       }
+
+      window.addEventListener('storage', (event) => {
+        if (event.key === 'vv_token') {
+          if (!event.newValue) {
+            this._token.set(null);
+            this._user.set(null);
+            this.router.navigate(['/login']);
+          } else {
+            this._token.set(event.newValue);
+            const userJson = localStorage.getItem('vv_user');
+            if (userJson) {
+              try {
+                this._user.set(JSON.parse(userJson));
+              } catch {
+                // Ignore parse errors
+              }
+            }
+          }
+        }
+      });
     }
   }
 
@@ -56,8 +78,8 @@ export class AuthService {
     this._token.set(response.token);
     this._user.set(response);
     if (isPlatformBrowser(this.platformId)) {
-      sessionStorage.setItem('vv_token', response.token);
-      sessionStorage.setItem('vv_user', JSON.stringify(response));
+      localStorage.setItem('vv_token', response.token);
+      localStorage.setItem('vv_user', JSON.stringify(response));
     }
   }
 
@@ -69,22 +91,26 @@ export class AuthService {
   }
 
   expireSession(): void {
-    this.clearSession();
+    this.clearSession(true, true);
   }
 
   getToken(): string | null {
     return this._token();
   }
 
-  private clearSession(redirect = true): void {
+  private clearSession(redirect = true, isExpired = false): void {
     this._token.set(null);
     this._user.set(null);
     if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('vv_token');
+      localStorage.removeItem('vv_user');
       sessionStorage.removeItem('vv_token');
       sessionStorage.removeItem('vv_user');
     }
     if (redirect) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/login'], {
+        queryParams: isExpired ? { sessionExpired: 'true' } : undefined
+      });
     }
   }
 }
