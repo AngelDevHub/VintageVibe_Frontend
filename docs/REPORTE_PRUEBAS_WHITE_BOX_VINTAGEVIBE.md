@@ -97,7 +97,7 @@ String? validateAndSanitizePrice(String? val) {
       .trim();
   final parsed = double.tryParse(cleaned);           // Instrucción
   if (parsed == null || parsed <= 0) {              // Decisión D2 (C3 || C4)
-    return 'Precio inválido mayor a 0';             // Rama 2
+    return 'El precio debe ser mayor a 0';          // Rama 2
   }
   return null;                                      // Rama 3 (Éxito)
 }
@@ -111,7 +111,7 @@ flowchart TD
     D1 -- No --> N4["4: Limpiar símbolos $, comas y trim()"]
     N4 --> N5["5: parsed = double.tryParse(cleaned)"]
     N5 --> D2{"6: parsed == null || parsed <= 0?"}
-    D2 -- Sí --> N7["7: return 'Precio inválido mayor a 0'"]
+    D2 -- Sí --> N7["7: return 'El precio debe ser mayor a 0'"]
     D2 -- No --> N8["8: return null (Válido)"]
     N3 --> N9(["9: Fin"])
     N7 --> N9
@@ -135,9 +135,9 @@ flowchart TD
 | :--- | :--- | :--- | :---: | :--- | :--- |
 | **TC-VAL-01** | `null` | C1: True | C1 | `'Requerido'` | Branch D1(True) |
 | **TC-VAL-02** | `"   "` | C1: False, C2: True | C1 | `'Requerido'` | Condition C2(True) |
-| **TC-VAL-03** | `"abc"` | C1/C2: False, C3: True | C2 | `'Precio inválido mayor a 0'` | Branch D2(True, parsed == null) |
-| **TC-VAL-04** | `"$0.00"` | C1/C2/C3: False, C4: True | C3 | `'Precio inválido mayor a 0'` | Condition C4(True, límite 0) |
-| **TC-VAL-05** | `"-0.01"` | C1/C2/C3: False, C4: True | C3 | `'Precio inválido mayor a 0'` | Condition C4(True, valor negativo) |
+| **TC-VAL-03** | `"abc"` | C1/C2: False, C3: True | C2 | `'El precio debe ser mayor a 0'` | Branch D2(True, parsed == null) |
+| **TC-VAL-04** | `"$0.00"` | C1/C2/C3: False, C4: True | C3 | `'El precio debe ser mayor a 0'` | Condition C4(True, límite 0) |
+| **TC-VAL-05** | `"-0.01"` | C1/C2/C3: False, C4: True | C3 | `'El precio debe ser mayor a 0'` | Condition C4(True, valor negativo) |
 | **TC-VAL-06** | `"$0.01"` | Todas False | C4 | `null` | Valor límite inferior válido |
 | **TC-VAL-07** | `"$1,250.50"` | Todas False | C4 | `null` | Formato moneda complejo |
 
@@ -408,7 +408,7 @@ Se consolidan cuatro defectos técnicos reales detectados durante la auditoría 
   final rawPrice = _priceController.text.replaceAll('$', '').replaceAll(',', '.').trim();
   final parsedPrice = double.tryParse(rawPrice);
   if (parsedPrice == null || parsedPrice <= 0) {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Por favor, introduce un precio válido mayor a 0')));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('El precio debe ser mayor a 0')));
     return;
   }
   ```
@@ -560,7 +560,7 @@ Se consolidan cuatro defectos técnicos reales detectados durante la auditoría 
 * **Cobertura de Condiciones (Condition Coverage):** Evalúa individualmente cada una de las sub-expresiones booleanas que conforman una decisión compuesta.
 * **Ejemplo en VintageVibe:**  
   En el validador de precio: `if (parsed == null || parsed <= 0)`.
-  * *Cobertura de instrucciones:* Ejecutar el cuerpo del `if` una sola vez cubre la sentencia `return 'Precio inválido'`.
+  * *Cobertura de instrucciones:* Ejecutar el cuerpo del `if` una sola vez cubre la sentencia `return 'El precio debe ser mayor a 0'`.
   * *Cobertura de decisiones:* Requiere dos pruebas: una donde toda la expresión sea `true` y otra donde sea `false` (llegando a `return null`).
   * *Cobertura de condiciones:* Exige probar las 4 combinaciones posibles de las dos condiciones independientes:
     1. `parsed == null` (True) $\lor$ `parsed <= 0` (No evaluado por cortocircuito).
