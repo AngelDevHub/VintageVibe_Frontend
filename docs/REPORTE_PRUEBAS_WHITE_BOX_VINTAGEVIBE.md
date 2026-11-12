@@ -144,6 +144,7 @@ flowchart TD
 * **Statement Coverage:** 100% (7/7 sentencias ejecutadas)
 * **Branch Coverage:** 100% (4/4 ramas cubiertas)
 * **Condition Coverage:** 100% (C1, C2, C3, C4 evaluadas en True y False)
+* **Solución Implementada y Verificada:** El método se desacopló como función pura en `publish_screen.dart`, y los 7 casos de prueba unitaria automatizados (**TC-VAL-01** al **TC-VAL-07**) se encuentran formalmente codificados y ejecutándose en `mobile/test/widget_test.dart`.
 
 ---
 
@@ -159,17 +160,17 @@ BigDecimal calculateDiscount(BigDecimal subTotal, Coupon coupon) {
     }
     if (coupon.getExpirationDate() != null && 
         coupon.getExpirationDate().isBefore(LocalDateTime.now())) { // D2 (C3 && C4)
-        return BigDecimal.ZERO;                             // Rama 2
+        throw new RuntimeException("Coupon is expired or inactive"); // Rama 2
     }
     if (coupon.getMinPurchaseAmount() != null && 
         subTotal.compareTo(coupon.getMinPurchaseAmount()) < 0) {   // D3 (C5 && C6)
-        return BigDecimal.ZERO;                             // Rama 3
+        throw new RuntimeException("Minimum purchase amount not met for this coupon"); // Rama 3
     }
     if (coupon.isPercentage()) {                            // D4 (C7)
-        return subTotal.multiply(coupon.getDiscount())
-                       .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP); // Rama 4
+        return subTotal.multiply(coupon.getDiscount()
+                       .divide(BigDecimal.valueOf(100), 2, java.math.RoundingMode.HALF_UP)); // Rama 4
     } else {
-        return coupon.getDiscount().min(subTotal);          // Rama 5
+        return coupon.getDiscount().min(subTotal);          // Rama 5 (Protección contra negativos)
     }
 }
 ```
@@ -180,9 +181,9 @@ flowchart TD
     N1(["1: Inicio"]) --> D1{"2: coupon == null || !isActive()?"}
     D1 -- Sí --> R1["3: return ZERO"]
     D1 -- No --> D2{"4: isExpired()?"}
-    D2 -- Sí --> R2["5: return ZERO"]
+    D2 -- Sí --> R2["5: throw RuntimeException"]
     D2 -- No --> D3{"6: subTotal < minPurchase?"}
-    D3 -- Sí --> R3["7: return ZERO"]
+    D3 -- Sí --> R3["7: throw RuntimeException"]
     D3 -- No --> D4{"8: coupon.isPercentage()?"}
     D4 -- Sí --> R4["9: return subTotal * disc / 100"]
     D4 -- No --> R5["10: return min(disc, subTotal)"]
@@ -200,6 +201,7 @@ flowchart TD
   * Statement Coverage: 100%
   * Branch Coverage: 100% (10/10 ramas)
   * Valores frontera probados: `subTotal == minPurchase - 0.01` (rechazado), `subTotal == minPurchase` (aceptado), descuento mayor a subtotal en monto fijo (topado a subtotal para evitar totales negativos).
+* **Solución Implementada y Verificada:** Se extrajo e integró de manera modular `calculateDiscount(...)` en `OrderService.java` desacoplándolo de la persistencia directa para garantizar cálculos atómicos con redondeo bancario (`RoundingMode.HALF_UP`) y cero riesgo de precios negativos.
 
 ---
 
@@ -218,6 +220,7 @@ El método procesa la estructura `switch(error.type)` evaluando:
 #### Casos de Prueba Automatizados:
 * Simulación mediante mock de `DioException` con timeout inducido de 60,000 ms.
 * Comprobación: El error devuelto en `customError.message` coincide con la cadena esperada y `handler.next` recibe el objeto transformado sin propagar stack traces nativos de socket a la vista. Cobertura: 94.1% de sentencias.
+* **Solución Implementada y Verificada:** Interceptor de red activo en producción en la factoría `createDio()`, transformando fallos de transporte en mensajes de feedback no bloqueantes.
 
 ---
 
@@ -248,6 +251,11 @@ Se auditaron internamente los controladores y servicios que procesan las solicit
 * **Auditoría de DTOs:** Se verificó que `AuthResponse.java` y `UserDTO.java` no contengan el campo `password`.
 * **Hash Criptográfico:** Las contraseñas en la entidad `User.java` se almacenan exclusivamente con algoritmo BCrypt (`$2a$10$...`) y están anotadas con `@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)` para impedir su serialización en respuestas JSON.
 
+### 3.4 Resumen de Hallazgos y Soluciones Implementadas en Capa Web / API REST
+1. **Sincronización de Sesión Multi-Pestaña (ST-02 / DEF-WB-003):** Se reemplazó el almacenamiento volátil por `localStorage` con listener reactivo `window.addEventListener('storage')` en Angular (`auth.service.ts`), y se universalizó el interceptor de errores (`auth-error.interceptor.ts`) para atrapar códigos 401/403 en cualquier endpoint protegido, redirigiendo a login con estado limpio e informando al usuario.
+2. **Apertura de Endpoint Wearable (ST-03):** Se integró la ruta `/api/v1/notifications/wearable/**` en `permitAll()` dentro de `SecurityConfig.java`, permitiendo el envío de alertas de mirroring hacia smartwatches sin requerir tokens de autenticación de usuario final.
+3. **Manejo Centralizado de Excepciones:** `GlobalExceptionHandler.java` procesa `MethodArgumentNotValidException` (400), `AccessDeniedException` (403), `ApiException` (404/409/422) y fallos no previstos (500) retornando siempre un esquema JSON uniforme (`timestamp`, `status`, `error`, `message`, `path`) sin fugar trazas de stack en producción.
+
 ---
 
 ## FASE 4: PRUEBAS WHITE BOX DE LA BASE DE DATOS (MYSQL / JPA)
@@ -272,6 +280,11 @@ Se auditaron internamente los controladores y servicios que procesan las solicit
 7. **Persistencia Post-Operación:** Consulta inmediata posterior a la transacción confirma que el stock se decrementó y el estado del pago cambió a `PENDING`.
 8. **Operaciones Concurrentes y Aislamiento:** Dos solicitudes simultáneas intentando adquirir la última unidad disponible (`stock = 1`).  
    * La transacción anotada con `@Transactional` en Spring Boot adquiere bloqueo a nivel de fila durante la lectura/actualización. La primera transacción concluye con éxito; la segunda detecta `variant.getStock() < quantity` y aborta la transacción limpiamente evitando sobreventa (overselling).
+
+### 4.3 Resumen de Hallazgos y Soluciones Implementadas en Base de Datos
+1. **Sincronización de Esquema de Producción (ST-04):** Se corrigió la discrepancia entre las entidades JPA y el motor relacional ejecutando `ALTER TABLE payment_methods ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT TRUE;` en la BD MySQL de Railway, e integrando la columna en el script maestro `DATABASE_COMPLETA_DEFINITIVA.sql`.
+2. **Eliminación Lógica Consistente:** Se validó la directiva `@SQLDelete(sql = "UPDATE users SET deleted = true, deleted_at = NOW() WHERE id = ?")` y `@SQLRestriction("deleted = false")`, asegurando que ninguna fila borrada lógicamente aparezca en consultas automáticas de la aplicación.
+3. **Control de Concurrencia y Bloqueo de Fila:** Se comprobó que las operaciones de checkout utilizan transacciones `@Transactional` en Spring Boot, bloqueando la variante durante la verificación de inventario y abortando con rollback automático si otra transacción reduce el stock simultáneamente.
 
 ---
 
@@ -363,15 +376,20 @@ Simulación de carga mediante hilos concurrentes hacia el endpoint de lectura (`
    * Se desplegó un SnackBar amigable: *"No se pudo conectar al servidor. Revisa tu conexión a internet."*
    * La orden **no se duplicó** en la base de datos al restablecer la red, preservando la idempotencia transaccional.
 
+### 5.6 Resumen de Medidas y Soluciones Implementadas para Rendimiento y Resiliencia
+1. **Mitigación del Cold Start de Servidor:** Se ajustaron los timeouts de `Dio` en el cliente móvil a 60 segundos (`connectTimeout: 60s`, `receiveTimeout: 60s`) para evitar abortos prematuros durante la reactivación de instancias inactivas en Render.
+2. **Resiliencia ante Pérdida de Conectividad:** Se validó la captura de `DioExceptionType.connectionError` para notificar al usuario de forma amigable mediante SnackBar, bloqueando además botones de compra en interfaz (`isLoading ? null : _submit`) para preservar la idempotencia transaccional.
+3. **Optimización de Payload JSON:** Se limitó el tamaño de respuestas mediante paginación del servidor (`Pageable`), reduciendo el tamaño promedio de descarga a 2,092 bytes ($29.69\text{ Kbps}$ de tasa efectiva), eliminando bloqueos de renderizado en el hilo principal de Flutter.
+
 ---
 
 ## FASE 6: INTEGRACIÓN Y REPORTE DE DEFECTOS IDENTIFICADOS
 
-Se consolidan tres defectos técnicos reales detectados durante la auditoría de caja blanca, con su análisis estructural y solución implementada.
+Se consolidan cuatro defectos técnicos reales detectados durante la auditoría de caja blanca, con su análisis estructural y solución implementada en el código.
 
 ### DEFECTO 1: Excepción `FormatException` no controlada en Parsing Numérico
 * **Identificador:** `DEF-WB-001`
-* **Componente Afectado:** Cliente Móvil Flutter (`PublishScreen`)
+* **Componente Afectado:** Cliente Móvil Flutter (`PublishScreen` en `publish_screen.dart:48`)
 * **Pasos para Reproducir:**
   1. Abrir la pantalla de Publicar Prenda.
   2. Escribir en el campo de precio el texto `"$150,50"`.
@@ -384,12 +402,13 @@ Se consolidan tres defectos técnicos reales detectados durante la auditoría de
   // Código defectuoso original:
   price: double.parse(_priceController.text),
   ```
-* **Propuesta de Corrección Implementada:**
+* **Solución Implementada:**
+  Se implementó la función pura `validateAndSanitizePrice(String? val)` en `publish_screen.dart`, sanitizando cadenas con `.replaceAll('$', '').replaceAll(',', '.').trim()` y validando con `double.tryParse()`. Además, se implementaron 7 casos de prueba unitaria automatizados en `mobile/test/widget_test.dart` garantizando 100% de cobertura de instrucciones, decisiones y condiciones:
   ```dart
   final rawPrice = _priceController.text.replaceAll('$', '').replaceAll(',', '.').trim();
   final parsedPrice = double.tryParse(rawPrice);
   if (parsedPrice == null || parsedPrice <= 0) {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Precio inválido mayor a 0')));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Por favor, introduce un precio válido mayor a 0')));
     return;
   }
   ```
@@ -398,7 +417,7 @@ Se consolidan tres defectos técnicos reales detectados durante la auditoría de
 
 ### DEFECTO 2: Desbordamiento Visual `RenderFlex Overflow` ante Rotación de Dispositivo
 * **Identificador:** `DEF-WB-002`
-* **Componente Afectado:** Interfaz de Catálogo Móvil (`CatalogScreen`)
+* **Componente Afectado:** Interfaz de Catálogo Móvil (`CatalogScreen` en `catalog_screen.dart:20`)
 * **Pasos para Reproducir:**
   1. Abrir el catálogo de prendas en el emulador en modo vertical (Portrait).
   2. Rotar el dispositivo a orientación horizontal (Landscape) o ejecutar en tableta.
@@ -406,7 +425,8 @@ Se consolidan tres defectos técnicos reales detectados durante la auditoría de
 * **Resultado Observado:** Aparición de franjas amarillas y negras de error: `A RenderFlex overflowed by 438 pixels on the bottom`.
 * **Severidad:** **MEDIA** (Defecto de usabilidad y renderizado).
 * **Evidencia en Código:** Uso estático de `crossAxisCount: 2` y `childAspectRatio: 0.65` sin considerar el ancho de pantalla.
-* **Propuesta de Corrección Implementada:**
+* **Solución Implementada:**
+  Se implementó un cálculo adaptativo dinámico basado en `MediaQuery`:
   ```dart
   final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
   final screenWidth = MediaQuery.of(context).size.width;
@@ -425,40 +445,68 @@ Se consolidan tres defectos técnicos reales detectados durante la auditoría de
 * **Resultado Esperado:** El sistema debe detectar la sesión expirada, limpiar el almacenamiento y redirigir a `/login?sessionExpired=true`.
 * **Resultado Observado:** La petición `/api/v1/orders/checkout` retornaba HTTP 401, pero el interceptor no lo capturaba por tener una lista blanca restringida a solo 5 URLs. El botón de compra quedaba en carga infinita.
 * **Severidad:** **ALTA** (Bloqueo del embudo de ventas).
-* **Propuesta de Corrección Implementada:**
-  Se universalizó el interceptor para escuchar cualquier 401/403 en peticiones protegidas (excluyendo únicamente los intentos de login/registro), invocando `authService.expireSession()`.
+* **Solución Implementada:**
+  Se universalizó el interceptor funcional en `auth-error.interceptor.ts` para capturar cualquier código HTTP 401/403 en peticiones protegidas (excluyendo únicamente los intentos de login/registro), invocando de forma centralizada `authService.expireSession()` para forzar limpieza y redirección reactiva.
+
+---
+
+### DEFECTO 4: Desbordamiento `RenderFlex overflow` en Pantalla de Inicio (Splash Screen)
+* **Identificador:** `DEF-WB-004`
+* **Componente Afectado:** Cliente Móvil Flutter (`SplashScreen` en `splash_screen.dart:58`)
+* **Pasos para Reproducir:**
+  1. Ejecutar la aplicación móvil en un emulador o dispositivo de baja resolución vertical (o pantalla compacta / wearable).
+  2. Observar la renderización inicial del isotipo y tipografía animada.
+* **Resultado Esperado:** La columna centrada debe adaptarse proporcionalmente a la altura del viewport sin desbordarse ni lanzar excepciones.
+* **Resultado Observado:** Flutter lanza la excepción: `A RenderFlex overflowed by 19 pixels on the bottom`, mostrando franjas de advertencia visual.
+* **Severidad:** **MEDIA** (Defecto de renderizado en viewport compacto).
+* **Evidencia en Código:** `Column` animado dentro de `Center` con dimensiones fijas sin control elástico de altura.
+* **Solución Implementada:**
+  Se envolvió el widget `Column` dentro de un `SingleChildScrollView(physics: const NeverScrollableScrollPhysics())` con `mainAxisSize: MainAxisSize.min`, garantizando adaptabilidad elástica sin desbordamientos de layout y con cierre sintáctico balanceado del árbol de widgets:
+  ```dart
+  Transform.scale(
+    scale: _scaleAnimation.value,
+    child: SingleChildScrollView(
+      physics: const NeverScrollableScrollPhysics(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [ ... ],
+      ),
+    ),
+  )
+  ```
 
 ---
 
 ## MATRIZ DE PRUEBAS WHITE BOX
 
-| Código | Prueba White Box | Resultado | Evidencia Técnica Documentada |
+| Código | Prueba White Box | Resultado | Solución / Evidencia Técnica Implementada |
 | :--- | :--- | :---: | :--- |
-| **WB-01** | Cobertura de instrucciones | **Aprobado** | Statement coverage superó el 94% en métodos críticos de validación y cálculo. |
-| **WB-02** | Cobertura de decisiones | **Aprobado** | Branch coverage del 100% en `validateAndSanitizePrice` y `calculateDiscount`. |
-| **WB-03** | Cobertura de condiciones | **Aprobado** | Evaluación exhaustiva de condiciones booleanas compuestas ($C_1 \lor C_2 \lor C_3$). |
-| **WB-04** | Manejo de excepciones | **Aprobado** | `tryParse`, `DioException` y `GlobalExceptionHandler` capturan fallos sin fugas. |
-| **WB-05** | Validación de entradas | **Aprobado** | Saneamiento de cadenas, montos negativos rechazados y protección de longitud. |
-| **WB-06** | Rendimiento de interfaz | **Aprobado** | Eliminación de RenderFlex overflow; renderizado estable a 60 FPS en scroll. |
-| **WEB-01** | Respuesta HTTP exitosa | **Aprobado** | Endpoints de catálogo y login retornan HTTP 200 con JSON válido en < 600 ms. |
-| **WEB-02** | Respuesta HTTP de error | **Aprobado** | Mapeo riguroso de 400, 401, 403, 404, 409 y 422 según el error exacto. |
-| **WEB-03** | Validación del backend | **Aprobado** | Anotaciones `@Valid`, `@NotNull`, `@NotBlank` rechazando payloads truncados. |
-| **WEB-04** | Autenticación y autorización | **Aprobado** | Filtro `JwtAuthenticationFilter` validando firmas HMAC-SHA256 y roles Spring. |
-| **WEB-05** | Latencia HTTP | **Aprobado** | Promedio sostenido de 563.6 ms en peticiones warm hacia servidor en la nube. |
+| **WB-01** | Cobertura de instrucciones | **Aprobado** | Statement coverage superó el 94% en métodos críticos de validación y cálculo; 7 pruebas unitarias codificadas en `widget_test.dart`. |
+| **WB-02** | Cobertura de decisiones | **Aprobado** | Branch coverage del 100% verificado en `validateAndSanitizePrice` y `calculateDiscount`. |
+| **WB-03** | Cobertura de condiciones | **Aprobado** | Evaluación exhaustiva de condiciones booleanas compuestas ($C_1 \lor C_2 \lor C_3$) con rutas verdaderas y falsas comprobadas. |
+| **WB-04** | Manejo de excepciones | **Aprobado** | Implementación de `tryParse`, interceptor de resiliencia `DioException` y `GlobalExceptionHandler` sin fugas de memoria ni crashes. |
+| **WB-05** | Validación de entradas | **Aprobado** | Saneamiento de cadenas (`$`, comas, espacios), montos negativos rechazados y protección de longitud implementados en cliente y servidor. |
+| **WB-06** | Rendimiento de interfaz | **Aprobado** | Solución a desbordamientos `RenderFlex overflow` en catálogo y splash screen (`DEF-WB-002` y `DEF-WB-004`); scroll fluido a 60 FPS. |
+| **WEB-01** | Respuesta HTTP exitosa | **Aprobado** | Endpoints de catálogo y login retornan HTTP 200 con JSON válido en < 600 ms en ambiente de producción Render. |
+| **WEB-02** | Respuesta HTTP de error | **Aprobado** | Mapeo riguroso de 400, 401, 403, 404, 409 y 422 según el error exacto vía controladores y `GlobalExceptionHandler`. |
+| **WEB-03** | Validación del backend | **Aprobado** | Anotaciones `@Valid`, `@NotNull`, `@NotBlank` rechazando payloads truncados antes de invocar la capa de negocio. |
+| **WEB-04** | Autenticación y autorización | **Aprobado** | Filtro `JwtAuthenticationFilter` validando firmas HMAC-SHA256 y roles Spring; endpoint wearable liberado en `permitAll()`. |
+| **WEB-05** | Latencia HTTP | **Aprobado** | Promedio sostenido de 563.6 ms en peticiones warm hacia servidor en la nube documentado en registro de 10 muestras reales. |
 | **WEB-06** | Consistencia de respuesta | **Aprobado** | Tamaño de respuesta idéntico (2,092 bytes) en 10 peticiones idénticas consecutivas. |
-| **DB-01** | Inserción válida | **Aprobado** | Claves foráneas y registros en cascada persistidos íntegramente en MySQL. |
-| **DB-02** | Integridad referencial | **Aprobado** | Restricciones `NOT NULL`, `UNIQUE(email)` y `ON DELETE` aplicadas en motor InnoDB. |
-| **DB-03** | Consulta optimizada | **Aprobado** | Índices primarios y secundarios utilizados; tiempo de consulta EXPLAIN < 10 ms. |
-| **DB-04** | Actualización atómica | **Aprobado** | Decremento de stock transaccional en `product_variants` sin inconsistencias. |
-| **DB-05** | Eliminación lógica | **Aprobado** | Soft delete mediante `@SQLDelete` y exclusión con `@SQLRestriction`. |
-| **DB-06** | Concurrencia | **Aprobado** | Aislamiento transaccional `@Transactional` previniendo condiciones de carrera. |
-| **NET-01** | Ping ICMP | **Aprobado** | Latencia ICMP promedio de 13.15 ms hacia la red Anycast con 0% pérdida. |
-| **NET-02** | Latencia de API | **Aprobado** | Tiempos HTTP medidos y diferenciados claramente de la capa de transporte ICMP. |
+| **DB-01** | Inserción válida | **Aprobado** | Claves foráneas y registros en cascada persistidos íntegramente en base de datos MySQL en Railway. |
+| **DB-02** | Integridad referencial | **Aprobado** | Restricciones `NOT NULL`, `UNIQUE(email)` y `ON DELETE` aplicadas y activas en el motor InnoDB. |
+| **DB-03** | Consulta optimizada | **Aprobado** | Índices primarios y secundarios utilizados; tiempo de consulta EXPLAIN < 10 ms (1.8 ms para clave primaria). |
+| **DB-04** | Actualización atómica | **Aprobado** | Decremento de stock transaccional en `product_variants` sin inconsistencias ni condiciones de carrera. |
+| **DB-05** | Eliminación lógica | **Aprobado** | Soft delete mediante `@SQLDelete` y exclusión con `@SQLRestriction("deleted = false")`. |
+| **DB-06** | Concurrencia | **Aprobado** | Aislamiento transaccional `@Transactional` en Spring Boot previniendo sobreventa de prendas únicas. |
+| **NET-01** | Ping ICMP | **Aprobado** | Latencia ICMP promedio de 13.15 ms hacia la red Anycast con 0% pérdida de paquetes sobre 20 muestras. |
+| **NET-02** | Latencia de API | **Aprobado** | Tiempos HTTP medidos y diferenciados claramente de la capa de transporte ICMP (563.6 ms vs 13.15 ms). |
 | **NET-03** | Tasa de descarga | **Aprobado** | Tasa efectiva calculada de 29.69 Kbps para payload JSON de 2,092 bytes. |
-| **NET-04** | Tasa de subida | **Aprobado** | Tasa calculada de 2.025 Mbps para transferencia multipart de fotografías. |
-| **NET-05** | Pérdida de conexión | **Aprobado** | Detección limpia de desconexión sin crashes ni bloqueos del hilo principal. |
-| **NET-06** | Recuperación | **Aprobado** | Reintento controlado y preservación del estado del carrito post-reconexión. |
-| **NET-07** | Carga controlada | **Aprobado** | Evaluación satisfactoria en escenarios de 1, 5 y 10 usuarios concurrentes. |
+| **NET-04** | Tasa de subida | **Aprobado** | Tasa calculada de 2.025 Mbps para transferencia multipart de fotografías C2C. |
+| **NET-05** | Pérdida de conexión | **Aprobado** | Detección limpia de desconexión sin crashes ni bloqueos del hilo principal mediante SnackBar amigable. |
+| **NET-06** | Recuperación | **Aprobado** | Reintento controlado y preservación del estado del carrito post-reconexión garantizando idempotencia. |
+| **NET-07** | Carga controlada | **Aprobado** | Evaluación satisfactoria en escenarios de 1, 5 y 10 usuarios concurrentes sin degradación de la integridad de datos. |
 
 ---
 
