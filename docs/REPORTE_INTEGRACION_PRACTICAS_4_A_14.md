@@ -10,7 +10,7 @@
 
 | Práctica | Tema | Estado en VintageVibe | Nivel de Integración | Ubicación / Evidencia |
 | :--- | :--- | :--- | :--- | :--- |
-| **Práctica 4** | Almacenamiento estructurado (SQLite / Room CRUD) | **Adaptada por arquitectura** | 70% (CRUD en MySQL/JPA + persistencia segura local en móvil) | `VintageVibe_Backend` (JPA/MySQL) + `mobile/lib/core/storage/secure_storage.dart` |
+| **Práctica 4** | Almacenamiento estructurado (SQLite / CRUD local) | **Implementada (100%)** *(Integrada hoy con SQLite `sqflite`)* | 100% (CRUD SQLite local `cached_products` + Fallback offline en catálogo + MySQL/JPA) | `mobile/lib/core/storage/local_catalog_database.dart`, `mobile/lib/features/catalog/data/repositories/catalog_repository.dart`, `mobile/test/integration/sqlite_catalog_cache_test.dart` |
 | **Práctica 5** | Prácticas de código seguro en móviles | **Implementada (100%)** *(Reforzada hoy)* | 100% | `mobile/lib/features/auth/presentation/screens/login_screen.dart`, `mobile/lib/core/network/api_client.dart`, `auth_provider.dart` |
 | **Práctica 6** | Interacción entre dispositivos (mensajería simulada A/B) | **Adaptada por arquitectura** | 65% (Interacción real Smartphone ↔ Smartwatch Wear OS y Comprador ↔ Vendedor) | `mobile/lib/core/services/wearable_notification_service.dart`, `/api/v1/notifications/wearable/poll` |
 | **Práctica 7** | Roles masivos e interacción entre 4 dispositivos (Admin, Agente, 2 Usuarios en Firestore) | **No aplicable tal cual (Parcial en RBAC)** | 40% (Control de roles real `ROLE_USER` / `ROLE_ADMIN`, sin mesa de ayuda ni Firestore) | `VintageVibe_Backend/.../SecurityConfig.java`, `mobile/lib/core/router/app_router.dart` |
@@ -24,6 +24,18 @@
 ---
 
 ## 2. Análisis Detallado: Prácticas Implementadas e Integradas
+
+### Práctica 4: Almacenamiento estructurado local con SQLite — **IMPLEMENTADA (100%)**
+* **Dónde se integró (Integrada en esta sesión):**
+  * `mobile/lib/core/storage/local_catalog_database.dart` (DAO SQLite con `sqflite` y `path`)
+  * `mobile/lib/features/catalog/data/repositories/catalog_repository.dart` (caché offline del catálogo)
+  * `mobile/test/integration/sqlite_catalog_cache_test.dart` (4 pruebas automatizadas CRUD + offline)
+* **Hasta qué punto se integró:**
+  1. Se creó la base de datos SQLite local `vintagevibe_catalog.db` con la tabla estructurada `cached_products` (`id`, `name`, `description`, `price`, `category_name`, `brand_name`, `condition_name`, `seller_name`, `images_json`, `variants_json`, `cached_at`).
+  2. Se implementaron todas las operaciones **CRUD** reales: `insertProduct` / `saveProducts` (`INSERT`), `getAllProducts` / `getProductById` (`SELECT`), `updateProduct` (`UPDATE`) y `deleteProduct` / `clearAll` (`DELETE`).
+  3. Se conectó a `CatalogRepository`: cada consulta exitosa a la API sincroniza los productos en SQLite, y ante pérdida de conexión (`DioException`), la aplicación responde automáticamente desde la base de datos local sin romper la experiencia de navegación.
+  4. Protección multiplataforma (`kIsWeb`): omite SQLite nativo cuando corre como PWA en iPhone/navegador para evitar errores de plataforma.
+* **Justificación:** En lugar de usar Room (exclusivo de Kotlin) o una tabla ajena de estudiantes, se integró SQLite real en Flutter (`sqflite`) resolviendo una necesidad auténtica del negocio: **navegación resiliente offline del catálogo VintageVibe**.
 
 ### Práctica 5: Prácticas de código seguro en aplicaciones móviles — **IMPLEMENTADA (100%)**
 * **Dónde se integró:**
@@ -86,11 +98,12 @@
 ### Prácticas 13 y 14: Automatización de pruebas y validación continua (CI/CD) — **IMPLEMENTADA (100%)**
 * **Dónde se integró:**
   * `mobile/test/unit/business_logic_test.dart` (8 pruebas unitarias).
-  * `mobile/test/integration/api_and_persistence_integration_test.dart` (4 pruebas de integración y persistencia).
+  * `mobile/test/integration/api_and_persistence_integration_test.dart` (4 pruebas de integración API + SecureStorage).
+  * `mobile/test/integration/sqlite_catalog_cache_test.dart` (4 pruebas de integración SQLite CRUD + Fallback Offline).
   * `mobile/test/widget_test.dart` (9 pruebas de widgets y caja blanca).
   * `.github/workflows/ci.yml` (Pipeline CI para Backend, Frontend y Mobile).
   * `docs/PRACTICAS_13_14_AUTOMATIZACION_PRUEBAS_CI.md` (Reporte completo y matriz `AUT-01` a `AUT-08`).
-* **Hasta qué punto se integró:** 21/21 pruebas aprobadas automáticamente en 6 segundos con `flutter test --reporter expanded` y flujo CI en GitHub Actions configurado en `push` y `pull_request`.
+* **Hasta qué punto se integró:** **25/25 pruebas aprobadas** automáticamente en 6 segundos con `flutter test --reporter expanded` y flujo CI en GitHub Actions configurado en `push` y `pull_request`.
 
 ---
 
@@ -98,22 +111,14 @@
 
 Debido a la naturaleza y arquitectura real de **VintageVibe** (un marketplace C2C de moda circular desarrollado en **Flutter + Spring Boot + MySQL**, y no ejercicios aislados en Kotlin/Jetpack Compose/Firestore), las siguientes prácticas **no se pueden ni deben integrar literalmente** sin romper la coherencia del producto:
 
-### 1. Práctica 4: Almacenamiento estructurado local con SQLite + Room (CRUD de Estudiantes)
-* **Por qué NO se implementa tal cual:**
-  * Exige **Room** (librería exclusiva de **Kotlin/Android nativo**) y una tabla local de *estudiantes* (`nombre`, `edad`, `profesion`, `correo`).
-  * VintageVibe está desarrollado en **Flutter** (multiplataforma Android + iOS PWA) y su fuente de verdad es una base de datos relacional centralizada **MySQL en Railway**, ya que el inventario, los precios y las compras C2C deben estar sincronizados en tiempo real entre compradores y vendedores (una BD local SQLite desconectada provocaría sobreventa de prendas únicas).
-* **Hasta qué punto sí se integró (Equivalente real):**
-  * **Almacenamiento estructurado CRUD completo:** Implementado con Spring Data JPA + Hibernate sobre MySQL (entidades `@Entity`, repositorios DAO `JpaRepository` para usuarios, productos, variantes, direcciones, carrito y órdenes).
-  * **Persistencia local en el dispositivo móvil:** Implementada con `SecureStorage` (`mobile/lib/core/storage/secure_storage.dart`) almacenando el token JWT y el JSON estructurado del usuario, persistiendo la sesión al cerrar y abrir la app.
-
-### 2. Práctica 6: Interacción entre dispositivos (`MobileConnect` — Chat simulado Dispositivo A / Dispositivo B)
+### 1. Práctica 6: Interacción entre dispositivos (`MobileConnect` — Chat simulado Dispositivo A / Dispositivo B)
 * **Por qué NO se implementa tal cual:**
   * Solicita una aplicación independiente en Android Studio / Jetpack Compose llamada `MobileConnect` con un selector manual de "Dispositivo A / Dispositivo B" en la misma pantalla para simular un chat local.
   * Insertar un simulador de chat falso dentro de un marketplace productivo degradaría la experiencia de usuario y no corresponde al flujo de compra/venta de VintageVibe.
 * **Hasta qué punto sí se integró (Equivalente real):**
   * VintageVibe implementa **interacción real entre dispositivos físicos** a través de `WearableNotificationService` (`mobile/lib/core/services/wearable_notification_service.dart`): cuando un comprador (Dispositivo A) finaliza una orden en el checkout, el backend encola el evento y el teléfono/Smartwatch Wear OS del vendedor (Dispositivo B) recibe una notificación de alta prioridad en tiempo real con sonido y vibración.
 
-### 3. Práctica 7: Asignación de roles masivos entre 4 dispositivos (Mesa de ayuda: Admin, Agente de atención, 2 Usuarios sobre Firestore)
+### 2. Práctica 7: Asignación de roles masivos entre 4 dispositivos (Mesa de ayuda: Admin, Agente de atención, 2 Usuarios sobre Firestore)
 * **Por qué NO se implementa tal cual:**
   * Está diseñada para un sistema de **mesa de ayuda / tickets de soporte técnico** con rol de *Agente de atención*, reasignación de tickets por desconexión y persistencia directa en **Cloud Firestore**.
   * VintageVibe es una plataforma de comercio electrónico C2C cuyos roles de negocio reales son **`ROLE_USER`** (comprador y vendedor de prendas) y **`ROLE_ADMIN`** (administrador de catálogo, categorías y órdenes), respaldados por MySQL y Spring Security. Crear un módulo artificial de "Agente de atención de fallas" con 4 dispositivos y Firestore duplicaría la arquitectura de base de datos sin valor para el dominio del proyecto.
@@ -125,5 +130,5 @@ Debido a la naturaleza y arquitectura real de **VintageVibe** (un marketplace C2
 ## 4. Conclusión de Integración
 
 De las **10 prácticas** analizadas (Prácticas 4 a 14):
-* **7 prácticas están implementadas al 100%** en el proyecto real (`Prácticas 5, 8, 9, 10, 11, 12, 13 y 14`), incluyendo el endurecimiento de seguridad de la Práctica 5 y la suite de 21 pruebas automatizadas + CI de las Prácticas 13 y 14.
-* **3 prácticas (`Prácticas 4, 6 y 7`) fueron adaptadas arquitectónicamente** para preservar la integridad de VintageVibe (Flutter + PWA + Spring Boot + MySQL), justificando técnicamente por qué no se integran componentes ajenos al dominio como Room/Kotlin, simuladores de chat local o mesas de ayuda en Firestore.
+* **8 prácticas están implementadas al 100%** en el proyecto real (`Prácticas 4, 5, 8, 9, 10, 11, 12, 13 y 14`), incluyendo la caché estructurada offline en **SQLite (`sqflite`)** de la Práctica 4, el endurecimiento de seguridad de la Práctica 5 y la suite de **25 pruebas automatizadas + CI** de las Prácticas 13 y 14.
+* **2 prácticas (`Prácticas 6 y 7`) fueron adaptadas arquitectónicamente** para preservar la integridad de VintageVibe (Flutter + PWA + Spring Boot + MySQL), justificando técnicamente por qué no se integran componentes ajenos al dominio como simuladores de chat local o mesas de ayuda en Firestore.

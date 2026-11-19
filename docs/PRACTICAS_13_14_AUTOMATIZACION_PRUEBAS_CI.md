@@ -88,8 +88,8 @@ Se actualizó el pipeline de integración continua en [`.github/workflows/ci.yml
 
 | Métrica | Resultado |
 | :--- | :--- |
-| **Total de pruebas ejecutadas** | **21 pruebas** (8 unitarias nuevas + 4 de integración/persistencia + 9 de widgets/caja blanca) |
-| **Pruebas aprobadas** | **21 / 21 (100%)** |
+| **Total de pruebas ejecutadas** | **25 pruebas** (8 unitarias nuevas + 8 de integración/persistencia [API, SecureStorage y SQLite] + 9 de widgets/caja blanca) |
+| **Pruebas aprobadas** | **25 / 25 (100%)** |
 | **Pruebas fallidas** | **0** |
 | **Tiempo total de ejecución** | **6 segundos (`00:06`)** |
 | **Errores encontrados y correcciones** | Se detectó en el workflow CI anterior una incompatibilidad de versión del SDK de Flutter (`3.29.0` vs Dart `3.12.0`); se actualizó al canal `stable` y se añadió `flutter analyze`. |
