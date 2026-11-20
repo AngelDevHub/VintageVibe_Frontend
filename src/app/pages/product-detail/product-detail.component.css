@@ -701,6 +701,117 @@
   margin: 0;
 }
 
+/* ───── Write Review Form ───── */
+.write-review-card {
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #eee);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+
+.write-review-header h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-dark);
+  margin: 0 0 0.25rem 0;
+}
+
+.write-review-header p {
+  font-size: 0.85rem;
+  color: var(--color-gray, #666);
+  margin: 0 0 1rem 0;
+}
+
+.star-rating-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.picker-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-dark);
+}
+
+.interactive-stars {
+  display: flex;
+  gap: 4px;
+}
+
+.star-btn {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  color: #ddd;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.star-btn:hover {
+  transform: scale(1.2);
+}
+
+.star-btn.active {
+  color: #e6a817;
+}
+
+.rating-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-dark);
+  background: #fef8ec;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid #fae1a0;
+}
+
+.review-textarea {
+  width: 100%;
+  border: 1px solid var(--color-border, #ddd);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: var(--color-dark);
+  resize: vertical;
+  background: #fafafa;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.review-textarea:focus {
+  border-color: var(--color-primary, #000);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+.write-review-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
+.submit-review-btn {
+  background: var(--color-dark, #111) !important;
+  color: #fff !important;
+  border: none !important;
+  padding: 0.6rem 1.4rem !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  border-radius: 10px !important;
+}
+
+.submit-review-btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
 /* ───── Not Found ───── */
 .not-found {
   text-align: center;

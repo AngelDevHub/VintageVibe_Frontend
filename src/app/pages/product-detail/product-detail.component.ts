@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -15,7 +16,7 @@ import { Product, Review, ProductVariant } from '../../core/models';
 
 @Component({
   selector: 'app-product-detail',
-  imports: [CommonModule, RouterLink, ButtonModule, MessageModule, ProgressSpinnerModule, TagModule, ToastModule],
+  imports: [CommonModule, FormsModule, RouterLink, ButtonModule, MessageModule, ProgressSpinnerModule, TagModule, ToastModule],
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css'],
   providers: [MessageService]
@@ -35,6 +36,11 @@ export class ProductDetailComponent implements OnInit {
   quantity = signal(1);
   isLoading = signal(true);
   isAddingToCart = signal(false);
+
+  // Review form state
+  newRating = signal(5);
+  reviewComment = signal('');
+  isSubmittingReview = signal(false);
   /** Average review rating (0-5) */
   avgRating = computed(() => {
     const list = this.reviews();
@@ -130,9 +136,52 @@ export class ProductDetailComponent implements OnInit {
   showToast(message: string, type: 'success' | 'error') {
     this.messageService.add({
       severity: type,
-      summary: type === 'success' ? 'Listo' : 'Atencion',
+      summary: type === 'success' ? 'Listo' : 'Atención',
       detail: message,
       life: 3200
+    });
+  }
+
+  setRating(stars: number) {
+    this.newRating.set(stars);
+  }
+
+  submitReview() {
+    const prod = this.product();
+    if (!prod) return;
+
+    if (!this.authService.isLoggedIn()) {
+      this.showToast('Inicia sesión para dejar tu valoración y reseña.', 'error');
+      return;
+    }
+
+    const comment = this.reviewComment().trim();
+    if (!comment) {
+      this.showToast('Por favor escribe tu reseña u opinión sobre la prenda.', 'error');
+      return;
+    }
+
+    this.isSubmittingReview.set(true);
+    this.reviewService.create({
+      productId: prod.id,
+      rating: this.newRating(),
+      comment: comment
+    }).subscribe({
+      next: () => {
+        this.isSubmittingReview.set(false);
+        this.reviewComment.set('');
+        this.newRating.set(5);
+        this.showToast('¡Tu reseña ha sido publicada con éxito!', 'success');
+        this.reviewService.getProductReviews(prod.id).subscribe({
+          next: (page: any) => this.reviews.set(page.content || []),
+          error: () => {}
+        });
+      },
+      error: (err: any) => {
+        this.isSubmittingReview.set(false);
+        const msg = err?.error?.message || 'Error al enviar la reseña.';
+        this.showToast(msg, 'error');
+      }
     });
   }
 }

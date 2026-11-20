@@ -210,6 +210,47 @@
       }
     </div>
 
+    <!-- Formulario para dejar valoración con estrellas y mensaje -->
+    <div class="write-review-card">
+      <div class="write-review-header">
+        <h3>Escribir una reseña</h3>
+        <p>Valora tu experiencia con esta prenda vintage</p>
+      </div>
+
+      <div class="star-rating-picker">
+        <span class="picker-label">Tu valoración:</span>
+        <div class="interactive-stars">
+          @for (s of [1,2,3,4,5]; track s) {
+          <button type="button" class="star-btn" [class.active]="s <= newRating()" (click)="setRating(s)">
+            ★
+          </button>
+          }
+        </div>
+        <span class="rating-badge">{{ newRating() }} de 5 estrellas</span>
+      </div>
+
+      <div class="review-input-group">
+        <textarea
+          class="review-textarea"
+          rows="3"
+          placeholder="Escribe tu opinión sobre el calce, tela, estado de la prenda y detalles vintage..."
+          [ngModel]="reviewComment()"
+          (ngModelChange)="reviewComment.set($event)"
+        ></textarea>
+      </div>
+
+      <div class="write-review-footer">
+        <button
+          pButton
+          class="submit-review-btn"
+          [label]="isSubmittingReview() ? 'Publicando...' : 'Publicar reseña'"
+          icon="pi pi-send"
+          [disabled]="isSubmittingReview() || !reviewComment().trim()"
+          (click)="submitReview()"
+        ></button>
+      </div>
+    </div>
+
     @if (reviews().length === 0) {
     <p-message severity="secondary" styleClass="no-reviews-message">
       Aun no hay reseñas para este producto.
